@@ -10,7 +10,6 @@
 -- Blizzard
 
 local addonName, L = ...
-local UIParent = UIParent
 local sArenaDB
 local sArena = CreateFrame("Frame")
 sArena.trinkets = {}
@@ -118,7 +117,7 @@ end
 
 function sArena:PLAYER_ENTERING_WORLD()
 	TestMode:SetChecked(false)
-		TestMode:OnClick()
+	TestMode:OnClick()
 	local _, instanceType = IsInInstance()
 	if instanceType == "arena" then
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
