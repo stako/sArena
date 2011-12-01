@@ -1,0 +1,9 @@
+## Interface: 40200
+## Title: sArena
+## Notes: Improved arena frames
+## Version: 1.0.0
+## Author: Stako
+## SavedVariables: sArenaDB
+
+localization.lua
+sArena.lua
