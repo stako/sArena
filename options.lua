@@ -1,27 +1,3 @@
---[[local O = sArena.addonName .. "OptionsPanel"
-sArena.OptionsPanel = CreateFrame("Frame", O)
-sArena.OptionsPanel.name = sArena.addonName
-
-local Title = sArena.OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-Title:SetText(sArena.addonName)
-Title:SetPoint("TOPLEFT", 16, -16)
-
-local SubTitle = sArena.OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-SubTitle:SetText(GetAddOnMetadata(sArena.addonName, "Notes") .. " (" .. GetAddOnMetadata(sArena.addonName, "Version") .. ")")
-SubTitle:SetPoint("TOPLEFT", Title, "BOTTOMLEFT", 0, -8)
-
-function sArena.OptionsPanel:refresh()
-
-end
-
-function sArena.OptionsPanel:default()
-
-end
-
-InterfaceOptions_AddCategory(sArena.OptionsPanel)
-SLASH_sArena1 = "/sarena"
-SlashCmdList[sArena.addonName] = function() InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel) end]]
-
 sArena.OptionsPanel = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
 sArena.OptionsPanel.name = sArena.addonName
 sArena.OptionsPanel:Hide()
@@ -56,7 +32,18 @@ sArena.OptionsPanel:SetScript("OnShow", function(frame)
 	lock:SetSize(56, 22)
 	lock:SetText(sArenaDB.lock and "Unlock" or "Lock")
 	lock.tiptext = "Hides title bar and prevents dragging"
-	lock:SetScript("OnClick", function(s) sArenaDB.lock = not sArenaDB.lock lock:SetText(sArenaDB.lock and "Unlock" or "Lock") if sArenaDB.lock then sArena:Hide() else sArena:Show() end end)
+	lock:SetScript("OnClick", function(s)
+		if sArena:CombatLockdown() then return end
+	
+		sArenaDB.lock = not sArenaDB.lock
+		lock:SetText(sArenaDB.lock and "Unlock" or "Lock")
+		
+		if sArenaDB.lock then
+			sArena:Hide()
+		else
+			sArena:Show()
+		end
+	end)
 	
 	local scale = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 	scale:SetText("Frame Scale: ")
@@ -76,12 +63,17 @@ sArena.OptionsPanel:SetScript("OnShow", function(frame)
 	scaleEditBox:SetBackdropColor(.1,.1,.1,.5)
 	scaleEditBox:SetAutoFocus(false)
 	scaleEditBox:SetText(sArenaDB.scale)
-	scaleEditBox:SetScript("OnEditFocusLost", function()
+	scaleEditBox:SetScript("OnEditFocusLost", function() 
+		if sArena:CombatLockdown() then
+			scaleEditBox:SetText(sArenaDB.scale)
+			return
+		end
+		
 		if type(tonumber(scaleEditBox:GetText())) == "number" and tonumber(scaleEditBox:GetText()) > 0 then
 			sArenaDB.scale = scaleEditBox:GetText()
 			sArena.Frame:SetScale(sArenaDB.scale)
 		else
-		print("Problem!")
+			scaleEditBox:SetText(sArenaDB.scale)
 		end
 	end)
 	scaleEditBox:SetScript("OnEscapePressed", scaleEditBox.ClearFocus)

@@ -51,6 +51,10 @@ function sArena:Initialize()
 	sArena:SetScript("OnDragStart", function(self, button) sArena:StartMoving() end)
 	sArena:SetScript("OnDragStop", function(self, button) sArena:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = sArena:GetPoint() end)
 	
+	-- Blizzard removed this feature from the options panel and SHOW_PARTY_BACKGROUND is always 0, but the CVar showPartyBackground still persists between sessions.
+	ArenaEnemyBackground:SetParent(sArena.Frame) -- ArenaEnemyBackground functions with both variables(see Blizzard_ArenaUI.lua). What the hell?
+	UpdateArenaEnemyBackground(GetCVarBool("showPartyBackground"))
+	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(sArena.Frame)
@@ -63,15 +67,27 @@ function sArena:Initialize()
 	ArenaEnemyFrame1:SetPoint("TOP", ArenaEnemyFrame1:GetParent(), "BOTTOM", 0, -8)
 end
 
+function sArena:CombatLockdown()
+	if InCombatLockdown() then
+		print("sArena: Must leave combat before doing that!")
+		return true
+	end
+end
+
 function sArena:HideArenaEnemyFrames()
+	if self:CombatLockdown() then return end
+	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaEnemyFrame_OnEvent(ArenaFrame, "ARENA_OPPONENT_UPDATE", ArenaFrame.unit, "cleared")
 		_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
 	end
+	ArenaEnemyBackground:Hide()
 end
 
 function sArena:Test(numOpps)
+	if self:CombatLockdown() then return end
+	
 	if not numOpps then numOpps = 3 end
 	if numOpps > 6 then numOpps = 5 end
 	if numOpps < 0 then numOpps = 0 end
@@ -84,6 +100,11 @@ function sArena:Test(numOpps)
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
 		if showArenaEnemyPets then _G["ArenaEnemyFrame"..i.."PetFrame"]:Show() end
+	end
+	
+	if GetCVarBool("showPartyBackground") or (SHOW_PARTY_BACKGROUND == "1") then
+		ArenaEnemyBackground:Show()
+		ArenaEnemyBackground:SetPoint("BOTTOMLEFT", "ArenaEnemyFrame"..numOpps.."PetFrame", "BOTTOMLEFT", -15, -10)
 	end
 end
 

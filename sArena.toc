@@ -9,4 +9,5 @@
 tekKonfig\tekKonfig.xml
 
 sArena.lua
+trinkets.lua
 options.lua
