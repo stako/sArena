@@ -1,354 +1,99 @@
-----------------------------------------
--- Credits
-----------------------------------------
--- Wowwiki
--- Kouri
--- Kollektiv
--- Lyn
--- haste
--- evl
--- Blizzard
+local addonName = ...
+local backdropLayout = { bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = { left = 0, right = 0, top = 0, bottom = 0 } }
+sArena = CreateFrame("Frame", nil, UIParent)
+sArena:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 
-local addonName, L = ...
-local sArenaDB
-local sArena = CreateFrame("Frame")
-sArena.trinkets = {}
-local init = false
-local TestMode, FrameXOffsetSlider, FrameYOffsetSlider, TrinketXOffsetSlider, TrinketYOffsetSlider
+sArena.addonName = addonName
 
-----------------------------------------
--- Called when an option is changed
-----------------------------------------
-function sArena:Update()
-	if not IsAddOnLoaded("Blizzard_ArenaUI") then
-		LoadAddOn("Blizzard_ArenaUI")
-	end
-	ArenaEnemyFrames:SetScale(sArenaDB.frames.scale)
-	ArenaEnemyFrame1:ClearAllPoints()
-	ArenaEnemyFrame1:SetPoint(sArenaDB.frames.point, sArenaDB.frames.anchor, sArenaDB.frames.relativePoint, sArenaDB.frames.xOffset, sArenaDB.frames.yOffset)
-	local arenaFrame
-	for i = 1, MAX_ARENA_ENEMIES do
-		arenaFrame = "ArenaEnemyFrame"..i
-		sArena.trinkets["arena"..i]:SetSize(sArenaDB.trinkets.size, sArenaDB.trinkets.size)
-		sArena.trinkets["arena"..i]:ClearAllPoints()
-		sArena.trinkets["arena"..i]:SetPoint(sArenaDB.trinkets.point, arenaFrame, sArenaDB.trinkets.relativePoint, sArenaDB.trinkets.xOffset, sArenaDB.trinkets.yOffset)
-	end
-	FrameXOffsetSlider:SetValue(sArenaDB.frames.xOffset)
-	FrameYOffsetSlider:SetValue(sArenaDB.frames.yOffset)
-	TrinketXOffsetSlider:SetValue(sArenaDB.trinkets.xOffset)
-	TrinketYOffsetSlider:SetValue(sArenaDB.trinkets.yOffset)
-end
+sArena:SetSize(200, 16)
+sArena:SetBackdrop(backdropLayout)
+sArena:SetBackdropColor(0, 0, 0, .8)
+sArena:SetClampedToScreen(true)
+sArena:EnableMouse(true)
+sArena:SetMovable(true)
+sArena:RegisterForDrag("LeftButton")
+sArena:Hide()
 
-----------------------------------------
--- Create elements once arena frames loaded
-----------------------------------------
-function sArena:init()
-	if init then return end
-	local arenaFrame, trinket
-	for i = 1, MAX_ARENA_ENEMIES do
-		arenaFrame = "ArenaEnemyFrame"..i
-		trinket = CreateFrame("Cooldown", arenaFrame.."Trinket", ArenaEnemyFrames)
-		trinket:SetPoint(sArenaDB.trinkets.point, arenaFrame, sArenaDB.trinkets.relativePoint, sArenaDB.trinkets.xOffset, sArenaDB.trinkets.yOffset)
-		trinket:SetSize(sArenaDB.trinkets.size, sArenaDB.trinkets.size)
-		trinket.icon = trinket:CreateTexture(nil, "BACKGROUND")
-		trinket.icon:SetAllPoints()
-		trinket.icon:SetTexture("Interface\\Icons\\inv_jewelry_trinketpvp_01")
-		trinket:Hide()
-		sArena.trinkets["arena"..i] = trinket
-	end
-	sArena:Update()
-	init = true
-end
+sArena.Title = sArena:CreateFontString(nil, "BACKGROUND")
+sArena.Title:SetFontObject("GameFontHighlight")
+sArena.Title:SetText(addonName .. " (Click to drag)")
+sArena.Title:SetPoint("CENTER", 0, 0)
 
-----------------------------------------
--- Default settings
-----------------------------------------
+sArena.Frame = CreateFrame("Frame", nil, UIParent)
+sArena.Frame:SetSize(200, 1)
+sArena.Frame:SetPoint("TOPLEFT", sArena, "BOTTOMLEFT", 0, 0)
+sArena.Frame:SetPoint("TOPRIGHT", sArena, "BOTTOMRIGHT", 0, 0)
+
+sArena:SetParent(sArena.Frame)
+
 local DBdefaults = {
-	testmode = false,
-	version = 1,
-	frames = {
-		scale = 1,
-		point = "TOPRIGHT",
-		anchor = "ArenaEnemyFrames",
-		relativePoint = "TOPRIGHT",
-		xOffset = -2,
-		yOffset = 0,
-	},
-	trinkets = {
-		enabled = true,
-		size = 22,
-		point = "LEFT",
-		relativePoint = "RIGHT",
-		xOffset = 2,
-		yOffset = -2,
-	},
+	firstrun = true,
+	version = 2,
+	position = {},
+	lock = false,
+	scale = 1,
 }
 
-----------------------------------------
--- OnEvent Scripts
-----------------------------------------
-sArena:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
+function sArena:Initialize()
+	sArena:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
+	sArena.Frame:SetScale(sArenaDB.scale)
+	
+	if sArenaDB.firstrun then
+		sArenaDB.firstrun = false
+		self:Test(3)
+		print("Looks like this is a new version of (or your first time running) sArena! Type /sarena for options.")
+	end
+	
+	if not sArenaDB.lock then
+		self:Show()
+	end
+	
+	sArena:SetScript("OnDragStart", function(self, button) sArena:StartMoving() end)
+	sArena:SetScript("OnDragStop", function(self, button) sArena:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = sArena:GetPoint() end)
+	
+	for i = 1, MAX_ARENA_ENEMIES do
+		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		ArenaFrame:SetParent(sArena.Frame)
+		ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
+		
+		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
+		ArenaPetFrame:SetParent(sArena.Frame)
+	end
+	
+	ArenaEnemyFrame1:SetPoint("TOP", ArenaEnemyFrame1:GetParent(), "BOTTOM", 0, -8)
+end
+
+function sArena:HideArenaEnemyFrames()
+	for i = 1, MAX_ARENA_ENEMIES do
+		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		ArenaEnemyFrame_OnEvent(ArenaFrame, "ARENA_OPPONENT_UPDATE", ArenaFrame.unit, "cleared")
+		_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
+	end
+end
+
+function sArena:Test(numOpps)
+	if not numOpps then numOpps = 3 end
+	if numOpps > 6 then numOpps = 5 end
+	if numOpps < 0 then numOpps = 0 end
+	
+	self:HideArenaEnemyFrames()
+	
+	local showArenaEnemyPets = (SHOW_ARENA_ENEMY_PETS == "1")
+	
+	for i = 1, numOpps do
+		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
+		if showArenaEnemyPets then _G["ArenaEnemyFrame"..i.."PetFrame"]:Show() end
+	end
+end
 
 function sArena:ADDON_LOADED(arg1)
 	if arg1 == addonName then
-		if not _G.sArenaDB then
-			_G.sArenaDB = CopyTable(DBdefaults)
+		if not sArenaDB or sArenaDB.version < DBdefaults.version then
+			sArenaDB = CopyTable(DBdefaults)
 		end
-		sArenaDB = _G.sArenaDB
-		sArenaDB.testmode = false
 	elseif arg1 == "Blizzard_ArenaUI" then
-		sArena.init()
+		self:Initialize()
 	end
 end
 sArena:RegisterEvent("ADDON_LOADED")
-
-function sArena:UNIT_SPELLCAST_SUCCEEDED(unitID, spell, rank, lineID, spellID)
-	if not sArena.trinkets[unitID] then
-		return
-	end
-	if spellID == 59752 or spellID == 42292 then
-		CooldownFrame_SetTimer(sArena.trinkets[unitID], GetTime(), 120, 1)
-		--SendChatMessage("Trinket used by: "..GetUnitName(unitID, true), "PARTY")
-	elseif spellID == 7744 then
-		CooldownFrame_SetTimer(sArena.trinkets[unitID], GetTime(), 30, 1)
-		--SendChatMessage("WotF used by: "..GetUnitName(unitID, true), "PARTY")
-	end
-end
-
-function sArena:PLAYER_ENTERING_WORLD()
-	TestMode:SetChecked(false)
-	TestMode:OnClick()
-	local _, instanceType = IsInInstance()
-	if instanceType == "arena" then
-		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	elseif self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") then
-		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	end
-end
-sArena:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-----------------------------------------
--- Options Panel Declarations
-----------------------------------------
-local O = addonName .. "OptionsPanel"
-
-local OptionsPanel = CreateFrame("Frame", O)
-OptionsPanel.name = addonName
-
-----------------------------------------
--- TestMode Checkbox
-----------------------------------------
-TestMode = CreateFrame("CheckButton", O.."TestMode", OptionsPanel, "OptionsCheckButtonTemplate")
-_G[O.."TestModeText"]:SetText(L["Test Mode"])
-function TestMode:OnClick()
-	local _, instanceType = IsInInstance();
-	if self:GetChecked() then
-		if not IsAddOnLoaded("Blizzard_ArenaUI") then
-			LoadAddOn("Blizzard_ArenaUI")
-		end
-		ArenaEnemyFrames:Show()
-		local arenaFrame
-		for i = 1, MAX_ARENA_ENEMIES do
-			arenaFrame = _G["ArenaEnemyFrame"..i]
-			arenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
-			arenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS["WARRIOR"]))
-			arenaFrame.name:SetText("Mingebag")
-			arenaFrame:Show()
-			CooldownFrame_SetTimer(sArena.trinkets["arena"..i], GetTime(), 300, 1)
-		end
-	else
-		if instanceType ~= "arena" then
-			if ArenaEnemyFrames then ArenaEnemyFrames:Hide() end
-		end
-		for _, trinket in pairs(sArena.trinkets) do
-			trinket:SetCooldown(0, 0)
-			trinket:Hide()
-		end
-	end
-end
-TestMode:SetScript("OnClick", TestMode.OnClick)
-
-----------------------------------------
--- DropDownMenu helper function
-----------------------------------------
-local info = UIDropDownMenu_CreateInfo()
-local function AddItem(owner, text, value)
-	info.owner = owner
-	info.func = owner.OnClick
-	info.text = text
-	info.value = value
-	info.checked = nil -- initially set the menu item to being unchecked
-	UIDropDownMenu_AddButton(info)
-end
-
-----------------------------------------
--- Frame Anchor Drop Down
-----------------------------------------
-local FrameAnchorDropDown = CreateFrame("Frame", O.."FrameAnchorDropDown", OptionsPanel, "UIDropDownMenuTemplate")
-function FrameAnchorDropDown:OnClick()
-	UIDropDownMenu_SetSelectedValue(FrameAnchorDropDown, self.value)
-	if self.value == "ArenaEnemyFrames" then
-		sArenaDB.frames.point = DBdefaults.frames.point
-		sArenaDB.frames.anchor = DBdefaults.frames.anchor
-		sArenaDB.frames.relativePoint = DBdefaults.frames.relativePoint
-		sArenaDB.frames.xOffset = DBdefaults.frames.xOffset
-		sArenaDB.frames.yOffset = DBdefaults.frames.yOffset
-	else
-		sArenaDB.frames.point = "CENTER"
-		sArenaDB.frames.anchor = self.value
-		sArenaDB.frames.relativePoint = "CENTER"
-		sArenaDB.frames.xOffset = 0
-		sArenaDB.frames.yOffset = 0
-	end
-	sArena:Update()
-end
-UIDropDownMenu_Initialize(FrameAnchorDropDown, function()
-	for _, v in ipairs({ "ArenaEnemyFrames", "PlayerFrame", "FocusFrame", "UIParent" }) do
-		AddItem(FrameAnchorDropDown, L[v], v)
-	end
-end)
-
-----------------------------------------
--- Slider helper function, thanks to Kollektiv
-----------------------------------------
-local function CreateSlider(text, parent, low, high, step)
-	local name = parent:GetName() .. text
-	local slider = CreateFrame("Slider", name, parent, "OptionsSliderTemplate")
-	slider:SetWidth(160)
-	slider:SetMinMaxValues(low, high)
-	slider:SetValueStep(step)
-	--_G[name .. "Text"]:SetText(text)
-	_G[name .. "Low"]:SetText(low)
-	_G[name .. "High"]:SetText(high)
-	return slider
-end
-
-----------------------------------------
--- Frame Scale Slider
-----------------------------------------
-local FrameScaleSlider = CreateSlider("FrameScaleSlider", OptionsPanel, 0.5, 3.0, 0.1)
-FrameScaleSlider:SetScript("OnValueChanged", function(self, value)
-	_G[self:GetName() .. "Text"]:SetText(L["Scale"] .. " (" .. tonumber(string.format("%." .. 1 .. "f", value)) .. ")")
-	sArenaDB.frames.scale = value
-	sArena:Update()
-end)
-
-----------------------------------------
--- Frame XOffset Slider
-----------------------------------------
-FrameXOffsetSlider = CreateSlider("FrameXOffsetSlider", OptionsPanel, -1024, 1024, 16)
-FrameXOffsetSlider:SetScript("OnValueChanged", function(self, value)
-	_G[self:GetName() .. "Text"]:SetText(L["Horizontal"] .. " (" .. value .. ")")
-	sArenaDB.frames.xOffset = value
-	sArena:Update()
-end)
-
-----------------------------------------
--- Frame YOffset Slider
-----------------------------------------
-FrameYOffsetSlider = CreateSlider("FrameYOffsetSlider", OptionsPanel, -1024, 1024, 16)
-FrameYOffsetSlider:SetScript("OnValueChanged", function(self, value)
-	_G[self:GetName() .. "Text"]:SetText(L["Vertical"] .. " (" .. value .. ")")
-	sArenaDB.frames.yOffset = value
-	sArena:Update()
-end)
-
-----------------------------------------
--- Trinket Size Slider
-----------------------------------------
-local TrinketSizeSlider = CreateSlider("TrinketSizeSlider", OptionsPanel, 15, 35, 1)
-TrinketSizeSlider:SetScript("OnValueChanged", function(self, value)
-	_G[self:GetName() .. "Text"]:SetText(L["Size"] .. " (" .. value .. ")")
-	sArenaDB.trinkets.size = value
-	sArena:Update()
-end)
-
-----------------------------------------
--- Trinket XOffset Slider
-----------------------------------------
-TrinketXOffsetSlider = CreateSlider("TrinketXOffsetSlider", OptionsPanel, -134, 32, 1)
-TrinketXOffsetSlider:SetScript("OnValueChanged", function(self, value)
-	_G[self:GetName() .. "Text"]:SetText(L["Horizontal"] .. " (" .. value .. ")")
-	sArenaDB.trinkets.xOffset = value
-	sArena:Update()
-end)
-
-----------------------------------------
--- Trinket YOffset Slider
-----------------------------------------
-TrinketYOffsetSlider = CreateSlider("TrinketYOffsetSlider", OptionsPanel, -64, 64, 1)
-TrinketYOffsetSlider:SetScript("OnValueChanged", function(self, value)
-	_G[self:GetName() .. "Text"]:SetText(L["Vertical"] .. " (" .. value .. ")")
-	sArenaDB.trinkets.yOffset = value
-	sArena:Update()
-end)
-
-----------------------------------------
--- Labels
-----------------------------------------
-local TitleLabel = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-TitleLabel:SetText(addonName)
-
-local SubTitleLabel = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-SubTitleLabel:SetText(GetAddOnMetadata(addonName, "Notes") .. " (" .. GetAddOnMetadata(addonName, "Version") .. ")")
-
-local FramesLabel = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-FramesLabel:SetText(L["Frames"])
-
-local FrameAnchorDropDownLabel = OptionsPanel:CreateFontString(O.."FrameAnchorDropDownLabel", "ARTWORK", "GameFontNormal")
-FrameAnchorDropDownLabel:SetText(L["Anchor"])
-
-local TrinketsLabel = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-TrinketsLabel:SetText(L["Trinkets"])
-
-----------------------------------------
--- Options Panel Layout
-----------------------------------------
-TitleLabel:SetPoint("TOPLEFT", 16, -16)
-SubTitleLabel:SetPoint("LEFT", TitleLabel, "RIGHT", 4, -2)
-
-TestMode:SetPoint("TOPLEFT", TitleLabel, "BOTTOMLEFT", 0, -16)
-
-FramesLabel:SetPoint("TOPLEFT", TestMode, "BOTTOMLEFT", 0, -16)
-FrameScaleSlider:SetPoint("TOPLEFT", FramesLabel, "BOTTOMLEFT", 2, -24)
-
-FrameAnchorDropDownLabel:SetPoint("BOTTOMLEFT", FrameScaleSlider, "TOPRIGHT", 32, 8)
-FrameAnchorDropDown:SetPoint("TOP", FrameAnchorDropDownLabel, "BOTTOMLEFT", 0, 0)
-
-FrameXOffsetSlider:SetPoint("TOPLEFT", FrameScaleSlider, "BOTTOMLEFT", 0, -32)
-FrameYOffsetSlider:SetPoint("LEFT", FrameXOffsetSlider, "RIGHT", 24, 0)
-
-TrinketsLabel:SetPoint("TOPLEFT", FrameXOffsetSlider, "BOTTOMLEFT", 0, -24)
-TrinketSizeSlider:SetPoint("TOPLEFT", TrinketsLabel, "BOTTOMLEFT", 2, -24)
-
-TrinketXOffsetSlider:SetPoint("TOPLEFT", TrinketSizeSlider, "BOTTOMLEFT", 0, -32)
-TrinketYOffsetSlider:SetPoint("LEFT", TrinketXOffsetSlider, "RIGHT", 24, 0)
-
-----------------------------------------
--- Called when options panel is opened
-----------------------------------------
-OptionsPanel.refresh = function()
-	sArenaOptionsPanelFrameAnchorDropDownText:SetText(L[sArenaDB.frames.anchor])
-	FrameScaleSlider:SetValue(sArenaDB.frames.scale)
-	FrameXOffsetSlider:SetValue(sArenaDB.frames.xOffset)
-	FrameYOffsetSlider:SetValue(sArenaDB.frames.yOffset)
-	TrinketSizeSlider:SetValue(sArenaDB.trinkets.size)
-	TrinketXOffsetSlider:SetValue(sArenaDB.trinkets.xOffset)
-	TrinketYOffsetSlider:SetValue(sArenaDB.trinkets.yOffset)
-end
-
-----------------------------------------
--- Called when defaults button pushed
-----------------------------------------
-OptionsPanel.default = function()
-	sArenaDB = CopyTable(DBdefaults)
-	sArena:Update()
-end
-
-InterfaceOptions_AddCategory(OptionsPanel)
-
-----------------------------------------
--- Create slash command to open options
-----------------------------------------
-SLASH_sArena1 = "/sarena"
-SlashCmdList[addonName] = function() InterfaceOptionsFrame_OpenToCategory(OptionsPanel) end
