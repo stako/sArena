@@ -58,7 +58,8 @@ function sArena:Initialize()
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(sArena.Frame)
-		ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
+		--ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
+		ArenaEnemyFrame_UpdatePlayer(ArenaFrame, true)
 		
 		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
 		ArenaPetFrame:SetParent(sArena.Frame)
@@ -81,25 +82,37 @@ function sArena:HideArenaEnemyFrames()
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaEnemyFrame_OnEvent(ArenaFrame, "ARENA_OPPONENT_UPDATE", ArenaFrame.unit, "cleared")
 		_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
+		ArenaEnemyFrame_UpdatePlayer(ArenaFrame)
 	end
 	ArenaEnemyBackground:Hide()
 end
 
 function sArena:Test(numOpps)
 	if self:CombatLockdown() then return end
-	
-	if not numOpps then numOpps = 3 end
-	if numOpps > 6 then numOpps = 5 end
-	if numOpps < 0 then numOpps = 0 end
+	if not numOpps or not (numOpps > 0 and numOpps < 6) then return end
 	
 	self:HideArenaEnemyFrames()
 	
 	local showArenaEnemyPets = (SHOW_ARENA_ENEMY_PETS == "1")
+	local _, instanceType = IsInInstance()
+	local factionGroup, _ = UnitFactionGroup('player')
 	
 	for i = 1, numOpps do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		local PVPIcon = _G["ArenaEnemyFrame"..i.."PVPIcon"]
+		if instanceType ~= "pvp" then
+			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
+			PVPIcon:Hide()
+		else
+			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -18, 0)
+			PVPIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..factionGroup)
+			PVPIcon:Show()
+		end
 		ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
-		if showArenaEnemyPets then _G["ArenaEnemyFrame"..i.."PetFrame"]:Show() end
+		if showArenaEnemyPets then
+			_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
+			_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
+		end
 	end
 	
 	if GetCVarBool("showPartyBackground") or (SHOW_PARTY_BACKGROUND == "1") then
