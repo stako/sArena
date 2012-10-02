@@ -28,44 +28,51 @@ sArena:SetParent(sArena.Frame)
 
 local DBdefaults = {
 	firstrun = true,
-	version = 2,
+	version = 3,
 	position = {},
 	lock = false,
 	scale = 1,
+	Trinkets = {
+		size = 24,
+	},
 }
 
 function sArena:Initialize()
-	sArena:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
-	sArena.Frame:SetScale(sArenaDB.scale)
+	self.OptionsPanel:Initialize()
 	
-	if sArenaDB.firstrun then
-		sArenaDB.firstrun = false
-		self:Test(3)
-		print("Looks like this is a new version of (or your first time running) sArena! Type /sarena for options.")
-	end
+	self:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
+	self.Frame:SetScale(sArenaDB.scale)
 	
 	if not sArenaDB.lock then
 		self:Show()
 	end
 	
-	sArena:SetScript("OnDragStart", function(self, button) sArena:StartMoving() end)
-	sArena:SetScript("OnDragStop", function(self, button) sArena:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = sArena:GetPoint() end)
+	self:SetScript("OnDragStart", function(s) s:StartMoving() end)
+	self:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = s:GetPoint() end)
 	
 	-- Blizzard removed this feature from the options panel and SHOW_PARTY_BACKGROUND is always 0, but the CVar showPartyBackground still persists between sessions.
-	ArenaEnemyBackground:SetParent(sArena.Frame) -- ArenaEnemyBackground functions with both variables(see Blizzard_ArenaUI.lua). What the hell?
+	ArenaEnemyBackground:SetParent(self.Frame) -- ArenaEnemyBackground functions with both variables(see Blizzard_ArenaUI.lua). What the hell?
 	UpdateArenaEnemyBackground(GetCVarBool("showPartyBackground"))
 	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
-		ArenaFrame:SetParent(sArena.Frame)
+		ArenaFrame:SetParent(self.Frame)
 		--ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame, true)
 		
 		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
-		ArenaPetFrame:SetParent(sArena.Frame)
+		ArenaPetFrame:SetParent(self.Frame)
+		
+		self.Trinkets:CreateIcon(ArenaFrame)
 	end
 	
 	ArenaEnemyFrame1:SetPoint("TOP", ArenaEnemyFrame1:GetParent(), "BOTTOM", 0, -8)
+	
+	if sArenaDB.firstrun then
+		sArenaDB.firstrun = false
+		self:Test(3)
+		print("Looks like this is your first time running this version of sArena! Type /sarena for options.")
+	end
 end
 
 function sArena:CombatLockdown()
@@ -78,13 +85,15 @@ end
 function sArena:HideArenaEnemyFrames()
 	if self:CombatLockdown() then return end
 	
+	ArenaEnemyBackground:Hide()
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaEnemyFrame_OnEvent(ArenaFrame, "ARENA_OPPONENT_UPDATE", ArenaFrame.unit, "cleared")
 		_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame)
 	end
-	ArenaEnemyBackground:Hide()
+	
+	self.Trinkets:Lock()
 end
 
 function sArena:Test(numOpps)
@@ -119,7 +128,30 @@ function sArena:Test(numOpps)
 		ArenaEnemyBackground:Show()
 		ArenaEnemyBackground:SetPoint("BOTTOMLEFT", "ArenaEnemyFrame"..numOpps.."PetFrame", "BOTTOMLEFT", -15, -10)
 	end
+	
+	self.Trinkets:Unlock()
 end
+
+function sArena:UNIT_SPELLCAST_SUCCEEDED(unitID, spell, rank, lineID, spellID)
+	if not sArena.Trinkets[unitID] then return end
+	
+	if spellID == 59752 or spellID == 42292 then -- EMFH and Trinket
+		CooldownFrame_SetTimer(self.Trinkets[unitID], GetTime(), 120, 1)
+	--[[elseif spellID == 7744 then -- WOTF
+		CooldownFrame_SetTimer(self.trinkets[unitID], GetTime(), 30, 1)]]
+	end
+end
+
+function sArena:PLAYER_ENTERING_WORLD()
+	local _, instanceType = IsInInstance()
+	if instanceType == "arena" then -- Trinket icons will only be active in arenas, not battlegrounds
+		self.Trinkets:Lock()
+		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	elseif self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") then
+		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	end
+end
+sArena:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 function sArena:ADDON_LOADED(arg1)
 	if arg1 == addonName then
