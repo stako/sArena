@@ -1,6 +1,5 @@
 local addonName = ...
 local backdropLayout = { bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = { left = 0, right = 0, top = 0, bottom = 0 } }
-local firstRun = true
 sArena = CreateFrame("Frame", nil, UIParent)
 sArena:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 
@@ -39,9 +38,6 @@ local DBdefaults = {
 }
 
 function sArena:Initialize()
-	if not firstRun then return end
-	firstRun = false
-	
 	self.OptionsPanel:Initialize()
 	
 	self:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
@@ -165,7 +161,6 @@ function sArena:ADDON_LOADED(arg1)
 		if not IsAddOnLoaded("Blizzard_ArenaUI") then
 			LoadAddOn("Blizzard_ArenaUI")
 		end
-	elseif arg1 == "Blizzard_ArenaUI" then
 		self:Initialize()
 	end
 end
