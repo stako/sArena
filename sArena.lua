@@ -1,12 +1,12 @@
-local addonName = ...
-local backdropLayout = { bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = { left = 0, right = 0, top = 0, bottom = 0 } }
+local AddonName = ...
+local BackdropLayout = { bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = { left = 0, right = 0, top = 0, bottom = 0 } }
 sArena = CreateFrame("Frame", nil, UIParent)
 sArena:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 
-sArena.addonName = addonName
+sArena.AddonName = AddonName
 
 sArena:SetSize(200, 16)
-sArena:SetBackdrop(backdropLayout)
+sArena:SetBackdrop(BackdropLayout)
 sArena:SetBackdropColor(0, 0, 0, .8)
 sArena:SetClampedToScreen(true)
 sArena:EnableMouse(true)
@@ -16,7 +16,7 @@ sArena:Hide()
 
 sArena.Title = sArena:CreateFontString(nil, "BACKGROUND")
 sArena.Title:SetFontObject("GameFontHighlight")
-sArena.Title:SetText(addonName .. " (Click to drag)")
+sArena.Title:SetText(AddonName .. " (Click to drag)")
 sArena.Title:SetPoint("CENTER", 0, 0)
 
 sArena.Frame = CreateFrame("Frame", nil, UIParent)
@@ -58,16 +58,23 @@ function sArena:Initialize()
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(self.Frame)
-		--ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
+		--ArenaFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame, true)
 		
 		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
 		ArenaPetFrame:SetParent(self.Frame)
 		
 		self.Trinkets:CreateIcon(ArenaFrame)
+		
+		local PrepFrame = _G["ArenaPrepFrame"..i]
+		PrepFrame:SetParent(self.Frame)
+		PrepFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
+		
+		if i == 1 then
+			ArenaFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
+			PrepFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
+		end
 	end
-	
-	ArenaEnemyFrame1:SetPoint("TOP", ArenaEnemyFrame1:GetParent(), "BOTTOM", 0, -8)
 	
 	if sArenaDB.firstrun then
 		sArenaDB.firstrun = false
@@ -135,8 +142,8 @@ end
 
 function sArena:PLAYER_ENTERING_WORLD()
 	local _, instanceType = IsInInstance()
-	if instanceType == "arena" then
-		if sArenaDB.Trinkets.enabled then -- Trinket icons will only be active in arenas, not battlegrounds
+	if sArenaDB.Trinkets.enabled then
+		if instanceType == "arena" then -- Trinket icons will only be active in arenas, not battlegrounds
 			self.Trinkets:Clear()
 			self.Trinkets:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		end
@@ -147,7 +154,7 @@ end
 sArena:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 function sArena:ADDON_LOADED(arg1)
-	if arg1 == addonName then
+	if arg1 == AddonName then
 		if not sArenaDB or sArenaDB.version < DBdefaults.version then
 			sArenaDB = CopyTable(DBdefaults)
 		end

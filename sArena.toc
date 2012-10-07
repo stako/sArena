@@ -1,6 +1,6 @@
 ## Interface: 50001
 ## Title: |cff009cffs|rArena
-## Notes: Improved arena frames
+## Notes: Improved arena frames.
 ## Author: Stako
 ## Version: 1.1.0
 

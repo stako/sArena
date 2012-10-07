@@ -1,11 +1,11 @@
 -- Tekkub from WoWI/GitHub made this so easy!
 
 sArena.OptionsPanel = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
-sArena.OptionsPanel.name = sArena.addonName
+sArena.OptionsPanel.name = sArena.AddonName
 sArena.OptionsPanel:Hide()
 
 function sArena.OptionsPanel:Initialize()
-	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, sArena.addonName, "Improved arena frames")
+	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, sArena.AddonName, "Improved arena frames")
 
 	local ClearButton = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", -16, -16)
 	ClearButton:SetSize(56, 22)
@@ -63,7 +63,7 @@ function sArena.OptionsPanel:Initialize()
 	ScaleEditBox:SetFontObject(GameFontHighlight)
 	ScaleEditBox:SetTextInsets(4,4,2,2)
 	ScaleEditBox:SetBackdrop(backdrop)
-	ScaleEditBox:SetBackdropColor(0,0,0,.9)
+	ScaleEditBox:SetBackdropColor(0,0,0,.4)
 	ScaleEditBox:SetAutoFocus(false)
 	ScaleEditBox:SetText(sArenaDB.scale)
 	ScaleEditBox:SetScript("OnEditFocusLost", function() 
@@ -88,6 +88,7 @@ function sArena.OptionsPanel:Initialize()
 	local TrinketsFrame = LibStub("tekKonfig-Group").new(self, "Trinkets", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -32)
 	TrinketsFrame:SetPoint("RIGHT", self, -16, 0)
 	TrinketsFrame:SetHeight(80)
+	TrinketsFrame:SetFrameLevel(3)
 	
 	local TrinketsEnableCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Enable", "TOPLEFT", TrinketsFrame, 8, -8)
 	TrinketsEnableCheckbox.tiptext = "Displays a cooldown icon when an enemy uses their PvP trinket."
@@ -109,7 +110,7 @@ function sArena.OptionsPanel:Initialize()
 	TrinketsIconSizeEditBox:SetFontObject(GameFontHighlight)
 	TrinketsIconSizeEditBox:SetTextInsets(4,4,2,2)
 	TrinketsIconSizeEditBox:SetBackdrop(backdrop)
-	TrinketsIconSizeEditBox:SetBackdropColor(0,0,0,.9)
+	TrinketsIconSizeEditBox:SetBackdropColor(0,0,0,.4)
 	TrinketsIconSizeEditBox:SetAutoFocus(false)
 	TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
 	TrinketsIconSizeEditBox:SetScript("OnEditFocusLost", function() 
@@ -134,4 +135,4 @@ end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)
 SLASH_sArena1 = "/sarena"
-SlashCmdList[sArena.addonName] = function() InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel) end
+SlashCmdList[sArena.AddonName] = function() InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel) end
