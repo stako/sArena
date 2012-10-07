@@ -5,41 +5,41 @@ sArena.OptionsPanel.name = sArena.addonName
 sArena.OptionsPanel:Hide()
 
 function sArena.OptionsPanel:Initialize()
-	local title, subtitle = LibStub("tekKonfig-Heading").new(self, sArena.addonName, "Improved arena frames")
+	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, sArena.addonName, "Improved arena frames")
 
-	local clear = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", -16, -16)
-	clear:SetSize(56, 22)
-	clear:SetText("Clear")
-	clear.tiptext = "Hides any testing frames that are visible"
-	clear:SetScript("OnClick", function(s) sArena:HideArenaEnemyFrames() end)
+	local ClearButton = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", -16, -16)
+	ClearButton:SetSize(56, 22)
+	ClearButton:SetText("Clear")
+	ClearButton.tiptext = "Hides any testing frames that are visible"
+	ClearButton:SetScript("OnClick", function(s) sArena:HideArenaEnemyFrames() end)
 
-	local test5 = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", clear, "TOPLEFT", -25, 0)
-	test5:SetSize(56, 22)
-	test5:SetText("Test 5")
-	test5.tiptext = "Displays 5 test frames"
-	test5:SetScript("OnClick", function(s) sArena:Test(5) end)
+	local Test5Button = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", ClearButton, "TOPLEFT", -25, 0)
+	Test5Button:SetSize(56, 22)
+	Test5Button:SetText("Test 5")
+	Test5Button.tiptext = "Displays 5 test frames"
+	Test5Button:SetScript("OnClick", function(s) sArena:Test(5) end)
 
-	local test3 = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", test5, "TOPLEFT", -5, 0)
-	test3:SetSize(56, 22)
-	test3:SetText("Test 3")
-	test3.tiptext = "Displays 3 test frames"
-	test3:SetScript("OnClick", function(s) sArena:Test(3) end)
+	local Test3Button = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", Test5Button, "TOPLEFT", -5, 0)
+	Test3Button:SetSize(56, 22)
+	Test3Button:SetText("Test 3")
+	Test3Button.tiptext = "Displays 3 test frames"
+	Test3Button:SetScript("OnClick", function(s) sArena:Test(3) end)
 
-	local test2 = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", test3, "TOPLEFT", -5, 0)
-	test2:SetSize(56, 22)
-	test2:SetText("Test 2")
-	test2.tiptext = "Displays 2 test frames"
-	test2:SetScript("OnClick", function(s) sArena:Test(2) end)
+	local Test2Button = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", Test3Button, "TOPLEFT", -5, 0)
+	Test2Button:SetSize(56, 22)
+	Test2Button:SetText("Test 2")
+	Test2Button.tiptext = "Displays 2 test frames"
+	Test2Button:SetScript("OnClick", function(s) sArena:Test(2) end)
 
-	local lock = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", test2, "TOPLEFT", -25, 0)
-	lock:SetSize(56, 22)
-	lock:SetText(sArenaDB.lock and "Unlock" or "Lock")
-	lock.tiptext = "Hides title bar and prevents dragging"
-	lock:SetScript("OnClick", function(s)
+	local LockButton = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", Test2Button, "TOPLEFT", -25, 0)
+	LockButton:SetSize(56, 22)
+	LockButton:SetText(sArenaDB.lock and "Unlock" or "Lock")
+	LockButton.tiptext = "Hides title bar and prevents dragging"
+	LockButton:SetScript("OnClick", function(s)
 		if sArena:CombatLockdown() then return end
 
 		sArenaDB.lock = not sArenaDB.lock
-		lock:SetText(sArenaDB.lock and "Unlock" or "Lock")
+		LockButton:SetText(sArenaDB.lock and "Unlock" or "Lock")
 		
 		if sArenaDB.lock then
 			sArena:Hide()
@@ -48,74 +48,88 @@ function sArena.OptionsPanel:Initialize()
 		end
 	end)
 
-	local scale = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-	scale:SetText("Frame Scale: ")
-	scale:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, 0)
+	local ScaleText = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	ScaleText:SetText("Frame Scale: ")
+	ScaleText:SetPoint("TOPLEFT", SubTitle, "BOTTOMLEFT", 0, 0)
 
 	local backdrop = {
 		bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = {left = 0, right = 0, top = 0, bottom = 0},
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8
 	}
 
-	local scaleEditBox = CreateFrame("EditBox", nil, self)
-	scaleEditBox:SetPoint("TOPLEFT", scale, "TOPRIGHT", 4, 2)
-	scaleEditBox:SetSize(35, 20)
-	scaleEditBox:SetFontObject(GameFontHighlight)
-	scaleEditBox:SetTextInsets(4,4,2,2)
-	scaleEditBox:SetBackdrop(backdrop)
-	scaleEditBox:SetBackdropColor(.1,.1,.1,.5)
-	scaleEditBox:SetAutoFocus(false)
-	scaleEditBox:SetText(sArenaDB.scale)
-	scaleEditBox:SetScript("OnEditFocusLost", function() 
+	local ScaleEditBox = CreateFrame("EditBox", nil, self)
+	ScaleEditBox:SetPoint("TOPLEFT", ScaleText, "TOPRIGHT", 4, 2)
+	ScaleEditBox:SetSize(35, 20)
+	ScaleEditBox:SetFontObject(GameFontHighlight)
+	ScaleEditBox:SetTextInsets(4,4,2,2)
+	ScaleEditBox:SetBackdrop(backdrop)
+	ScaleEditBox:SetBackdropColor(0,0,0,.9)
+	ScaleEditBox:SetAutoFocus(false)
+	ScaleEditBox:SetText(sArenaDB.scale)
+	ScaleEditBox:SetScript("OnEditFocusLost", function() 
 		if sArena:CombatLockdown() then
-			scaleEditBox:SetText(sArenaDB.scale)
+			ScaleEditBox:SetText(sArenaDB.scale)
 			return
 		end
 		
-		if type(tonumber(scaleEditBox:GetText())) == "number" and tonumber(scaleEditBox:GetText()) > 0 then
-			sArenaDB.scale = scaleEditBox:GetText()
+		if type(tonumber(ScaleEditBox:GetText())) == "number" and tonumber(ScaleEditBox:GetText()) > 0 then
+			sArenaDB.scale = ScaleEditBox:GetText()
 			sArena.Frame:SetScale(sArenaDB.scale)
 		else
-			scaleEditBox:SetText(sArenaDB.scale)
+			ScaleEditBox:SetText(sArenaDB.scale)
 		end
 	end)
-	scaleEditBox:SetScript("OnEscapePressed", scaleEditBox.ClearFocus)
-	scaleEditBox:SetScript("OnEnterPressed", scaleEditBox.ClearFocus)
-	scaleEditBox.tiptext = "Sets the scale of the arena frames. Numbers between 0.5 and 2 recommended."
-	scaleEditBox:SetScript("OnEnter", clear:GetScript("OnEnter"))
-	scaleEditBox:SetScript("OnLeave", clear:GetScript("OnLeave"))
+	ScaleEditBox:SetScript("OnEscapePressed", ScaleEditBox.ClearFocus)
+	ScaleEditBox:SetScript("OnEnterPressed", ScaleEditBox.ClearFocus)
+	ScaleEditBox.tiptext = "Sets the scale of the arena frames. Numbers between 0.5 and 2 recommended."
+	ScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
+	ScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
-	local trinketSize = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-	trinketSize:SetText("Trinket Size: ")
-	trinketSize:SetPoint("TOPLEFT", scale, "BOTTOMLEFT", 0, -16)
+	local TrinketsFrame = LibStub("tekKonfig-Group").new(self, "Trinkets", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -32)
+	TrinketsFrame:SetPoint("RIGHT", self, -16, 0)
+	TrinketsFrame:SetHeight(80)
 	
-	local trinketSizeEditBox = CreateFrame("EditBox", nil, self)
-	trinketSizeEditBox:SetPoint("TOPLEFT", scaleEditBox, "BOTTOMLEFT", 0, -7)
-	trinketSizeEditBox:SetSize(35, 20)
-	trinketSizeEditBox:SetFontObject(GameFontHighlight)
-	trinketSizeEditBox:SetTextInsets(4,4,2,2)
-	trinketSizeEditBox:SetBackdrop(backdrop)
-	trinketSizeEditBox:SetBackdropColor(.1,.1,.1,.5)
-	trinketSizeEditBox:SetAutoFocus(false)
-	trinketSizeEditBox:SetText(sArenaDB.Trinkets.size)
-	trinketSizeEditBox:SetScript("OnEditFocusLost", function() 
+	local TrinketsEnableCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Enable", "TOPLEFT", TrinketsFrame, 8, -8)
+	TrinketsEnableCheckbox.tiptext = "Displays a cooldown icon when an enemy uses their PvP trinket."
+	TrinketsEnableCheckbox:SetChecked(sArenaDB.Trinkets.enabled and true or false)
+	TrinketsEnableCheckbox:SetScript("OnClick", function()
+		sArenaDB.Trinkets.enabled = TrinketsEnableCheckbox:GetChecked() and true or false
+		sArena.Trinkets:Clear()
+		sArena.Trinkets:Test(5)
+		sArena:PLAYER_ENTERING_WORLD()
+	end)
+	
+	local TrinketsIconSizeText = TrinketsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	TrinketsIconSizeText:SetText("Icon Size: ")
+	TrinketsIconSizeText:SetPoint("TOPLEFT", TrinketsEnableCheckbox, "BOTTOMLEFT", 6, -8)
+	
+	local TrinketsIconSizeEditBox = CreateFrame("EditBox", nil, self)
+	TrinketsIconSizeEditBox:SetPoint("LEFT", TrinketsIconSizeText, "RIGHT", 4, -1)
+	TrinketsIconSizeEditBox:SetSize(35, 20)
+	TrinketsIconSizeEditBox:SetFontObject(GameFontHighlight)
+	TrinketsIconSizeEditBox:SetTextInsets(4,4,2,2)
+	TrinketsIconSizeEditBox:SetBackdrop(backdrop)
+	TrinketsIconSizeEditBox:SetBackdropColor(0,0,0,.9)
+	TrinketsIconSizeEditBox:SetAutoFocus(false)
+	TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
+	TrinketsIconSizeEditBox:SetScript("OnEditFocusLost", function() 
 		if sArena:CombatLockdown() then
-			trinketSizeEditBox:SetText(sArenaDB.Trinkets.size)
+			TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
 			return
 		end
 		
-		if type(tonumber(trinketSizeEditBox:GetText())) == "number" and tonumber(trinketSizeEditBox:GetText()) > 0 then
-			sArenaDB.Trinkets.size = trinketSizeEditBox:GetText()
+		if type(tonumber(TrinketsIconSizeEditBox:GetText())) == "number" and tonumber(TrinketsIconSizeEditBox:GetText()) > 0 then
+			sArenaDB.Trinkets.size = TrinketsIconSizeEditBox:GetText()
 			sArena.Trinkets:Resize(sArenaDB.Trinkets.size)
 		else
-			trinketSizeEditBox:SetText(sArenaDB.Trinkets.size)
+			TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
 		end
 	end)
-	trinketSizeEditBox:SetScript("OnEscapePressed", trinketSizeEditBox.ClearFocus)
-	trinketSizeEditBox:SetScript("OnEnterPressed", trinketSizeEditBox.ClearFocus)
-	trinketSizeEditBox.tiptext = "Sets the size of the trinket icons."
-	trinketSizeEditBox:SetScript("OnEnter", clear:GetScript("OnEnter"))
-	trinketSizeEditBox:SetScript("OnLeave", clear:GetScript("OnLeave"))
+	TrinketsIconSizeEditBox:SetScript("OnEscapePressed", TrinketsIconSizeEditBox.ClearFocus)
+	TrinketsIconSizeEditBox:SetScript("OnEnterPressed", TrinketsIconSizeEditBox.ClearFocus)
+	TrinketsIconSizeEditBox.tiptext = "Sets the size of the trinket icons."
+	TrinketsIconSizeEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
+	TrinketsIconSizeEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)

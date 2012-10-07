@@ -28,11 +28,12 @@ sArena:SetParent(sArena.Frame)
 
 local DBdefaults = {
 	firstrun = true,
-	version = 3,
+	version = 4,
 	position = {},
 	lock = false,
 	scale = 1,
 	Trinkets = {
+		enabled = true,
 		size = 24,
 	},
 }
@@ -93,7 +94,7 @@ function sArena:HideArenaEnemyFrames()
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame)
 	end
 	
-	self.Trinkets:Lock()
+	self.Trinkets:Clear()
 end
 
 function sArena:Test(numOpps)
@@ -129,26 +130,18 @@ function sArena:Test(numOpps)
 		ArenaEnemyBackground:SetPoint("BOTTOMLEFT", "ArenaEnemyFrame"..numOpps.."PetFrame", "BOTTOMLEFT", -15, -10)
 	end
 	
-	self.Trinkets:Unlock()
-end
-
-function sArena:UNIT_SPELLCAST_SUCCEEDED(unitID, spell, rank, lineID, spellID)
-	if not sArena.Trinkets[unitID] then return end
-	
-	if spellID == 59752 or spellID == 42292 then -- EMFH and Trinket
-		CooldownFrame_SetTimer(self.Trinkets[unitID], GetTime(), 120, 1)
-	--[[elseif spellID == 7744 then -- WOTF
-		CooldownFrame_SetTimer(self.trinkets[unitID], GetTime(), 30, 1)]]
-	end
+	self.Trinkets:Test(numOpps)
 end
 
 function sArena:PLAYER_ENTERING_WORLD()
 	local _, instanceType = IsInInstance()
-	if instanceType == "arena" then -- Trinket icons will only be active in arenas, not battlegrounds
-		self.Trinkets:Lock()
-		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	if instanceType == "arena" then
+		if sArenaDB.Trinkets.enabled then -- Trinket icons will only be active in arenas, not battlegrounds
+			self.Trinkets:Clear()
+			self.Trinkets:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+		end
 	elseif self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") then
-		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+		self.Trinkets:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	end
 end
 sArena:RegisterEvent("PLAYER_ENTERING_WORLD")

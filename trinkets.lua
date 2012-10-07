@@ -1,6 +1,7 @@
 -- Starship/Spaceship from AJ has provided a lot of the code here.
 
-sArena.Trinkets = {}
+sArena.Trinkets = CreateFrame("Frame", nil, sArena)
+sArena.Trinkets:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 
 function sArena.Trinkets:CreateIcon(frame)
 	local id = frame:GetID()
@@ -23,15 +24,26 @@ function sArena.Trinkets:CreateIcon(frame)
 	self["arena"..id] = Trinket
 end
 
-function sArena.Trinkets:Unlock()
-	for i = 1, MAX_ARENA_ENEMIES do
+function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell, rank, lineID, spellID)
+	if not sArena.Trinkets[unitID] then return end
+	
+	if spellID == 59752 or spellID == 42292 then -- EMFH and Trinket
+		CooldownFrame_SetTimer(self[unitID], GetTime(), 120, 1)
+	--[[elseif spellID == 7744 then -- WOTF
+		CooldownFrame_SetTimer(self[unitID], GetTime(), 30, 1)]]
+	end
+end
+
+function sArena.Trinkets:Test(numOpps)
+	if not sArenaDB.Trinkets.enabled then return end
+	for i = 1, numOpps do
 		self["arena"..i]:SetCooldown(0, -1)
 		self["arena"..i]:EnableMouse(true)
 		self["arena"..i]:SetMovable(true)
 	end
 end
 
-function sArena.Trinkets:Lock()
+function sArena.Trinkets:Clear()
 	for i = 1, MAX_ARENA_ENEMIES do
 		self["arena"..i]:SetCooldown(0, 0)
 		self["arena"..i]:Hide()
