@@ -1,11 +1,13 @@
 -- Starship/Spaceship from AJ has provided a lot of the code here.
 
+local _
+
 sArena.Trinkets = CreateFrame("Frame", nil, sArena)
 sArena.Trinkets:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 
 function sArena.Trinkets:CreateIcon(frame)
 	local id = frame:GetID()
-	local factionGroup, _ = UnitFactionGroup('player')
+	local factionGroup = UnitFactionGroup('player')
 	--self.Trinkets["arena"..id] = CreateFrame("Cooldown", nil, frame)
 	local Trinket = CreateFrame("Cooldown", nil, frame)
 	if sArenaDB.Trinkets.point then
@@ -24,12 +26,14 @@ function sArena.Trinkets:CreateIcon(frame)
 	self["arena"..id] = Trinket
 end
 
-function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell, rank, lineID, spellID)
+function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
 	if not sArena.Trinkets[unitID] then return end
 	
-	if spellID == 59752 or spellID == 42292 then -- EMFH and Trinket
+	-- Some complaints about trinkets not showing. This should help.
+	-- Using the name of the spell instead of a spell ID. GetSpellInfo() for localized names.
+	if spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) then -- Trinket and EMFH
 		CooldownFrame_SetTimer(self[unitID], GetTime(), 120, 1)
-	--[[elseif spellID == 7744 then -- WOTF
+	--[[elseif spell == GetSpellInfo(7744) then -- WOTF
 		CooldownFrame_SetTimer(self[unitID], GetTime(), 30, 1)]]
 	end
 end
