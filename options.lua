@@ -92,45 +92,54 @@ function sArena.OptionsPanel:Initialize()
 	
 	local TrinketsEnableCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Enable", "TOPLEFT", TrinketsFrame, 8, -8)
 	TrinketsEnableCheckbox.tiptext = "Displays a cooldown icon when an enemy uses their PvP trinket."
+	TrinketsEnableCheckbox:SetHitRectInsets(0, -40, 0, 0)
 	TrinketsEnableCheckbox:SetChecked(sArenaDB.Trinkets.enabled and true or false)
 	TrinketsEnableCheckbox:SetScript("OnClick", function()
 		sArenaDB.Trinkets.enabled = TrinketsEnableCheckbox:GetChecked() and true or false
-		sArena.Trinkets:Clear()
+		sArena.Trinkets:HideTrinkets()
 		sArena.Trinkets:Test(5)
-		sArena:PLAYER_ENTERING_WORLD()
+		sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	end)
 	
-	local TrinketsIconSizeText = TrinketsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	TrinketsIconSizeText:SetText("Icon Size: ")
-	TrinketsIconSizeText:SetPoint("TOPLEFT", TrinketsEnableCheckbox, "BOTTOMLEFT", 6, -8)
+	local TrinketsAlwaysShowCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Always Show", "LEFT", TrinketsEnableCheckbox, "RIGHT", 45, 0)
+	TrinketsAlwaysShowCheckbox.tiptext = "Always show trinket icons, regardless of whether they are on cooldown"
+	TrinketsAlwaysShowCheckbox:SetChecked(sArenaDB.Trinkets.alwaysShow and true or false)
+	TrinketsAlwaysShowCheckbox:SetScript("OnClick", function()
+		sArenaDB.Trinkets.alwaysShow = TrinketsAlwaysShowCheckbox:GetChecked() and true or false
+		sArena.Trinkets:AlwaysShow(sArenaDB.Trinkets.alwaysShow)
+	end)
 	
-	local TrinketsIconSizeEditBox = CreateFrame("EditBox", nil, self)
-	TrinketsIconSizeEditBox:SetPoint("LEFT", TrinketsIconSizeText, "RIGHT", 4, -1)
-	TrinketsIconSizeEditBox:SetSize(35, 20)
-	TrinketsIconSizeEditBox:SetFontObject(GameFontHighlight)
-	TrinketsIconSizeEditBox:SetTextInsets(4,4,2,2)
-	TrinketsIconSizeEditBox:SetBackdrop(backdrop)
-	TrinketsIconSizeEditBox:SetBackdropColor(0,0,0,.4)
-	TrinketsIconSizeEditBox:SetAutoFocus(false)
-	TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
-	TrinketsIconSizeEditBox:SetScript("OnEditFocusLost", function() 
+	local TrinketsIconScaleText = TrinketsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	TrinketsIconScaleText:SetText("Icon Scale: ")
+	TrinketsIconScaleText:SetPoint("TOPLEFT", TrinketsEnableCheckbox, "BOTTOMLEFT", 6, -8)
+	
+	local TrinketsIconScaleEditBox = CreateFrame("EditBox", nil, self)
+	TrinketsIconScaleEditBox:SetPoint("LEFT", TrinketsIconScaleText, "RIGHT", 4, -1)
+	TrinketsIconScaleEditBox:SetSize(35, 20)
+	TrinketsIconScaleEditBox:SetFontObject(GameFontHighlight)
+	TrinketsIconScaleEditBox:SetTextInsets(4,4,2,2)
+	TrinketsIconScaleEditBox:SetBackdrop(backdrop)
+	TrinketsIconScaleEditBox:SetBackdropColor(0,0,0,.4)
+	TrinketsIconScaleEditBox:SetAutoFocus(false)
+	TrinketsIconScaleEditBox:SetText(sArenaDB.Trinkets.scale)
+	TrinketsIconScaleEditBox:SetScript("OnEditFocusLost", function() 
 		if sArena:CombatLockdown() then
-			TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
+			TrinketsIconScaleEditBox:SetText(sArenaDB.Trinkets.scale)
 			return
 		end
 		
-		if type(tonumber(TrinketsIconSizeEditBox:GetText())) == "number" and tonumber(TrinketsIconSizeEditBox:GetText()) > 0 then
-			sArenaDB.Trinkets.size = TrinketsIconSizeEditBox:GetText()
-			sArena.Trinkets:Resize(sArenaDB.Trinkets.size)
+		if type(tonumber(TrinketsIconScaleEditBox:GetText())) == "number" and tonumber(TrinketsIconScaleEditBox:GetText()) > 0 then
+			sArenaDB.Trinkets.scale = TrinketsIconScaleEditBox:GetText()
+			sArena.Trinkets:Scale(sArenaDB.Trinkets.scale)
 		else
-			TrinketsIconSizeEditBox:SetText(sArenaDB.Trinkets.size)
+			TrinketsIconScaleEditBox:SetText(sArenaDB.Trinkets.scale)
 		end
 	end)
-	TrinketsIconSizeEditBox:SetScript("OnEscapePressed", TrinketsIconSizeEditBox.ClearFocus)
-	TrinketsIconSizeEditBox:SetScript("OnEnterPressed", TrinketsIconSizeEditBox.ClearFocus)
-	TrinketsIconSizeEditBox.tiptext = "Sets the size of the trinket icons."
-	TrinketsIconSizeEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
-	TrinketsIconSizeEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
+	TrinketsIconScaleEditBox:SetScript("OnEscapePressed", TrinketsIconScaleEditBox.ClearFocus)
+	TrinketsIconScaleEditBox:SetScript("OnEnterPressed", TrinketsIconScaleEditBox.ClearFocus)
+	TrinketsIconScaleEditBox.tiptext = "Sets the scale of the trinket icons."
+	TrinketsIconScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
+	TrinketsIconScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)
