@@ -59,6 +59,7 @@ end
 function sArena.Trinkets:Test(numOpps)
 	if ( sArena:CombatLockdown() or not sArenaDB.Trinkets.enabled ) then return end
 	for i = 1, numOpps do
+		self["arena"..i].Icon:Show()
 		self["arena"..i]:SetCooldown(0, -1)
 		self["arena"..i]:EnableMouse(true)
 		self["arena"..i]:SetMovable(true)
@@ -68,6 +69,7 @@ hooksecurefunc(sArena, "Test", function(obj, arg1) sArena.Trinkets:Test(arg1) en
 
 function sArena.Trinkets:HideTrinkets()
 	for i = 1, MAX_ARENA_ENEMIES do
+		self["arena"..i].Icon:Hide()
 		self["arena"..i]:Hide()
 		self["arena"..i]:SetCooldown(0, 0)
 		self["arena"..i]:EnableMouse(false)
@@ -147,8 +149,10 @@ end
 function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	local instanceType = select(2, IsInInstance())
 	if ( sArenaDB.Trinkets.enabled and instanceType == "arena" ) then
-		self:HideTrinkets()
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+		for i = 1, MAX_ARENA_ENEMIES do
+			self["arena"..i]:SetCooldown(0, 0)
+		end
 	elseif ( self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
 		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	end
