@@ -2,7 +2,7 @@
 ## Title: |cff009cffs|rArena
 ## Notes: Improved arena frames.
 ## Author: Stako
-## Version: 1.1.0
+## Version: 1.1.1
 
 ## SavedVariables: sArenaDB
 
