@@ -100,7 +100,7 @@ function sArena.OptionsPanel:Initialize()
 		sArena.Trinkets:Test(5)
 		sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	end)
-	
+
 	local TrinketsAlwaysShowCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Always Show", "LEFT", TrinketsEnableCheckbox, "RIGHT", 45, 0)
 	TrinketsAlwaysShowCheckbox.tiptext = "Always show trinket icons, regardless of whether they are on cooldown"
 	TrinketsAlwaysShowCheckbox:SetChecked(sArenaDB.Trinkets.alwaysShow and true or false)
@@ -108,11 +108,11 @@ function sArena.OptionsPanel:Initialize()
 		sArenaDB.Trinkets.alwaysShow = TrinketsAlwaysShowCheckbox:GetChecked() and true or false
 		sArena.Trinkets:AlwaysShow(sArenaDB.Trinkets.alwaysShow)
 	end)
-	
+
 	local TrinketsIconScaleText = TrinketsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	TrinketsIconScaleText:SetText("Icon Scale: ")
 	TrinketsIconScaleText:SetPoint("TOPLEFT", TrinketsEnableCheckbox, "BOTTOMLEFT", 6, -8)
-	
+
 	local TrinketsIconScaleEditBox = CreateFrame("EditBox", nil, self)
 	TrinketsIconScaleEditBox:SetPoint("LEFT", TrinketsIconScaleText, "RIGHT", 4, -1)
 	TrinketsIconScaleEditBox:SetSize(35, 20)

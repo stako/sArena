@@ -45,13 +45,14 @@ function sArena.Trinkets:CreateIcon(frame)
 	trinket.Icon.Border.Texture:SetPoint("TOPLEFT", -6, 5)
 	trinket.Icon.Border.Texture:SetSize(50, 50)
 	
-	trinket:Hide()
 	trinket:RegisterForDrag("LeftButton")
 	trinket:SetScript("OnDragStart", function(s) s:StartMoving() end)
 	trinket:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() self:DragStop(s) end)
-	
+
+	if ( not sArenaDB.Trinkets.enabled ) then trinket.Icon:Hide() end
+
 	self:AlwaysShow(sArenaDB.Trinkets.alwaysShow, trinket)
-	
+
 	local id = frame:GetID()
 	self["arena"..id] = trinket
 end
@@ -111,25 +112,23 @@ function sArena.Trinkets:AlwaysShow(alwaysShow, ...)
 	if ( trinket ) then
 		if ( alwaysShow ) then
 			trinket.Icon:SetParent(trinket:GetParent())
-			trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 			trinket.Icon:SetScale(sArenaDB.Trinkets.scale)
 		else
 			trinket.Icon:SetParent(trinket)
-			trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 			trinket.Icon:SetScale(1)
 		end
+		trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 	else
 		for i = 1, MAX_ARENA_ENEMIES do
 			trinket = self["arena"..i]
 			if ( alwaysShow ) then
 				trinket.Icon:SetParent(trinket:GetParent())
-				trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 				trinket.Icon:SetScale(sArenaDB.Trinkets.scale)
 			else
 				trinket.Icon:SetParent(trinket)
-				trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 				trinket.Icon:SetScale(1)
 			end
+			trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 		end
 	end
 end
