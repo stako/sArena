@@ -130,11 +130,11 @@ function sArena:ADDON_LOADED(arg1)
 		if ( not sArenaDB or sArenaDB.version < sArena.Defaults.version ) then
 			sArenaDB = CopyTable(sArena.Defaults)
 		end
-		if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then
+		if not IsAddOnLoaded("Blizzard_ArenaUI") then
 			LoadAddOn("Blizzard_ArenaUI")
 		end
 		self:Initialize()
-		if ( sArenaDB.firstrun ) then
+		if (sArenaDB.firstrun) then
 			sArenaDB.firstrun = false
 			self:Test(3)
 			print("Looks like this is your first time running this version of sArena! Type /sarena for options.")
