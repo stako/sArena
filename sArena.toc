@@ -1,4 +1,4 @@
-## Interface: 60003
+## Interface: 60000
 ## Title: |cff009cffs|rArena
 ## Notes: Improved arena frames.
 ## Author: Stako
