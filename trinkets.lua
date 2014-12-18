@@ -3,8 +3,8 @@ sArena.Trinkets = CreateFrame("Frame", nil, sArena)
 
 sArena.Defaults.Trinkets = {
 	enabled = true,
-		scale = 1,
-		alwaysShow = true,
+	scale = 1,
+	alwaysShow = true,
 }
 
 function sArena.Trinkets:Initialize()
@@ -20,8 +20,9 @@ end
 hooksecurefunc(sArena, "Initialize", function() sArena.Trinkets:Initialize() end)
 
 function sArena.Trinkets:CreateIcon(frame)
-	local trinket = CreateFrame("Cooldown", nil, frame)
+	local trinket = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 	trinket:SetFrameLevel(frame:GetFrameLevel() + 3)
+	trinket:ClearAllPoints()
 	if ( sArenaDB.Trinkets.point ) then
 		trinket:SetPoint(sArenaDB.Trinkets.point, frame, sArenaDB.Trinkets.x, sArenaDB.Trinkets.y)
 	else
@@ -61,7 +62,7 @@ function sArena.Trinkets:Test(numOpps)
 	if ( sArena:CombatLockdown() or not sArenaDB.Trinkets.enabled ) then return end
 	for i = 1, numOpps do
 		self["arena"..i].Icon:Show()
-		self["arena"..i]:SetCooldown(0, -1)
+		self["arena"..i]:SetCooldown(GetTime(), 120)
 		self["arena"..i]:EnableMouse(true)
 		self["arena"..i]:SetMovable(true)
 	end
