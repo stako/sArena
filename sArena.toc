@@ -1,5 +1,5 @@
-## Interface: 50100
-## Title: |cff009cffs|rArena
+## Interface: 60000
+## Title: sArena
 ## Notes: Improved arena frames.
 ## Author: Stako
 ## Version: 1.1.1
