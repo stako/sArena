@@ -155,6 +155,7 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	if ( sArenaDB.Trinkets.enabled and instanceType == "arena" ) then
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		for i = 1, MAX_ARENA_ENEMIES do
+			self["arena"..i].Icon:Show()
 			self["arena"..i]:SetCooldown(0, 0)
 		end
 	else
