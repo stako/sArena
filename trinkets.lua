@@ -153,8 +153,15 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 		for i = 1, MAX_ARENA_ENEMIES do
 			self["arena"..i]:SetCooldown(0, 0)
 		end
-	elseif ( self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
-		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	else
+		for i = 1, MAX_ARENA_ENEMIES do
+			self["arena"..i].Icon:Hide()
+			self["arena"..i]:Hide()
+			self["arena"..i]:SetCooldown(0, 0)
+		end
+		if ( self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
+			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+		end
 	end
 end
 sArena.Trinkets:RegisterEvent("PLAYER_ENTERING_WORLD")
