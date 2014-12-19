@@ -31,6 +31,14 @@ function sArena.Trinkets:CreateIcon(frame)
 	trinket:SetSize(18, 18)
 	trinket:SetScale(sArenaDB.Trinkets.scale)
 	
+	for _, region in next, {trinket:GetRegions()} do
+		if region:GetObjectType() == "FontString" then
+			trinket.Text = region
+		end
+	end
+	local font = trinket.Text:GetFont()
+	trinket.Text:SetFont(font, 7, "OUTLINE")
+	
 	trinket.Icon = CreateFrame("Frame", nil, trinket)
 	trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 	trinket.Icon:SetAllPoints()
