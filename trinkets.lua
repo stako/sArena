@@ -31,6 +31,7 @@ function sArena.Trinkets:CreateIcon(frame)
 	trinket:SetSize(18, 18)
 	trinket:SetScale(sArenaDB.Trinkets.scale)
 	
+	-- Find Blizzard's built-in cooldown count and make it smaller. Credits to Zork/Rothar for this.
 	for _, region in next, {trinket:GetRegions()} do
 		if region:GetObjectType() == "FontString" then
 			trinket.Text = region
