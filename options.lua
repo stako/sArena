@@ -85,6 +85,14 @@ function sArena.OptionsPanel:Initialize()
 	ScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	ScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
+	local ClassHPCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Class HP", "LEFT", ScaleEditBox, "RIGHT", 20, -1)
+	ClassHPCheckbox.tiptext = "Colours healthbars based on class."
+	ClassHPCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	ClassHPCheckbox:SetChecked(sArenaDB.classhp and true or false)
+	ClassHPCheckbox:SetScript("OnClick", function()
+		sArenaDB.classhp = ClassHPCheckbox:GetChecked() and true or false
+	end)
+	
 	local TrinketsFrame = LibStub("tekKonfig-Group").new(self, "Trinkets", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -32)
 	TrinketsFrame:SetPoint("RIGHT", self, -16, 0)
 	TrinketsFrame:SetHeight(80)

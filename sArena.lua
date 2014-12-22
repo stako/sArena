@@ -28,10 +28,11 @@ sArena:SetParent(sArena.Frame)
 
 sArena.Defaults = {
 	firstrun = true,
-	version = 5,
+	version = 6,
 	position = {},
 	lock = false,
 	scale = 1,
+	classhp = true,
 }
 
 function sArena:Initialize()
@@ -142,3 +143,25 @@ function sArena:ADDON_LOADED(arg1)
 	end
 end
 sArena:RegisterEvent("ADDON_LOADED")
+
+local HealthBars = {
+	ArenaEnemyFrame1HealthBar = 1,
+	ArenaEnemyFrame2HealthBar = 1,
+	ArenaEnemyFrame3HealthBar = 1,
+	ArenaEnemyFrame4HealthBar = 1,
+	ArenaEnemyFrame5HealthBar = 1
+}
+function sArena:ColourHealthBars(self)
+	if not sArenaDB.classhp then return end
+	if (HealthBars[self:GetName()]) then
+		local class = select(2, UnitClass(self.unit))
+		if class then
+			local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+			if not self.lockColor then
+				self:SetStatusBarColor(c.r, c.g, c.b)
+			end
+		end
+	end
+end
+hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena:ColourHealthBars(self) end)
+hooksecurefunc("UnitFrameHealthBar_Update", function(self) sArena:ColourHealthBars(self) end)
