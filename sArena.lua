@@ -49,14 +49,9 @@ function sArena:Initialize()
 	self:SetScript("OnDragStart", function(s) s:StartMoving() end)
 	self:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = s:GetPoint() end)
 	
-	-- Blizzard removed this feature from the options panel and SHOW_PARTY_BACKGROUND is always 0, but the CVar showPartyBackground still persists between sessions.
-	ArenaEnemyBackground:SetParent(self.Frame) -- ArenaEnemyBackground functions with both variables(see Blizzard_ArenaUI.lua). What the hell?
-	UpdateArenaEnemyBackground(GetCVarBool("showPartyBackground"))
-	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(self.Frame)
-		--ArenaFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame, true)
 		
 		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
@@ -71,6 +66,13 @@ function sArena:Initialize()
 			PrepFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
 		end
 	end
+	
+	hooksecurefunc(ArenaPrepFrames, "Hide", function()
+		if InCombatLockdown() then return end
+		for i = 1, MAX_ARENA_ENEMIES do
+			_G["ArenaPrepFrame"..i]:Hide()
+		end
+	end)
 end
 
 function sArena:CombatLockdown()
@@ -83,10 +85,10 @@ end
 function sArena:HideArenaEnemyFrames()
 	if ( self:CombatLockdown() ) then return end
 	
-	ArenaEnemyBackground:Hide()
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
-		ArenaEnemyFrame_OnEvent(ArenaFrame, "ARENA_OPPONENT_UPDATE", ArenaFrame.unit, "cleared")
+		ArenaEnemyFrame_Unlock(ArenaFrame)
+		ArenaFrame:Hide()
 		_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame)
 	end
@@ -101,6 +103,8 @@ function sArena:Test(numOpps)
 	local showArenaEnemyPets = (SHOW_ARENA_ENEMY_PETS == "1")
 	local instanceType = select(2, IsInInstance())
 	local factionGroup = UnitFactionGroup('player')
+	local _, class = UnitClass('player')
+	local _, _, _,specIcon = GetSpecializationInfo(GetSpecialization())
 	
 	for i = 1, numOpps do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
@@ -114,15 +118,16 @@ function sArena:Test(numOpps)
 			PVPIcon:Show()
 		end
 		ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
+		ArenaEnemyFrame_Unlock(ArenaFrame)
+		ArenaFrame.name:SetText(GetUnitName('player', false))
+		ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+		ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+		ArenaFrame.specBorder:Show()
+		SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
 		if ( showArenaEnemyPets ) then
 			_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
 			_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
 		end
-	end
-	
-	if ( GetCVarBool("showPartyBackground") or SHOW_PARTY_BACKGROUND == "1" ) then
-		ArenaEnemyBackground:Show()
-		ArenaEnemyBackground:SetPoint("BOTTOMLEFT", "ArenaEnemyFrame"..numOpps.."PetFrame", "BOTTOMLEFT", -15, -10)
 	end
 end
 
@@ -154,7 +159,7 @@ local HealthBars = {
 function sArena:ColourHealthBars(self)
 	if not sArenaDB.classhp then return end
 	if (HealthBars[self:GetName()]) then
-		local class = select(2, UnitClass(self.unit))
+		local _, class = UnitClass(self.unit)
 		if class then
 			local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			if not self.lockColor then
