@@ -58,7 +58,7 @@ function sArena.OptionsPanel:Initialize()
 	}
 
 	local ScaleEditBox = CreateFrame("EditBox", nil, self)
-	ScaleEditBox:SetPoint("TOPLEFT", ScaleText, "TOPRIGHT", 4, 2)
+	ScaleEditBox:SetPoint("TOPLEFT", ScaleText, "TOPRIGHT", 4, 3)
 	ScaleEditBox:SetSize(35, 20)
 	ScaleEditBox:SetFontObject(GameFontHighlight)
 	ScaleEditBox:SetTextInsets(4,4,2,2)
@@ -85,15 +85,36 @@ function sArena.OptionsPanel:Initialize()
 	ScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	ScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
-	local ClassHPCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Class HP", "LEFT", ScaleEditBox, "RIGHT", 20, -1)
-	ClassHPCheckbox.tiptext = "Colours healthbars based on class."
-	ClassHPCheckbox:SetHitRectInsets(0, -40, 0, 0)
-	ClassHPCheckbox:SetChecked(sArenaDB.classhp and true or false)
-	ClassHPCheckbox:SetScript("OnClick", function()
-		sArenaDB.classhp = ClassHPCheckbox:GetChecked() and true or false
+	local ClassColoursFrame = LibStub("tekKonfig-Group").new(self, "Class Colours", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -24)
+	ClassColoursFrame:SetPoint("RIGHT", self, -16, 0)
+	ClassColoursFrame:SetHeight(40)
+	ClassColoursFrame:SetFrameLevel(3)
+	
+	local ClassColoursHealthbarCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Health Bar", "TOPLEFT", ClassColoursFrame, 8, -8)
+	ClassColoursHealthbarCheckbox.tiptext = "Colour health bars by class."
+	ClassColoursHealthbarCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	ClassColoursHealthbarCheckbox:SetChecked(sArenaDB.classcolours.health and true or false)
+	ClassColoursHealthbarCheckbox:SetScript("OnClick", function()
+		sArenaDB.classcolours.health = ClassColoursHealthbarCheckbox:GetChecked() and true or false
 	end)
 	
-	local TrinketsFrame = LibStub("tekKonfig-Group").new(self, "Trinkets", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -32)
+	local ClassColoursNameCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Name", "LEFT", ClassColoursHealthbarCheckbox, "RIGHT", 72, 0)
+	ClassColoursNameCheckbox.tiptext = "Colour names by class."
+	ClassColoursNameCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	ClassColoursNameCheckbox:SetChecked(sArenaDB.classcolours.name and true or false)
+	ClassColoursNameCheckbox:SetScript("OnClick", function()
+		sArenaDB.classcolours.name = ClassColoursNameCheckbox:GetChecked() and true or false
+	end)
+	
+	local ClassColoursFrameCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Frame", "LEFT", ClassColoursNameCheckbox, "RIGHT", 45, 0)
+	ClassColoursFrameCheckbox.tiptext = "Colour frames by class."
+	ClassColoursFrameCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	ClassColoursFrameCheckbox:SetChecked(sArenaDB.classcolours.frame and true or false)
+	ClassColoursFrameCheckbox:SetScript("OnClick", function()
+		sArenaDB.classcolours.frame = ClassColoursFrameCheckbox:GetChecked() and true or false
+	end)
+	
+	local TrinketsFrame = LibStub("tekKonfig-Group").new(self, "Trinkets", "TOPLEFT", ClassColoursFrame, "BOTTOMLEFT", 0, -16)
 	TrinketsFrame:SetPoint("RIGHT", self, -16, 0)
 	TrinketsFrame:SetHeight(80)
 	TrinketsFrame:SetFrameLevel(3)

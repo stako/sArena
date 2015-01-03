@@ -28,11 +28,15 @@ sArena:SetParent(sArena.Frame)
 
 sArena.Defaults = {
 	firstrun = true,
-	version = 6,
+	version = 7,
 	position = {},
 	lock = false,
 	scale = 1,
-	classhp = true,
+	classcolours = {
+		health = true,
+		name = true,
+		frame = false,
+	},
 }
 
 function sArena:Initialize()
@@ -73,6 +77,8 @@ function sArena:Initialize()
 			_G["ArenaPrepFrame"..i]:Hide()
 		end
 	end)
+	
+	hooksecurefunc("ArenaEnemyFrame_Lock", function(self) sArena:ColourHealthBars(self) end)
 end
 
 function sArena:CombatLockdown()
@@ -142,7 +148,6 @@ function sArena:ADDON_LOADED(arg1)
 		self:Initialize()
 		if ( sArenaDB.firstrun ) then
 			sArenaDB.firstrun = false
-			self:Test(3)
 			print("Looks like this is your first time running this version of sArena! Type /sarena for options.")
 		end
 	end
@@ -157,15 +162,23 @@ local HealthBars = {
 	ArenaEnemyFrame5HealthBar = 1
 }
 function sArena:ColourHealthBars(self)
-	if not sArenaDB.classhp then return end
 	if (HealthBars[self:GetName()]) then
+		local texture = _G[self:GetParent():GetName() .. "Texture"]
+		local specBorder = _G[self:GetParent():GetName() .. "SpecBorder"]
+		local name = _G[self:GetParent():GetName() .. "Name"]
+		
+		texture:SetVertexColor(1, 1, 1)
+		specBorder:SetVertexColor(1, 1, 1)
+		name:SetTextColor(1, 0.82, 0, 1)
+		
 		local _, class = UnitClass(self.unit)
-		if class then
-			local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-			if not self.lockColor then
-				self:SetStatusBarColor(c.r, c.g, c.b)
-			end
-		end
+		if not class then return end
+		
+		local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+		
+		if sArenaDB.classcolours.health and not self.lockColor then self:SetStatusBarColor(c.r, c.g, c.b) end
+		if sArenaDB.classcolours.frame then texture:SetVertexColor(c.r, c.g, c.b) specBorder:SetVertexColor(c.r, c.g, c.b) end
+		if sArenaDB.classcolours.name then name:SetTextColor(c.r, c.g, c.b, 1) end
 	end
 end
 hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena:ColourHealthBars(self) end)
