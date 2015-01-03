@@ -119,6 +119,26 @@ function sArena.OptionsPanel:Initialize()
 	CastingBarScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	CastingBarScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
+	local FlipCastingBarCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Flip Casting Bars", "LEFT", CastingBarScaleEditBox, "RIGHT", 10, 0)
+	FlipCastingBarCheckbox.tiptext = "Move casting bars to the right side of the arena frames."
+	FlipCastingBarCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	FlipCastingBarCheckbox:SetChecked(sArenaDB.flipCastingBar and true or false)
+	FlipCastingBarCheckbox:SetScript("OnClick", function()
+		if sArena:CombatLockdown() then
+			FlipCastingBarCheckbox:SetChecked(sArenaDB.flipCastingBar and true or false)
+			return
+		end
+		sArenaDB.flipCastingBar = FlipCastingBarCheckbox:GetChecked() and true or false
+		for i = 1, MAX_ARENA_ENEMIES do
+			_G["ArenaEnemyFrame"..i.."CastingBar"]:ClearAllPoints()
+			if sArenaDB.flipCastingBar then
+				_G["ArenaEnemyFrame"..i.."CastingBar"]:SetPoint("LEFT", _G["ArenaEnemyFrame"..i], "RIGHT", 38, -3)
+			else
+				_G["ArenaEnemyFrame"..i.."CastingBar"]:SetPoint("RIGHT", _G["ArenaEnemyFrame"..i], "LEFT", -15, -3)
+			end
+		end
+	end)
+	
 	local ClassColoursFrame = LibStub("tekKonfig-Group").new(self, "Class Colours", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -24)
 	ClassColoursFrame:SetPoint("RIGHT", self, -16, 0)
 	ClassColoursFrame:SetHeight(40)

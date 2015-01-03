@@ -28,11 +28,12 @@ sArena:SetParent(sArena.Frame)
 
 sArena.Defaults = {
 	firstrun = true,
-	version = 8,
+	version = 9,
 	position = {},
 	lock = false,
 	scale = 1,
 	castingBarScale = 1,
+	flipCastingBar = false,
 	classcolours = {
 		health = true,
 		name = true,
@@ -68,6 +69,10 @@ function sArena:Initialize()
 		
 		local CastingBar = _G["ArenaEnemyFrame"..i.."CastingBar"]
 		CastingBar:SetScale(sArenaDB.castingBarScale)
+		if sArenaDB.flipCastingBar then
+			CastingBar:ClearAllPoints()
+			CastingBar:SetPoint("LEFT", ArenaFrame, "RIGHT", 38, -3)
+		end
 		
 		if ( i == 1 ) then
 			ArenaFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
