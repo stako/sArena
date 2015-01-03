@@ -85,6 +85,40 @@ function sArena.OptionsPanel:Initialize()
 	ScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	ScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
+	local CastingBarScaleText = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	CastingBarScaleText:SetText("Casting Bar Scale: ")
+	CastingBarScaleText:SetPoint("LEFT", ScaleEditBox, "RIGHT", 10, 0)
+	
+	local CastingBarScaleEditBox = CreateFrame("EditBox", nil, self)
+	CastingBarScaleEditBox:SetPoint("TOPLEFT", CastingBarScaleText, "TOPRIGHT", 4, 3)
+	CastingBarScaleEditBox:SetSize(35, 20)
+	CastingBarScaleEditBox:SetFontObject(GameFontHighlight)
+	CastingBarScaleEditBox:SetTextInsets(4,4,2,2)
+	CastingBarScaleEditBox:SetBackdrop(backdrop)
+	CastingBarScaleEditBox:SetBackdropColor(0,0,0,.4)
+	CastingBarScaleEditBox:SetAutoFocus(false)
+	CastingBarScaleEditBox:SetText(sArenaDB.castingBarScale)
+	CastingBarScaleEditBox:SetScript("OnEditFocusLost", function() 
+		if sArena:CombatLockdown() then
+			CastingBarScaleEditBox:SetText(sArenaDB.castingBarScale)
+			return
+		end
+		
+		if type(tonumber(CastingBarScaleEditBox:GetText())) == "number" and tonumber(CastingBarScaleEditBox:GetText()) > 0 then
+			sArenaDB.castingBarScale = CastingBarScaleEditBox:GetText()
+			for i = 1, MAX_ARENA_ENEMIES do
+			_G["ArenaEnemyFrame"..i.."CastingBar"]:SetScale(sArenaDB.castingBarScale)
+			end
+		else
+			CastingBarScaleEditBox:SetText(sArenaDB.castingBarScale)
+		end
+	end)
+	CastingBarScaleEditBox:SetScript("OnEscapePressed", CastingBarScaleEditBox.ClearFocus)
+	CastingBarScaleEditBox:SetScript("OnEnterPressed", CastingBarScaleEditBox.ClearFocus)
+	CastingBarScaleEditBox.tiptext = "Sets the scale of the casting bars. Numbers between 0.5 and 2 recommended."
+	CastingBarScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
+	CastingBarScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
+	
 	local ClassColoursFrame = LibStub("tekKonfig-Group").new(self, "Class Colours", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -24)
 	ClassColoursFrame:SetPoint("RIGHT", self, -16, 0)
 	ClassColoursFrame:SetHeight(40)
