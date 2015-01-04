@@ -5,6 +5,7 @@ local BackdropLayout = { bgFile = "Interface\\ChatFrame\\ChatFrameBackground", i
 
 sArena.AddonName = AddonName
 
+-- Create the anchor frame.
 sArena:SetSize(200, 16)
 sArena:SetBackdrop(BackdropLayout)
 sArena:SetBackdropColor(0, 0, 0, .8)
@@ -19,6 +20,9 @@ sArena.Title:SetFontObject("GameFontHighlight")
 sArena.Title:SetText(AddonName .. " (Click to drag)")
 sArena.Title:SetPoint("CENTER", 0, 0)
 
+--[[Create a frame to replace "ArenaEnemyFrames" and "ArenaPrepFrames".
+	We replace these frames because they get moved around when
+	multi-seater mounts are used or when the repair indicator is shown.]]
 sArena.Frame = CreateFrame("Frame", nil, UIParent)
 sArena.Frame:SetSize(200, 1)
 sArena.Frame:SetPoint("TOPLEFT", sArena, "BOTTOMLEFT", 0, 0)
@@ -26,6 +30,7 @@ sArena.Frame:SetPoint("TOPRIGHT", sArena, "BOTTOMRIGHT", 0, 0)
 
 sArena:SetParent(sArena.Frame)
 
+-- Default settings
 sArena.Defaults = {
 	firstrun = true,
 	version = 10,
@@ -42,20 +47,25 @@ sArena.Defaults = {
 	},
 }
 
+-- Initialize function. Called by sArena:ADDON_LOADED()
 function sArena:Initialize()
 	self.OptionsPanel:Initialize()
 	
+	-- Set position and scale of sArena frame.
 	self:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
 	self.Frame:SetScale(sArenaDB.scale)
 	
+	-- Show sArena anchor if it's unlocked in options
 	if ( not sArenaDB.lock ) then
 		self:Show()
 	end
 	
+	-- Create drag functionality for sArena anchor
 	local _
 	self:SetScript("OnDragStart", function(s) s:StartMoving() end)
 	self:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = s:GetPoint() end)
 	
+	-- Change parent of each arena frame from ArenaEnemyFrames/ArenaPrepFrames to sArena.Frame
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(self.Frame)
@@ -66,6 +76,7 @@ function sArena:Initialize()
 		local PrepFrame = _G["ArenaPrepFrame"..i]
 		PrepFrame:SetParent(self.Frame)
 		
+		-- Scale and position casting bars
 		local CastingBar = _G["ArenaEnemyFrame"..i.."CastingBar"]
 		CastingBar:SetScale(sArenaDB.castingBarScale)
 		if sArenaDB.flipCastingBar then
@@ -76,6 +87,8 @@ function sArena:Initialize()
 	
 	self:Placement()
 	
+	--[[Prep frames were showing outside of arena after leaving a match before match start.
+		Fixed this by hooking ArenaPrepFrames:Hide() and hiding each prep frame]]
 	hooksecurefunc(ArenaPrepFrames, "Hide", function()
 		if InCombatLockdown() then return end
 		for i = 1, MAX_ARENA_ENEMIES do
@@ -83,12 +96,14 @@ function sArena:Initialize()
 		end
 	end)
 	
-	hooksecurefunc("ArenaEnemyFrame_Lock", function(self) sArena:ColourHealthBars(self) end)
+	hooksecurefunc("ArenaEnemyFrame_Lock", function(self) sArena:ClassColours(self) end)
 end
 
+-- Called by sArena:Initialize() or when some options are changed.
 function sArena:Placement()
 	local instanceType = select(2, IsInInstance())
 	
+	-- Set position of each arena and prep frame. Position changes depending on growUpwards option.
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		local PrepFrame = _G["ArenaPrepFrame"..i]
@@ -116,6 +131,7 @@ function sArena:Placement()
 		
 		PrepFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
 		
+		-- Frames are moved a little bit when inside of battlegrounds to make room for faction icons.
 		if ( instanceType ~= "pvp" ) then
 			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
 		else
@@ -124,6 +140,7 @@ function sArena:Placement()
 	end
 end
 
+-- Used when handling secure frames.
 function sArena:CombatLockdown()
 	if ( InCombatLockdown() ) then
 		print("sArena: Must leave combat before doing that!")
@@ -143,6 +160,7 @@ function sArena:HideArenaEnemyFrames()
 	end
 end
 
+-- Test mode
 function sArena:Test(numOpps)
 	if ( self:CombatLockdown() ) then return end
 	if ( not numOpps or not (numOpps > 0 and numOpps < 6) ) then return end
@@ -153,7 +171,7 @@ function sArena:Test(numOpps)
 	local instanceType = select(2, IsInInstance())
 	local factionGroup = UnitFactionGroup('player')
 	local _, class = UnitClass('player')
-	local _, _, _,specIcon = GetSpecializationInfo(GetSpecialization())
+	local _, _, _, specIcon = GetSpecializationInfo(GetSpecialization())
 	
 	for i = 1, numOpps do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
@@ -182,9 +200,11 @@ end
 
 function sArena:ADDON_LOADED(arg1)
 	if ( arg1 == AddonName ) then
+		-- Create database for options, or update database for new version of sArena.
 		if ( not sArenaDB or sArenaDB.version ~= sArena.Defaults.version ) then
 			sArenaDB = CopyTable(sArena.Defaults)
 		end
+		-- Load Blizzard_ArenaUI.
 		if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then
 			LoadAddOn("Blizzard_ArenaUI")
 		end
@@ -204,12 +224,15 @@ local HealthBars = {
 	ArenaEnemyFrame4HealthBar = 1,
 	ArenaEnemyFrame5HealthBar = 1
 }
-function sArena:ColourHealthBars(self)
+
+function sArena:ClassColours(self)
+	-- Check if self == an arena frame health bar
 	if (HealthBars[self:GetName()]) then
 		local texture = _G[self:GetParent():GetName() .. "Texture"]
 		local specBorder = _G[self:GetParent():GetName() .. "SpecBorder"]
 		local name = _G[self:GetParent():GetName() .. "Name"]
 		
+		-- Set default colours
 		texture:SetVertexColor(1, 1, 1)
 		specBorder:SetVertexColor(1, 1, 1)
 		name:SetTextColor(1, 0.82, 0, 1)
@@ -219,10 +242,11 @@ function sArena:ColourHealthBars(self)
 		
 		local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 		
+		-- Set colours if options are enabled
 		if sArenaDB.classcolours.health and not self.lockColor then self:SetStatusBarColor(c.r, c.g, c.b) end
 		if sArenaDB.classcolours.frame then texture:SetVertexColor(c.r, c.g, c.b) specBorder:SetVertexColor(c.r, c.g, c.b) end
 		if sArenaDB.classcolours.name then name:SetTextColor(c.r, c.g, c.b, 1) end
 	end
 end
-hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena:ColourHealthBars(self) end)
-hooksecurefunc("UnitFrameHealthBar_Update", function(self) sArena:ColourHealthBars(self) end)
+hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena:ClassColours(self) end)
+hooksecurefunc("UnitFrameHealthBar_Update", function(self) sArena:ClassColours(self) end)
