@@ -119,7 +119,20 @@ function sArena.OptionsPanel:Initialize()
 	CastingBarScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	CastingBarScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
-	local FlipCastingBarCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Flip Casting Bars", "LEFT", CastingBarScaleEditBox, "RIGHT", 10, 0)
+	local GrowUpwardsCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Grow Upwards", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -10)
+	GrowUpwardsCheckbox.tiptext = "Grow arena frames upwards."
+	GrowUpwardsCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	GrowUpwardsCheckbox:SetChecked(sArenaDB.growUpwards and true or false)
+	GrowUpwardsCheckbox:SetScript("OnClick", function()
+		if sArena:CombatLockdown() then
+			GrowUpwardsCheckbox:SetChecked(sArenaDB.growUpwards and true or false)
+			return
+		end
+		sArenaDB.growUpwards = GrowUpwardsCheckbox:GetChecked() and true or false
+		sArena:Placement()
+	end)
+	
+	local FlipCastingBarCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Flip Casting Bars", "LEFT", GrowUpwardsCheckbox, "RIGHT", 100, 0)
 	FlipCastingBarCheckbox.tiptext = "Move casting bars to the right side of the arena frames."
 	FlipCastingBarCheckbox:SetHitRectInsets(0, -40, 0, 0)
 	FlipCastingBarCheckbox:SetChecked(sArenaDB.flipCastingBar and true or false)
@@ -139,7 +152,7 @@ function sArena.OptionsPanel:Initialize()
 		end
 	end)
 	
-	local ClassColoursFrame = LibStub("tekKonfig-Group").new(self, "Class Colours", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -24)
+	local ClassColoursFrame = LibStub("tekKonfig-Group").new(self, "Class Colours", "TOPLEFT", GrowUpwardsCheckbox, "BOTTOMLEFT", 0, -18)
 	ClassColoursFrame:SetPoint("RIGHT", self, -16, 0)
 	ClassColoursFrame:SetHeight(40)
 	ClassColoursFrame:SetFrameLevel(3)

@@ -28,9 +28,10 @@ sArena:SetParent(sArena.Frame)
 
 sArena.Defaults = {
 	firstrun = true,
-	version = 9,
+	version = 10,
 	position = {},
 	lock = false,
+	growUpwards = false,
 	scale = 1,
 	castingBarScale = 1,
 	flipCastingBar = false,
@@ -58,14 +59,12 @@ function sArena:Initialize()
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(self.Frame)
-		ArenaEnemyFrame_UpdatePlayer(ArenaFrame, true)
 		
 		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
 		ArenaPetFrame:SetParent(self.Frame)
 		
 		local PrepFrame = _G["ArenaPrepFrame"..i]
 		PrepFrame:SetParent(self.Frame)
-		PrepFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
 		
 		local CastingBar = _G["ArenaEnemyFrame"..i.."CastingBar"]
 		CastingBar:SetScale(sArenaDB.castingBarScale)
@@ -73,12 +72,9 @@ function sArena:Initialize()
 			CastingBar:ClearAllPoints()
 			CastingBar:SetPoint("LEFT", ArenaFrame, "RIGHT", 38, -3)
 		end
-		
-		if ( i == 1 ) then
-			ArenaFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
-			PrepFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
-		end
 	end
+	
+	self:Placement()
 	
 	hooksecurefunc(ArenaPrepFrames, "Hide", function()
 		if InCombatLockdown() then return end
@@ -88,6 +84,44 @@ function sArena:Initialize()
 	end)
 	
 	hooksecurefunc("ArenaEnemyFrame_Lock", function(self) sArena:ColourHealthBars(self) end)
+end
+
+function sArena:Placement()
+	local instanceType = select(2, IsInInstance())
+	
+	for i = 1, MAX_ARENA_ENEMIES do
+		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		local PrepFrame = _G["ArenaPrepFrame"..i]
+		
+		ArenaFrame:ClearAllPoints()
+		PrepFrame:ClearAllPoints()
+		
+		if sArenaDB.growUpwards then
+			if ( i == 1 ) then
+				ArenaFrame:SetPoint("BOTTOM", self.Frame, "TOP", 0, 40)
+				PrepFrame:SetPoint("BOTTOM", self.Frame, "TOP", 0, 40)
+			else
+				ArenaFrame:SetPoint("BOTTOM", _G["ArenaEnemyFrame"..i-1], "TOP", 0, 20)
+				PrepFrame:SetPoint("BOTTOM", _G["ArenaPrepFrame"..i-1], "TOP", 0, 20)
+			end
+		else
+			if ( i == 1 ) then
+				ArenaFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
+				PrepFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
+			else
+				ArenaFrame:SetPoint("TOP", _G["ArenaEnemyFrame"..i-1], "BOTTOM", 0, -20)
+				PrepFrame:SetPoint("TOP", _G["ArenaPrepFrame"..i-1], "BOTTOM", 0, -20)
+			end
+		end
+		
+		PrepFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
+		
+		if ( instanceType ~= "pvp" ) then
+			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
+		else
+			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -18, 0)
+		end
+	end
 end
 
 function sArena:CombatLockdown()
@@ -134,7 +168,7 @@ function sArena:Test(numOpps)
 		end
 		ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
 		ArenaEnemyFrame_Unlock(ArenaFrame)
-		ArenaFrame.name:SetText(GetUnitName('player', false))
+		ArenaFrame.name:SetText("arena"..i)
 		ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 		ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
 		ArenaFrame.specBorder:Show()
@@ -148,7 +182,7 @@ end
 
 function sArena:ADDON_LOADED(arg1)
 	if ( arg1 == AddonName ) then
-		if ( not sArenaDB or sArenaDB.version < sArena.Defaults.version ) then
+		if ( not sArenaDB or sArenaDB.version ~= sArena.Defaults.version ) then
 			sArenaDB = CopyTable(sArena.Defaults)
 		end
 		if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then
