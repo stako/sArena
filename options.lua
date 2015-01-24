@@ -5,7 +5,7 @@ sArena.OptionsPanel.name = sArena.AddonName
 sArena.OptionsPanel:Hide()
 
 function sArena.OptionsPanel:Initialize()
-	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, sArena.AddonName, "Improved arena frames")
+	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, sArena.AddonName, "Enhanced arena frames")
 
 	local ClearButton = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", -16, -16)
 	ClearButton:SetSize(56, 22)
@@ -118,6 +118,41 @@ function sArena.OptionsPanel:Initialize()
 	CastingBarScaleEditBox.tiptext = "Sets the scale of the casting bars. Numbers between 0.5 and 2 recommended."
 	CastingBarScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	CastingBarScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
+	
+	local StatusTextSizeText = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	StatusTextSizeText:SetText("Status Text Size: ")
+	StatusTextSizeText:SetPoint("LEFT", CastingBarScaleEditBox, "RIGHT", 10, 0)
+	
+	local StatusTextSizeEditBox = CreateFrame("EditBox", nil, self)
+	StatusTextSizeEditBox:SetPoint("TOPLEFT", StatusTextSizeText, "TOPRIGHT", 4, 3)
+	StatusTextSizeEditBox:SetSize(35, 20)
+	StatusTextSizeEditBox:SetFontObject(GameFontHighlight)
+	StatusTextSizeEditBox:SetTextInsets(4,4,2,2)
+	StatusTextSizeEditBox:SetBackdrop(backdrop)
+	StatusTextSizeEditBox:SetBackdropColor(0,0,0,.4)
+	StatusTextSizeEditBox:SetAutoFocus(false)
+	StatusTextSizeEditBox:SetText(sArenaDB.statusTextSize)
+	StatusTextSizeEditBox:SetScript("OnEditFocusLost", function() 
+		if sArena:CombatLockdown() then
+			StatusTextSizeEditBox:SetText(sArenaDB.statusTextSize)
+			return
+		end
+		
+		if type(tonumber(StatusTextSizeEditBox:GetText())) == "number" and tonumber(StatusTextSizeEditBox:GetText()) > 0 then
+			sArenaDB.statusTextSize = StatusTextSizeEditBox:GetText()
+			for i = 1, MAX_ARENA_ENEMIES do
+				_G["ArenaEnemyFrame"..i.."HealthBarText"]:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.statusTextSize, "OUTLINE")
+				_G["ArenaEnemyFrame"..i.."ManaBarText"]:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.statusTextSize, "OUTLINE")
+			end
+		else
+			StatusTextSizeEditBox:SetText(sArenaDB.statusTextSize)
+		end
+	end)
+	StatusTextSizeEditBox:SetScript("OnEscapePressed", StatusTextSizeEditBox.ClearFocus)
+	StatusTextSizeEditBox:SetScript("OnEnterPressed", StatusTextSizeEditBox.ClearFocus)
+	StatusTextSizeEditBox.tiptext = "Sets the size of the status text. Default: 10"
+	StatusTextSizeEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
+	StatusTextSizeEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 	
 	local GrowUpwardsCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Grow Upwards", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -10)
 	GrowUpwardsCheckbox.tiptext = "Grow arena frames upwards."

@@ -151,8 +151,8 @@ function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
 	if spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) then -- Trinket and EMFH
 		CooldownFrame_SetTimer(self[unitID], GetTime(), 120, 1)
 	elseif spell == GetSpellInfo(7744) then -- WOTF
-		-- When WOTF is used, set cooldown timer to 30 seconds only if it's not already running or it has less than 30 seconds remaining
-		local remainingTime = 120000 - ((GetTime() * 1000) - (select(1, self[unitID]:GetCooldownTimes())))
+		-- When WOTF is used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
+		local remainingTime = 120000 - ((GetTime() * 1000) - self[unitID]:GetCooldownTimes())
 		if remainingTime < 30000 then
 			CooldownFrame_SetTimer(self[unitID], GetTime(), 30, 1)
 		end

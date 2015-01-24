@@ -33,11 +33,12 @@ sArena:SetParent(sArena.Frame)
 -- Default settings
 sArena.Defaults = {
 	firstrun = true,
-	version = 10,
+	version = 11,
 	position = {},
 	lock = false,
 	growUpwards = false,
 	scale = 1,
+	statusTextSize = 10,
 	castingBarScale = 1,
 	flipCastingBar = false,
 	classcolours = {
@@ -75,6 +76,10 @@ function sArena:Initialize()
 		
 		local PrepFrame = _G["ArenaPrepFrame"..i]
 		PrepFrame:SetParent(self.Frame)
+		
+		-- Set status text size
+		_G["ArenaEnemyFrame"..i.."HealthBarText"]:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.statusTextSize, "OUTLINE")
+		_G["ArenaEnemyFrame"..i.."ManaBarText"]:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.statusTextSize, "OUTLINE")
 		
 		-- Scale and position casting bars
 		local CastingBar = _G["ArenaEnemyFrame"..i.."CastingBar"]
