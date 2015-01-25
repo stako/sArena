@@ -83,6 +83,7 @@ function sArena:Initialize()
 		
 		-- Scale and position casting bars
 		local CastingBar = _G["ArenaEnemyFrame"..i.."CastingBar"]
+		self:CreateCastingBar(CastingBar)
 		CastingBar:SetScale(sArenaDB.castingBarScale)
 		if sArenaDB.flipCastingBar then
 			CastingBar:ClearAllPoints()
@@ -161,6 +162,7 @@ function sArena:HideArenaEnemyFrames()
 		ArenaEnemyFrame_Unlock(ArenaFrame)
 		ArenaFrame:Hide()
 		_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
+		self["TestCastingBar"..i]:Hide()
 		ArenaEnemyFrame_UpdatePlayer(ArenaFrame)
 	end
 end
@@ -195,6 +197,7 @@ function sArena:Test(numOpps)
 		ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 		ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
 		ArenaFrame.specBorder:Show()
+		self["TestCastingBar"..i]:Show()
 		SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
 		if ( showArenaEnemyPets ) then
 			_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
@@ -255,3 +258,21 @@ function sArena:ClassColours(self)
 end
 hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena:ClassColours(self) end)
 hooksecurefunc("UnitFrameHealthBar_Update", function(self) sArena:ClassColours(self) end)
+
+function sArena:CreateCastingBar(frame)
+	local castingbar = CreateFrame("StatusBar", nil, frame:GetParent())
+	castingbar:SetAllPoints(frame)
+	castingbar:SetMinMaxValues(0, 100)
+	castingbar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	castingbar:SetStatusBarColor(1.0, 0.7, 0.0)
+	castingbar:SetValue(100)
+	castingbar:Hide()
+	
+	castingbar.Icon = castingbar:CreateTexture(nil, "ARTWORK")
+	castingbar.Icon:SetAllPoints(_G[frame:GetName().."Icon"])
+	castingbar.Icon:SetPoint("RIGHT", castingbar, "LEFT", -5, 0)
+	castingbar.Icon:SetTexture("Interface\\Icons\\spell_shadow_possession")
+	
+	local id = frame:GetParent():GetID()
+	self["TestCastingBar"..id] = castingbar
+end
