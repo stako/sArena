@@ -156,7 +156,7 @@ function sArena.OptionsPanel:Initialize()
 	
 	local GrowUpwardsCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Grow Upwards", "TOPLEFT", ScaleText, "BOTTOMLEFT", 0, -10)
 	GrowUpwardsCheckbox.tiptext = "Grow arena frames upwards."
-	GrowUpwardsCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	GrowUpwardsCheckbox:SetHitRectInsets(0, -94, 0, 0)
 	GrowUpwardsCheckbox:SetChecked(sArenaDB.growUpwards and true or false)
 	GrowUpwardsCheckbox:SetScript("OnClick", function()
 		if sArena:CombatLockdown() then
@@ -169,7 +169,7 @@ function sArena.OptionsPanel:Initialize()
 	
 	local FlipCastingBarCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Flip Casting Bars", "LEFT", GrowUpwardsCheckbox, "RIGHT", 100, 0)
 	FlipCastingBarCheckbox.tiptext = "Move casting bars to the right side of the arena frames."
-	FlipCastingBarCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	FlipCastingBarCheckbox:SetHitRectInsets(0, -104, 0, 0)
 	FlipCastingBarCheckbox:SetChecked(sArenaDB.flipCastingBar and true or false)
 	FlipCastingBarCheckbox:SetScript("OnClick", function()
 		if sArena:CombatLockdown() then
@@ -194,7 +194,7 @@ function sArena.OptionsPanel:Initialize()
 	
 	local ClassColoursHealthbarCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Health Bar", "TOPLEFT", ClassColoursFrame, 8, -8)
 	ClassColoursHealthbarCheckbox.tiptext = "Colour health bars by class."
-	ClassColoursHealthbarCheckbox:SetHitRectInsets(0, -40, 0, 0)
+	ClassColoursHealthbarCheckbox:SetHitRectInsets(0, -70, 0, 0)
 	ClassColoursHealthbarCheckbox:SetChecked(sArenaDB.classcolours.health and true or false)
 	ClassColoursHealthbarCheckbox:SetScript("OnClick", function()
 		sArenaDB.classcolours.health = ClassColoursHealthbarCheckbox:GetChecked() and true or false
@@ -234,6 +234,7 @@ function sArena.OptionsPanel:Initialize()
 
 	local TrinketsAlwaysShowCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Always Show", "LEFT", TrinketsEnableCheckbox, "RIGHT", 45, 0)
 	TrinketsAlwaysShowCheckbox.tiptext = "Always show trinket icons, regardless of whether they are on cooldown"
+	TrinketsAlwaysShowCheckbox:SetHitRectInsets(0, -90, 0, 0)
 	TrinketsAlwaysShowCheckbox:SetChecked(sArenaDB.Trinkets.alwaysShow and true or false)
 	TrinketsAlwaysShowCheckbox:SetScript("OnClick", function()
 		sArenaDB.Trinkets.alwaysShow = TrinketsAlwaysShowCheckbox:GetChecked() and true or false
