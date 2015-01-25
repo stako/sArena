@@ -37,8 +37,7 @@ function sArena.Trinkets:CreateIcon(frame)
 			trinket.Text = region
 		end
 	end
-	local font = trinket.Text:GetFont()
-	trinket.Text:SetFont(font, 7, "OUTLINE")
+	trinket.Text:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinkets.cooldownFontSize or 7, "OUTLINE")
 	
 	trinket.Icon = CreateFrame("Frame", nil, trinket)
 	trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)

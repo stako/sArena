@@ -272,6 +272,40 @@ function sArena.OptionsPanel:Initialize()
 	TrinketsIconScaleEditBox.tiptext = "Sets the scale of the trinket icons."
 	TrinketsIconScaleEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	TrinketsIconScaleEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
+	
+	local TrinketsCDFontSizeText = TrinketsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	TrinketsCDFontSizeText:SetText("Cooldown Font Size: ")
+	TrinketsCDFontSizeText:SetPoint("LEFT", TrinketsIconScaleEditBox, "RIGHT", 8, 1)
+
+	local TrinketsCDFontSizeEditBox = CreateFrame("EditBox", nil, self)
+	TrinketsCDFontSizeEditBox:SetPoint("LEFT", TrinketsCDFontSizeText, "RIGHT", 4, -1)
+	TrinketsCDFontSizeEditBox:SetSize(35, 20)
+	TrinketsCDFontSizeEditBox:SetFontObject(GameFontHighlight)
+	TrinketsCDFontSizeEditBox:SetTextInsets(4,4,2,2)
+	TrinketsCDFontSizeEditBox:SetBackdrop(backdrop)
+	TrinketsCDFontSizeEditBox:SetBackdropColor(0,0,0,.4)
+	TrinketsCDFontSizeEditBox:SetAutoFocus(false)
+	TrinketsCDFontSizeEditBox:SetText(sArenaDB.Trinkets.cooldownFontSize or "7")
+	TrinketsCDFontSizeEditBox:SetScript("OnEditFocusLost", function() 
+		if sArena:CombatLockdown() then
+			TrinketsCDFontSizeEditBox:SetText(sArenaDB.Trinkets.cooldownFontSize)
+			return
+		end
+		
+		if type(tonumber(TrinketsCDFontSizeEditBox:GetText())) == "number" and tonumber(TrinketsCDFontSizeEditBox:GetText()) > 0 then
+			sArenaDB.Trinkets.cooldownFontSize = TrinketsCDFontSizeEditBox:GetText()
+			for i=1,MAX_ARENA_ENEMIES do
+				sArena.Trinkets["arena"..i].Text:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinkets.cooldownFontSize, "OUTLINE")
+			end
+		else
+			TrinketsCDFontSizeEditBox:SetText(sArenaDB.Trinkets.cooldownFontSize)
+		end
+	end)
+	TrinketsCDFontSizeEditBox:SetScript("OnEscapePressed", TrinketsCDFontSizeEditBox.ClearFocus)
+	TrinketsCDFontSizeEditBox:SetScript("OnEnterPressed", TrinketsCDFontSizeEditBox.ClearFocus)
+	TrinketsCDFontSizeEditBox.tiptext = "Sets the font size of the Blizzard cooldown count."
+	TrinketsCDFontSizeEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
+	TrinketsCDFontSizeEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
 end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)
