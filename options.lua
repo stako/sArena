@@ -1,11 +1,12 @@
 -- Tekkub from WoWI/GitHub made this so easy!
+local AddonName, sArena = ...
 
 sArena.OptionsPanel = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
-sArena.OptionsPanel.name = sArena.AddonName
+sArena.OptionsPanel.name = AddonName
 sArena.OptionsPanel:Hide()
 
 function sArena.OptionsPanel:Initialize()
-	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, sArena.AddonName, "Enhanced arena frames")
+	local Title, SubTitle = LibStub("tekKonfig-Heading").new(self, AddonName, "Enhanced arena frames")
 
 	local ClearButton = LibStub("tekKonfig-Button").new_small(self, "TOPRIGHT", -16, -16)
 	ClearButton:SetSize(56, 22)
@@ -42,9 +43,9 @@ function sArena.OptionsPanel:Initialize()
 		LockButton:SetText(sArenaDB.lock and "Unlock" or "Lock")
 		
 		if sArenaDB.lock then
-			sArena:Hide()
+			sArena.DragFrame:Hide()
 		else
-			sArena:Show()
+			sArena.DragFrame:Show()
 		end
 	end)
 
@@ -310,4 +311,4 @@ end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)
 SLASH_sArena1 = "/sarena"
-SlashCmdList[sArena.AddonName] = function() InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel) end
+SlashCmdList[AddonName] = function() InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel) end

@@ -1,5 +1,6 @@
 -- Credit to Starship/Spaceship from AJ for providing original concept.
-sArena.Trinkets = CreateFrame("Frame", nil, sArena)
+local AddonName, sArena = ...
+sArena.Trinkets = CreateFrame("Frame", nil, sArena.DragFrame)
 
 sArena.Defaults.Trinkets = {
 	enabled = true,
@@ -16,11 +17,15 @@ function sArena.Trinkets:Initialize()
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		self:CreateIcon(ArenaFrame)
 	end
+	
+	self:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 hooksecurefunc(sArena, "Initialize", function() sArena.Trinkets:Initialize() end)
 
 function sArena.Trinkets:CreateIcon(frame)
 	local trinket = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+	trinket:SetDrawEdge(true)
 	trinket:SetFrameLevel(frame:GetFrameLevel() + 3)
 	trinket:ClearAllPoints()
 	if ( sArenaDB.Trinkets.point ) then
@@ -142,8 +147,6 @@ function sArena.Trinkets:AlwaysShow(alwaysShow, ...)
 	end
 end
 
-sArena.Trinkets:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
-
 function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
 	if not sArena.Trinkets[unitID] then return end
 	
@@ -177,4 +180,3 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 		end
 	end
 end
-sArena.Trinkets:RegisterEvent("PLAYER_ENTERING_WORLD")

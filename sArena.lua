@@ -1,34 +1,33 @@
-local AddonName = ...
-sArena = CreateFrame("Frame", nil, UIParent)
-sArena:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
+local AddonName, sArena = ...
+
 local BackdropLayout = { bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = { left = 0, right = 0, top = 0, bottom = 0 } }
 
-sArena.AddonName = AddonName
+-- Create the drag frame.
+sArena.DragFrame = CreateFrame("Frame", nil, UIParent)
+sArena.DragFrame:SetSize(200, 16)
+sArena.DragFrame:SetBackdrop(BackdropLayout)
+sArena.DragFrame:SetBackdropColor(0, 0, 0, .8)
+sArena.DragFrame:SetClampedToScreen(true)
+sArena.DragFrame:EnableMouse(true)
+sArena.DragFrame:SetMovable(true)
+sArena.DragFrame:RegisterForDrag("LeftButton")
+sArena.DragFrame:Hide()
 
--- Create the anchor frame.
-sArena:SetSize(200, 16)
-sArena:SetBackdrop(BackdropLayout)
-sArena:SetBackdropColor(0, 0, 0, .8)
-sArena:SetClampedToScreen(true)
-sArena:EnableMouse(true)
-sArena:SetMovable(true)
-sArena:RegisterForDrag("LeftButton")
-sArena:Hide()
-
-sArena.Title = sArena:CreateFontString(nil, "BACKGROUND")
-sArena.Title:SetFontObject("GameFontHighlight")
-sArena.Title:SetText(AddonName .. " (Click to drag)")
-sArena.Title:SetPoint("CENTER", 0, 0)
+sArena.DragFrame.Title = sArena.DragFrame:CreateFontString(nil, "BACKGROUND")
+sArena.DragFrame.Title:SetFontObject("GameFontHighlight")
+sArena.DragFrame.Title:SetText(AddonName .. " (Click to drag)")
+sArena.DragFrame.Title:SetPoint("CENTER", 0, 0)
 
 --[[Create a frame to replace "ArenaEnemyFrames" and "ArenaPrepFrames".
 	We replace these frames because they get moved around when
 	multi-seater mounts are used or when the repair indicator is shown.]]
 sArena.Frame = CreateFrame("Frame", nil, UIParent)
 sArena.Frame:SetSize(200, 1)
-sArena.Frame:SetPoint("TOPLEFT", sArena, "BOTTOMLEFT", 0, 0)
-sArena.Frame:SetPoint("TOPRIGHT", sArena, "BOTTOMRIGHT", 0, 0)
+sArena.Frame:SetPoint("TOPLEFT", sArena.DragFrame, "BOTTOMLEFT", 0, 0)
+sArena.Frame:SetPoint("TOPRIGHT", sArena.DragFrame, "BOTTOMRIGHT", 0, 0)
+sArena.Frame:SetScript("OnEvent", function(self, event, ...) return sArena[event](sArena, ...) end)
 
-sArena:SetParent(sArena.Frame)
+sArena.DragFrame:SetParent(sArena.Frame)
 
 -- Default settings
 sArena.Defaults = {
@@ -53,18 +52,18 @@ function sArena:Initialize()
 	self.OptionsPanel:Initialize()
 	
 	-- Set position and scale of sArena frame.
-	self:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
+	self.DragFrame:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
 	self.Frame:SetScale(sArenaDB.scale)
 	
 	-- Show sArena anchor if it's unlocked in options
 	if ( not sArenaDB.lock ) then
-		self:Show()
+		self.DragFrame:Show()
 	end
 	
 	-- Create drag functionality for sArena anchor
 	local _
-	self:SetScript("OnDragStart", function(s) s:StartMoving() end)
-	self:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = s:GetPoint() end)
+	self.DragFrame:SetScript("OnDragStart", function(s) s:StartMoving() end)
+	self.DragFrame:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() sArenaDB.position.point, _, sArenaDB.position.relativePoint, sArenaDB.position.x, sArenaDB.position.y = s:GetPoint() end)
 	
 	-- Change parent of each arena frame from ArenaEnemyFrames/ArenaPrepFrames to sArena.Frame
 	for i = 1, MAX_ARENA_ENEMIES do
@@ -223,7 +222,7 @@ function sArena:ADDON_LOADED(arg1)
 		end
 	end
 end
-sArena:RegisterEvent("ADDON_LOADED")
+sArena.Frame:RegisterEvent("ADDON_LOADED")
 
 local HealthBars = {
 	ArenaEnemyFrame1HealthBar = 1,
