@@ -76,7 +76,6 @@ function sArena.AuraWatch:UNIT_AURA(unitID)
 				filter = "HELPFUL"
 			else
 				spellId = tonumber(self.Spells[debuffIndex])
-				self.UnitAura = UnitDebuff
 				filter = "HARMFUL"
 			end
 		end

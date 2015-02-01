@@ -59,6 +59,9 @@ sArena.AuraWatch.Spells = {
 	"5246",		-- Intimidating Shout (aoe)
 	"132168",	-- Shockwave
 	"107570",	-- Storm Bolt
+	"145585",	-- Storm Bolt
+	"132169",	-- Storm Bolt
+	"139275",	-- Storm Bolt
 	"20549",	-- War Stomp
 	"137460",	-- Ring of Peace Incapacitate
 
