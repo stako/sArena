@@ -307,6 +307,20 @@ function sArena.OptionsPanel:Initialize()
 	TrinketsCDFontSizeEditBox.tiptext = "Sets the font size of the Blizzard cooldown count."
 	TrinketsCDFontSizeEditBox:SetScript("OnEnter", ClearButton:GetScript("OnEnter"))
 	TrinketsCDFontSizeEditBox:SetScript("OnLeave", ClearButton:GetScript("OnLeave"))
+	
+	local AuraWatchFrame = LibStub("tekKonfig-Group").new(self, "Aura Watch", "TOPLEFT", TrinketsFrame, "BOTTOMLEFT", 0, -16)
+	AuraWatchFrame:SetPoint("RIGHT", self, -16, 0)
+	AuraWatchFrame:SetHeight(40)
+	AuraWatchFrame:SetFrameLevel(3)
+	
+	local AuraWatchEnableCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Enable", "TOPLEFT", AuraWatchFrame, 8, -8)
+	AuraWatchEnableCheckbox.tiptext = "Enable aura watch."
+	AuraWatchEnableCheckbox:SetHitRectInsets(0, -70, 0, 0)
+	AuraWatchEnableCheckbox:SetChecked(sArenaDB.AuraWatch.enabled and true or false)
+	AuraWatchEnableCheckbox:SetScript("OnClick", function()
+		sArenaDB.AuraWatch.enabled = AuraWatchEnableCheckbox:GetChecked() and true or false
+		sArena.AuraWatch:PLAYER_ENTERING_WORLD()
+	end)
 end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)

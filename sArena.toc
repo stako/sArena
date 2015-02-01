@@ -1,6 +1,6 @@
 ## Interface: 60000
 ## Title: sArena
-## Notes: Improved arena frames.
+## Notes: Enhanced arena frames.
 ## Author: Stako
 ## Version: 1.1.5
 
@@ -10,4 +10,6 @@ tekKonfig\tekKonfig.xml
 
 sArena.lua
 trinkets.lua
+AuraWatch.lua
+AuraWatchSpells.lua
 options.lua

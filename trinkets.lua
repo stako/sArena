@@ -1,6 +1,6 @@
 -- Credit to Starship/Spaceship from AJ for providing original concept.
 local AddonName, sArena = ...
-sArena.Trinkets = CreateFrame("Frame", nil, sArena.DragFrame)
+sArena.Trinkets = CreateFrame("Frame", nil, UIParent)
 
 sArena.Defaults.Trinkets = {
 	enabled = true,
@@ -25,7 +25,6 @@ hooksecurefunc(sArena, "Initialize", function() sArena.Trinkets:Initialize() end
 
 function sArena.Trinkets:CreateIcon(frame)
 	local trinket = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
-	trinket:SetDrawEdge(true)
 	trinket:SetFrameLevel(frame:GetFrameLevel() + 3)
 	trinket:ClearAllPoints()
 	if ( sArenaDB.Trinkets.point ) then
@@ -75,7 +74,7 @@ function sArena.Trinkets:Test(numOpps)
 	if ( sArena:CombatLockdown() or not sArenaDB.Trinkets.enabled ) then return end
 	for i = 1, numOpps do
 		self["arena"..i].Icon:Show()
-		self["arena"..i]:SetCooldown(GetTime(), 120)
+		CooldownFrame_SetTimer(self["arena"..i], GetTime(), 120, 1, 0, 0, true)
 		self["arena"..i]:EnableMouse(true)
 		self["arena"..i]:SetMovable(true)
 	end
@@ -86,7 +85,7 @@ function sArena.Trinkets:HideTrinkets()
 	for i = 1, MAX_ARENA_ENEMIES do
 		self["arena"..i].Icon:Hide()
 		self["arena"..i]:Hide()
-		self["arena"..i]:SetCooldown(0, 0)
+		CooldownFrame_SetTimer(self["arena"..i], 0, 0, 0, 0, 0, true)
 		self["arena"..i]:EnableMouse(false)
 		self["arena"..i]:SetMovable(false)
 	end
@@ -151,12 +150,12 @@ function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
 	if not sArena.Trinkets[unitID] then return end
 	
 	if spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) then -- Trinket and EMFH
-		CooldownFrame_SetTimer(self[unitID], GetTime(), 120, 1)
+		CooldownFrame_SetTimer(self[unitID], GetTime(), 120, 1, 0, 0, true)
 	elseif spell == GetSpellInfo(7744) then -- WOTF
 		-- When WOTF is used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
 		local remainingTime = 120000 - ((GetTime() * 1000) - self[unitID]:GetCooldownTimes())
 		if remainingTime < 30000 then
-			CooldownFrame_SetTimer(self[unitID], GetTime(), 30, 1)
+			CooldownFrame_SetTimer(self[unitID], GetTime(), 30, 1, 0, 0, true)
 		end
 	end
 end
@@ -167,13 +166,13 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		for i = 1, MAX_ARENA_ENEMIES do
 			self["arena"..i].Icon:Show()
-			self["arena"..i]:SetCooldown(0, 0)
+			CooldownFrame_SetTimer(self["arena"..i], 0, 0, 0, 0, 0, true)
 		end
 	else
 		for i = 1, MAX_ARENA_ENEMIES do
 			self["arena"..i].Icon:Hide()
 			self["arena"..i]:Hide()
-			self["arena"..i]:SetCooldown(0, 0)
+			CooldownFrame_SetTimer(self["arena"..i], 0, 0, 0, 0, 0, true)
 		end
 		if ( self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
 			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")

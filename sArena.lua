@@ -69,12 +69,18 @@ function sArena:Initialize()
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		ArenaFrame:SetParent(self.Frame)
+		ArenaFrame.classPortrait:SetSize(26, 26)
+		ArenaFrame.classPortrait:ClearAllPoints()
+		ArenaFrame.classPortrait:SetPoint("TOPRIGHT", ArenaFrame, -13, -6)
 		
 		local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
 		ArenaPetFrame:SetParent(self.Frame)
 		
 		local PrepFrame = _G["ArenaPrepFrame"..i]
 		PrepFrame:SetParent(self.Frame)
+		PrepFrame.classPortrait:SetSize(26, 26)
+		PrepFrame.classPortrait:ClearAllPoints()
+		PrepFrame.classPortrait:SetPoint("TOPRIGHT", PrepFrame, -13, -6)
 		
 		-- Set status text size
 		_G["ArenaEnemyFrame"..i.."HealthBarText"]:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.statusTextSize, "OUTLINE")
