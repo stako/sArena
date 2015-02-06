@@ -22,6 +22,7 @@ hooksecurefunc(sArena, "Initialize", function() sArena.AuraWatch:Initialize() en
 
 function sArena.AuraWatch:CreateCooldownFrame(frame)
 	local cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+	cooldown:SetSwipeColor(0, 0, 0, 0)
 	cooldown:ClearAllPoints()
 	cooldown:SetPoint("TOPLEFT", frame.classPortrait, "TOPLEFT", 2, -2)
 	cooldown:SetPoint("BOTTOMRIGHT", frame.classPortrait, "BOTTOMRIGHT", -2, 2)
@@ -52,34 +53,23 @@ end
 
 function sArena.AuraWatch:UNIT_AURA(unitID)
 	if self[unitID] then
-		local spellId, buffIndex, debuffIndex, filter
+		local spellId, filter
 		
-		for i, v in ipairs(self.Spells) do
+		-- Loop through table in AuraWatchSpells.lua to check if unit has an important aura
+		for k, v in ipairs(self.Spells) do
 			local name, rank = GetSpellInfo(v)
-			if UnitAura(unitID, name, rank, "HELPFUL") and select(11, UnitAura(unitID, name, rank, "HELPFUL")) == tonumber(v) then
-				buffIndex = i
-				break
-			end
-		end
-		
-		for i, v in ipairs(self.Spells) do
-			local name, rank = GetSpellInfo(v)
-			if UnitAura(unitID, name, rank, "HARMFUL") and select(11, UnitAura(unitID, name, rank, "HARMFUL")) == tonumber(v) then
-				debuffIndex = i
-				break
-			end
-		end
-		
-		if buffIndex or debuffIndex then
-			if (buffIndex and debuffIndex and buffIndex < debuffIndex) or (buffIndex and not debuffIndex) then
-				spellId = tonumber(self.Spells[buffIndex])
+			if UnitAura(unitID, name, rank, "HELPFUL") and select(11, UnitAura(unitID, name, rank, "HELPFUL")) == v then
+				spellId = v
 				filter = "HELPFUL"
-			else
-				spellId = tonumber(self.Spells[debuffIndex])
+				break
+			elseif UnitAura(unitID, name, rank, "HARMFUL") and select(11, UnitAura(unitID, name, rank, "HARMFUL")) == v then
+				spellId = v
 				filter = "HARMFUL"
+				break
 			end
 		end
 		
+		-- If an aura is found, set texture and cooldown
 		if spellId then
 			local name, rank = GetSpellInfo(spellId)
 			local _, _, icon, _, _, duration, expires = UnitAura(unitID, name, rank, filter)
