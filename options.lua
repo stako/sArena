@@ -314,9 +314,9 @@ function sArena.OptionsPanel:Initialize()
 	AuraWatchFrame:SetFrameLevel(3)
 	
 	local AuraWatchEnableCheckbox = LibStub("tekKonfig-Checkbox").new(self, nil, "Enable", "TOPLEFT", AuraWatchFrame, 8, -8)
-	AuraWatchEnableCheckbox.tiptext = "Displays important aura on arena frame class portraits."
+	AuraWatchEnableCheckbox.tiptext = "Displays important auras on arena frame class portraits."
 	AuraWatchEnableCheckbox:SetHitRectInsets(0, -70, 0, 0)
-	AuraWatchEnableCheckbox:SetChecked(sArenaDB.AuraWatch.enabled and true or false)
+	AuraWatchEnableCheckbox:SetChecked(sArenaDB.AuraWatch.enabled)
 	AuraWatchEnableCheckbox:SetScript("OnClick", function()
 		sArenaDB.AuraWatch.enabled = AuraWatchEnableCheckbox:GetChecked() and true or false
 		sArena.AuraWatch:PLAYER_ENTERING_WORLD()

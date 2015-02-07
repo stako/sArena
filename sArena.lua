@@ -49,8 +49,6 @@ sArena.Defaults = {
 
 -- Initialize function. Called by sArena:ADDON_LOADED()
 function sArena:Initialize()
-	self.OptionsPanel:Initialize()
-	
 	-- Set position and scale of sArena frame.
 	self.DragFrame:SetPoint(sArenaDB.position.point or "RIGHT", _G["UIParent"], sArenaDB.position.relativePoint or "RIGHT", sArenaDB.position.x or -100, sArenaDB.position.y or 100)
 	self.Frame:SetScale(sArenaDB.scale)
@@ -108,6 +106,10 @@ function sArena:Initialize()
 	end)
 	
 	hooksecurefunc("ArenaEnemyFrame_Lock", function(self) sArena:ClassColours(self) end)
+	
+	self.Trinkets:Initialize()
+	self.AuraWatch:Initialize()
+	self.OptionsPanel:Initialize()
 end
 
 -- Called by sArena:Initialize() or when some options are changed.

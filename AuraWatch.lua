@@ -18,7 +18,7 @@ function sArena.AuraWatch:Initialize()
 	self:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
-hooksecurefunc(sArena, "Initialize", function() sArena.AuraWatch:Initialize() end)
+--hooksecurefunc(sArena, "Initialize", function() sArena.AuraWatch:Initialize() end)
 
 function sArena.AuraWatch:CreateCooldownFrame(frame)
 	local cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")

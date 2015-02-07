@@ -21,7 +21,7 @@ function sArena.Trinkets:Initialize()
 	self:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
-hooksecurefunc(sArena, "Initialize", function() sArena.Trinkets:Initialize() end)
+--hooksecurefunc(sArena, "Initialize", function() sArena.Trinkets:Initialize() end)
 
 function sArena.Trinkets:CreateIcon(frame)
 	local trinket = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
