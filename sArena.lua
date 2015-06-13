@@ -248,8 +248,8 @@ function sArena:ClassColours(self)
 		local name = _G[self:GetParent():GetName() .. "Name"]
 		
 		-- Set default colours
-		texture:SetVertexColor(1, 1, 1)
-		specBorder:SetVertexColor(1, 1, 1)
+		texture:SetVertexColor(PlayerFrame:GetVertexColor())
+		specBorder:SetVertexColor(PlayerFrame:GetVertexColor())
 		name:SetTextColor(1, 0.82, 0, 1)
 		
 		local _, class = UnitClass(self.unit)
