@@ -185,7 +185,7 @@ function sArena:Test(numOpps)
 	local instanceType = select(2, IsInInstance())
 	local factionGroup = UnitFactionGroup('player')
 	local _, class = UnitClass('player')
-	local _, _, _, specIcon = GetSpecializationInfo(GetSpecialization())
+	local _, _, _, specIcon = GetSpecializationInfo(UnitLevel('player') >= 10 and GetSpecialization() or 1)
 	
 	for i = 1, numOpps do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
@@ -244,13 +244,19 @@ function sArena:ClassColours(self)
 	-- Check if self == an arena frame health bar
 	if (HealthBars[self:GetName()]) then
 		local texture = _G[self:GetParent():GetName() .. "Texture"]
+		local petTexture = _G[self:GetParent():GetName() .. "PetFrameTexture"]
 		local specBorder = _G[self:GetParent():GetName() .. "SpecBorder"]
 		local name = _G[self:GetParent():GetName() .. "Name"]
 		
 		-- Set default colours
-		texture:SetVertexColor(1, 1, 1)
-		specBorder:SetVertexColor(1, 1, 1)
+		texture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
+		petTexture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
+		specBorder:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		name:SetTextColor(1, 0.82, 0, 1)
+		
+		for i = 1, MAX_ARENA_ENEMIES do
+			if sArena.Trinkets["arena"..i] then sArena.Trinkets["arena"..i].Icon.Border.Texture:SetVertexColor(PlayerFrameTexture:GetVertexColor()) end
+		end
 		
 		local _, class = UnitClass(self.unit)
 		if not class then return end

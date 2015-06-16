@@ -99,7 +99,7 @@ sArena.AuraWatch.Spells = {
 	-- Offensive Buffs
 	51713,	-- Shadow Dance
 	84747,	-- Deep Insight (Rogue Red Buff)
-	--84746,	-- Moderate Insight (Rogue Yellow Buff)
+	84746,	-- Moderate Insight (Rogue Yellow Buff)
 	13750,	-- Adrenaline Rush
 	112071,	-- Celestial Alignment
 	31884,	-- Avenging Wrath
@@ -107,9 +107,9 @@ sArena.AuraWatch.Spells = {
 	113858,	-- Dark Soul
 	113861,	-- Dark Soul
 	113860,	-- Dark Soul
+	106951,	-- Berserk
 	102543,	-- Incarnation: King of the Jungle
 	102560,	-- Incarnation: Chosen of Elune
-	106951,	-- Berserk
 	12472,	-- Icy Veins
 	3045,	-- Rapid Fire
 	19574,	-- Bestial Wrath
@@ -142,5 +142,5 @@ sArena.AuraWatch.Spells = {
 	108271,	-- Astral Shift
 	111397,	-- Blood Horror
 	108416,	-- Sacrificial Pact
-	55694,	-- Enraged Regeneration
+	55694	-- Enraged Regeneration
 }
