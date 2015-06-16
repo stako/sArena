@@ -9,7 +9,7 @@ sArena.Defaults.Trinkets = {
 }
 
 function sArena.Trinkets:Initialize()
-	if ( not sArenaDB.Trinkets ) then
+	if not sArenaDB.Trinkets then
 		sArenaDB.Trinkets = CopyTable(sArena.Defaults.Trinkets)
 	end
 	
@@ -27,7 +27,7 @@ function sArena.Trinkets:CreateIcon(frame)
 	local trinket = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 	trinket:SetFrameLevel(frame:GetFrameLevel() + 3)
 	trinket:ClearAllPoints()
-	if ( sArenaDB.Trinkets.point ) then
+	if sArenaDB.Trinkets.point then
 		trinket:SetPoint(sArenaDB.Trinkets.point, frame, sArenaDB.Trinkets.x, sArenaDB.Trinkets.y)
 	else
 		trinket:SetPoint("LEFT", frame, "RIGHT", 0, 0)
@@ -62,7 +62,7 @@ function sArena.Trinkets:CreateIcon(frame)
 	trinket:SetScript("OnDragStart", function(s) s:StartMoving() end)
 	trinket:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() self:DragStop(s) end)
 
-	if ( not sArenaDB.Trinkets.enabled ) then trinket.Icon:Hide() end
+	if not sArenaDB.Trinkets.enabled then trinket.Icon:Hide() end
 
 	self:AlwaysShow(sArenaDB.Trinkets.alwaysShow, trinket)
 
@@ -71,7 +71,7 @@ function sArena.Trinkets:CreateIcon(frame)
 end
 
 function sArena.Trinkets:Test(numOpps)
-	if ( sArena:CombatLockdown() or not sArenaDB.Trinkets.enabled ) then return end
+	if sArena:CombatLockdown() or not sArenaDB.Trinkets.enabled then return end
 	for i = 1, numOpps do
 		self["arena"..i].Icon:Show()
 		CooldownFrame_SetTimer(self["arena"..i], GetTime(), 120, 1, 0, 0, true)
@@ -112,7 +112,7 @@ end
 function sArena.Trinkets:Scale(scale)
 	for i = 1, MAX_ARENA_ENEMIES do
 		self["arena"..i]:SetScale(scale)
-		if ( sArenaDB.Trinkets.alwaysShow ) then
+		if sArenaDB.Trinkets.alwaysShow then
 			self["arena"..i].Icon:SetScale(scale)
 		else
 			self["arena"..i].Icon:SetScale(1)
@@ -122,8 +122,8 @@ end
 
 function sArena.Trinkets:AlwaysShow(alwaysShow, ...)
 	local trinket = ...
-	if ( trinket ) then
-		if ( alwaysShow ) then
+	if trinket then
+		if alwaysShow then
 			trinket.Icon:SetParent(trinket:GetParent())
 			trinket.Icon:SetScale(sArenaDB.Trinkets.scale)
 		else
@@ -134,7 +134,7 @@ function sArena.Trinkets:AlwaysShow(alwaysShow, ...)
 	else
 		for i = 1, MAX_ARENA_ENEMIES do
 			trinket = self["arena"..i]
-			if ( alwaysShow ) then
+			if alwaysShow then
 				trinket.Icon:SetParent(trinket:GetParent())
 				trinket.Icon:SetScale(sArenaDB.Trinkets.scale)
 			else
@@ -162,7 +162,7 @@ end
 
 function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	local instanceType = select(2, IsInInstance())
-	if ( sArenaDB.Trinkets.enabled and instanceType == "arena" ) then
+	if sArenaDB.Trinkets.enabled and instanceType == "arena" then
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		for i = 1, MAX_ARENA_ENEMIES do
 			self["arena"..i].Icon:Show()
@@ -174,7 +174,7 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 			self["arena"..i]:Hide()
 			CooldownFrame_SetTimer(self["arena"..i], 0, 0, 0, 0, 0, true)
 		end
-		if ( self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
+		if self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") then
 			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		end
 	end

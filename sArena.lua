@@ -54,7 +54,7 @@ function sArena:Initialize()
 	self.Frame:SetScale(sArenaDB.scale)
 	
 	-- Show sArena anchor if it's unlocked in options
-	if ( not sArenaDB.lock ) then
+	if not sArenaDB.lock then
 		self.DragFrame:Show()
 	end
 	
@@ -125,7 +125,7 @@ function sArena:Placement()
 		PrepFrame:ClearAllPoints()
 		
 		if sArenaDB.growUpwards then
-			if ( i == 1 ) then
+			if i == 1 then
 				ArenaFrame:SetPoint("BOTTOM", self.Frame, "TOP", 0, 40)
 				PrepFrame:SetPoint("BOTTOM", self.Frame, "TOP", 0, 40)
 			else
@@ -133,7 +133,7 @@ function sArena:Placement()
 				PrepFrame:SetPoint("BOTTOM", _G["ArenaPrepFrame"..i-1], "TOP", 0, 20)
 			end
 		else
-			if ( i == 1 ) then
+			if i == 1 then
 				ArenaFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
 				PrepFrame:SetPoint("TOP", self.Frame, "BOTTOM", 0, -8)
 			else
@@ -144,8 +144,8 @@ function sArena:Placement()
 		
 		PrepFrame:SetPoint("RIGHT", self.Frame, "RIGHT", -2, 0)
 		
-		-- Frames are moved a little bit when inside of battlegrounds to make room for faction icons.
-		if ( instanceType ~= "pvp" ) then
+		-- Frames are shifted left a little bit when inside of battlegrounds to make room for faction icons.
+		if instanceType ~= "pvp" then
 			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
 		else
 			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -18, 0)
@@ -155,14 +155,14 @@ end
 
 -- Used when handling secure frames.
 function sArena:CombatLockdown()
-	if ( InCombatLockdown() ) then
+	if InCombatLockdown() then
 		print("sArena: Must leave combat before doing that!")
 		return true
 	end
 end
 
 function sArena:HideArenaEnemyFrames()
-	if ( self:CombatLockdown() ) then return end
+	if self:CombatLockdown() then return end
 	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
@@ -176,8 +176,8 @@ end
 
 -- Test mode
 function sArena:Test(numOpps)
-	if ( self:CombatLockdown() ) then return end
-	if ( not numOpps or not (numOpps > 0 and numOpps < 6) ) then return end
+	if self:CombatLockdown() then return end
+	if not numOpps or (numOpps < 1 or numOpps > 5) then numOpps = 3 end
 	
 	self:HideArenaEnemyFrames()
 	
@@ -185,12 +185,12 @@ function sArena:Test(numOpps)
 	local instanceType = select(2, IsInInstance())
 	local factionGroup = UnitFactionGroup('player')
 	local _, class = UnitClass('player')
-	local _, _, _, specIcon = GetSpecializationInfo(UnitLevel('player') >= 10 and GetSpecialization() or 1)
+	local _, _, _, specIcon = GetSpecializationInfo(GetSpecialization() or 1)
 	
 	for i = 1, numOpps do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		local PVPIcon = _G["ArenaEnemyFrame"..i.."PVPIcon"]
-		if ( instanceType ~= "pvp" ) then
+		if instanceType ~= "pvp" then
 			ArenaFrame:SetPoint("RIGHT", ArenaFrame:GetParent(), "RIGHT", -2, 0)
 			PVPIcon:Hide()
 		else
@@ -206,7 +206,7 @@ function sArena:Test(numOpps)
 		ArenaFrame.specBorder:Show()
 		self["TestCastingBar"..i]:Show()
 		SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
-		if ( showArenaEnemyPets ) then
+		if showArenaEnemyPets then
 			_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
 			_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
 		end
@@ -214,17 +214,17 @@ function sArena:Test(numOpps)
 end
 
 function sArena:ADDON_LOADED(arg1)
-	if ( arg1 == AddonName ) then
+	if arg1 == AddonName then
 		-- Create database for options, or update database for new version of sArena.
-		if ( not sArenaDB or sArenaDB.version ~= sArena.Defaults.version ) then
+		if not sArenaDB or sArenaDB.version ~= sArena.Defaults.version then
 			sArenaDB = CopyTable(sArena.Defaults)
 		end
 		-- Load Blizzard_ArenaUI.
-		if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then
+		if not IsAddOnLoaded("Blizzard_ArenaUI") then
 			LoadAddOn("Blizzard_ArenaUI")
 		end
 		self:Initialize()
-		if ( sArenaDB.firstrun ) then
+		if sArenaDB.firstrun then
 			sArenaDB.firstrun = false
 			print("Looks like this is your first time running this version of sArena! Type /sarena for options.")
 		end
@@ -242,7 +242,7 @@ local HealthBars = {
 
 function sArena:ClassColours(self)
 	-- Check if self == an arena frame health bar
-	if (HealthBars[self:GetName()]) then
+	if HealthBars[self:GetName()] then
 		local texture = _G[self:GetParent():GetName() .. "Texture"]
 		local petTexture = _G[self:GetParent():GetName() .. "PetFrameTexture"]
 		local specBorder = _G[self:GetParent():GetName() .. "SpecBorder"]
@@ -253,10 +253,10 @@ function sArena:ClassColours(self)
 		petTexture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		specBorder:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		name:SetTextColor(1, 0.82, 0, 1)
-		
-		for i = 1, MAX_ARENA_ENEMIES do
-			if sArena.Trinkets["arena"..i] then sArena.Trinkets["arena"..i].Icon.Border.Texture:SetVertexColor(PlayerFrameTexture:GetVertexColor()) end
+		if sArena.Trinkets["arena"..self:GetParent():GetID()] then
+			sArena.Trinkets["arena"..self:GetParent():GetID()].Icon.Border.Texture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		end
+
 		
 		local _, class = UnitClass(self.unit)
 		if not class then return end
