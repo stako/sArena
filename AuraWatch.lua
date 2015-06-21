@@ -1,19 +1,28 @@
 local AddonName, sArena = ...
 sArena.AuraWatch = CreateFrame("Frame", nil, UIParent)
 
+local BUFF_MAX_DISPLAY = BUFF_MAX_DISPLAY
+local DEBUFF_MAX_DISPLAY = DEBUFF_MAX_DISPLAY
+
 sArena.Defaults.AuraWatch = {
 	enabled = true,
 }
 
 -- Called when addon is loaded
 function sArena.AuraWatch:Initialize()
-	if ( not sArenaDB.AuraWatch ) then
+	if not sArenaDB.AuraWatch then
 		sArenaDB.AuraWatch = CopyTable(sArena.Defaults.AuraWatch)
 	end
 	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
 		self:CreateCooldownFrame(ArenaFrame)
+	end
+	
+	-- Create prioritized aura list. We're simply swapping the keys and values from sArena.AuraWatch.Spells
+	self.AuraList = {}
+	for k,v in ipairs(self.Spells) do
+		self.AuraList[v] = k
 	end
 	
 	self:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
@@ -46,29 +55,36 @@ end
 
 function sArena.AuraWatch:PLAYER_ENTERING_WORLD()
 	local instanceType = select(2, IsInInstance())
-	if ( sArenaDB.AuraWatch.enabled and instanceType == "arena" ) then
+	if sArenaDB.AuraWatch.enabled and instanceType == "arena" then
 		self:RegisterEvent("UNIT_AURA")
-	elseif ( self:IsEventRegistered("UNIT_AURA") ) then
+	elseif self:IsEventRegistered("UNIT_AURA") then
 		self:UnregisterEvent("UNIT_AURA")
 	end
 end
 
 function sArena.AuraWatch:UNIT_AURA(unitID)
 	if self[unitID] then
-		local spellId, filter
+		local spellId, filter, buff, debuff
 		
-		-- Loop through table in AuraWatchSpells.lua to find a matching aura
-		for k, v in ipairs(self.Spells) do
-			local name, rank = GetSpellInfo(v)
-			-- UnitAura has an implicit "HELPFUL" filter - it cannot be used to check helpful and harmful auras with a single call, so we need to call it twice
-			if UnitAura(unitID, name, rank, "HELPFUL") and select(11, UnitAura(unitID, name, rank, "HELPFUL")) == v then
-				spellId = v
-				filter = "HELPFUL"
-				break
-			elseif UnitAura(unitID, name, rank, "HARMFUL") and select(11, UnitAura(unitID, name, rank, "HARMFUL")) == v then
-				spellId = v
-				filter = "HARMFUL"
-				break
+		-- Loop through unit's auras
+		for i=1, BUFF_MAX_DISPLAY do
+			buff = select(11, UnitAura(unitID, i, "HELPFUL"))
+			-- See if buff exists in our table
+			if buff and self.AuraList[buff] then
+				-- Compare with the previous buff found in the for loop (if it exists) and select that with the greatest priority
+				if not spellId or spellId and self.AuraList[buff] < self.AuraList[spellId] then
+					spellId = buff
+					filter = "HELPFUL"
+				end
+			end
+			
+			if i <= DEBUFF_MAX_DISPLAY then debuff = select(11, UnitAura(unitID, i, "HARMFUL")) end
+			-- Same as above, but with debuffs
+			if debuff and self.AuraList[debuff] then
+				if not spellId or spellId and self.AuraList[debuff] < self.AuraList[spellId] then
+					spellId = debuff
+					filter = "HARMFUL"
+				end
 			end
 		end
 		
