@@ -325,4 +325,13 @@ end
 
 InterfaceOptions_AddCategory(sArena.OptionsPanel)
 SLASH_sArena1 = "/sarena"
-SlashCmdList[AddonName] = function() InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel) end
+SlashCmdList[AddonName] = function(msg, editbox)
+	if msg == '' then
+		InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel)
+		InterfaceOptionsFrame_OpenToCategory(sArena.OptionsPanel)
+	elseif msg == 'test2' then sArena:Test(2)
+	elseif msg == 'test3' then sArena:Test(3)
+	elseif msg == 'test5' then sArena:Test(5)
+	elseif msg == 'clear' then sArena:HideArenaEnemyFrames()
+	end
+end
