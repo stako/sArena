@@ -110,6 +110,9 @@ function sArena:Initialize()
 	self.Trinkets:Initialize()
 	self.AuraWatch:Initialize()
 	self.OptionsPanel:Initialize()
+	
+	-- Improved functionality with DRTracker addon. /testdrs command will work again.
+	if SlashCmdList["TESTDRS"] then hooksecurefunc(SlashCmdList, "TESTDRS", function() self:Test(5) ArenaEnemyFrames:Show() end) end
 end
 
 -- Called by sArena:Initialize() or when some options are changed.
