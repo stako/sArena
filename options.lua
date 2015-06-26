@@ -228,8 +228,6 @@ function sArena.OptionsPanel:Initialize()
 	TrinketsEnableCheckbox:SetChecked(sArenaDB.Trinkets.enabled and true or false)
 	TrinketsEnableCheckbox:SetScript("OnClick", function()
 		sArenaDB.Trinkets.enabled = TrinketsEnableCheckbox:GetChecked() and true or false
-		sArena.Trinkets:HideTrinkets()
-		sArena.Trinkets:Test(5)
 		sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	end)
 

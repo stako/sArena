@@ -24,7 +24,7 @@ end
 --hooksecurefunc(sArena, "Initialize", function() sArena.Trinkets:Initialize() end)
 
 function sArena.Trinkets:CreateIcon(frame)
-	local trinket = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+	local trinket = CreateFrame("Cooldown", frame:GetName().."Trinket", frame, "CooldownFrameTemplate")
 	trinket:SetFrameLevel(frame:GetFrameLevel() + 3)
 	trinket:ClearAllPoints()
 	if sArenaDB.Trinkets.point then
@@ -43,21 +43,23 @@ function sArena.Trinkets:CreateIcon(frame)
 	end
 	trinket.Text:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinkets.cooldownFontSize or 7, "OUTLINE")
 	
-	trinket.Icon = CreateFrame("Frame", nil, trinket)
+	trinket.Icon = CreateFrame("Frame", trinket:GetName().."Icon", trinket)
 	trinket.Icon:SetFrameLevel(trinket:GetFrameLevel() - 1)
 	trinket.Icon:SetAllPoints()
-	trinket.Icon.Texture = trinket.Icon:CreateTexture(nil, "BORDER")
+	trinket.Icon.Texture = trinket.Icon:CreateTexture(trinket.Icon:GetName().."Texture", "BORDER")
 	trinket.Icon.Texture:SetAllPoints()
 	SetPortraitToTexture(trinket.Icon.Texture, UnitFactionGroup('player') == "Horde" and "Interface\\Icons\\inv_jewelry_trinketpvp_02" or "Interface\\Icons\\inv_jewelry_trinketpvp_01")
 	
-	trinket.Icon.Border = CreateFrame("Frame", nil, trinket.Icon)
+	trinket.Icon.Border = CreateFrame("Frame", trinket:GetName().."Border", trinket.Icon)
 	trinket.Icon.Border:SetFrameLevel(trinket:GetFrameLevel() + 1)
 	trinket.Icon.Border:SetAllPoints()
-	trinket.Icon.Border.Texture = trinket.Icon.Border:CreateTexture(nil, "ARTWORK")
+	trinket.Icon.Border.Texture = trinket.Icon.Border:CreateTexture(trinket.Icon.Border:GetName().."Texture", "ARTWORK")
 	trinket.Icon.Border.Texture:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
 	trinket.Icon.Border.Texture:SetPoint("TOPLEFT", -6, 5)
 	trinket.Icon.Border.Texture:SetSize(50, 50)
 	
+	trinket:EnableMouse(true)
+	trinket:SetMovable(true)
 	trinket:RegisterForDrag("LeftButton")
 	trinket:SetScript("OnDragStart", function(s) s:StartMoving() end)
 	trinket:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() self:DragStop(s) end)
@@ -75,21 +77,9 @@ function sArena.Trinkets:Test(numOpps)
 	for i = 1, numOpps do
 		self["arena"..i].Icon:Show()
 		CooldownFrame_SetTimer(self["arena"..i], GetTime(), 120, 1, 0, 0, true)
-		self["arena"..i]:EnableMouse(true)
-		self["arena"..i]:SetMovable(true)
 	end
 end
 hooksecurefunc(sArena, "Test", function(obj, arg1) sArena.Trinkets:Test(arg1) end)
-
-function sArena.Trinkets:HideTrinkets()
-	for i = 1, MAX_ARENA_ENEMIES do
-		self["arena"..i].Icon:Hide()
-		self["arena"..i]:Hide()
-		CooldownFrame_SetTimer(self["arena"..i], 0, 0, 0, 0, 0, true)
-		self["arena"..i]:EnableMouse(false)
-		self["arena"..i]:SetMovable(false)
-	end
-end
 
 function sArena.Trinkets:DragStop(s)
 	-- Zork/Rothar's hack to maintain relativity: Super Cool.
