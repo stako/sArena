@@ -107,8 +107,8 @@ sArena.AuraWatch.Spells = {
 	113858,	-- Dark Soul
 	113861,	-- Dark Soul
 	113860,	-- Dark Soul
-	106951,	-- Berserk
 	102543,	-- Incarnation: King of the Jungle
+	106951,	-- Berserk
 	102560,	-- Incarnation: Chosen of Elune
 	12472,	-- Icy Veins
 	3045,	-- Rapid Fire

@@ -33,7 +33,6 @@ end
 function sArena.AuraWatch:CreateCooldownFrame(frame)
 	local cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 	cooldown:SetSwipeColor(0, 0, 0, 0)
-	cooldown.omniA = 0
 	cooldown:ClearAllPoints()
 	cooldown:SetPoint("TOPLEFT", frame.classPortrait, "TOPLEFT", 2, -2)
 	cooldown:SetPoint("BOTTOMRIGHT", frame.classPortrait, "BOTTOMRIGHT", -2, 2)
