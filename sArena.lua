@@ -231,9 +231,18 @@ function sArena:ADDON_LOADED(arg1)
 			sArenaDB.firstrun = false
 			print("Looks like this is your first time running this version of sArena! Type /sarena for options.")
 		end
+		sArena.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end
 sArena.Frame:RegisterEvent("ADDON_LOADED")
+
+function sArena:PLAYER_ENTERING_WORLD()
+	local instanceType = select(2, IsInInstance())
+	if instanceType ~= "arena" then return end
+	for i=1, MAX_ARENA_ENEMIES do
+		_G["ArenaEnemyFrame"..i]:Hide()
+	end
+end
 
 local HealthBars = {
 	ArenaEnemyFrame1HealthBar = 1,

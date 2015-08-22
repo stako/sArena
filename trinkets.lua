@@ -25,6 +25,7 @@ end
 
 function sArena.Trinkets:CreateIcon(frame)
 	local trinket = CreateFrame("Cooldown", frame:GetName().."Trinket", frame, "CooldownFrameTemplate")
+	trinket:SetDrawBling(false)
 	trinket:SetFrameLevel(frame:GetFrameLevel() + 3)
 	trinket:ClearAllPoints()
 	if sArenaDB.Trinkets.point then
