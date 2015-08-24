@@ -2,14 +2,9 @@
 ## Title: sArena
 ## Notes: Enhanced arena frames.
 ## Author: Stako
-## Version: 1.1.6b
+## Version: 1.2.0
+## RequiredDeps: Blizzard_ArenaUI
 
 ## SavedVariables: sArenaDB
 
-tekKonfig\tekKonfig.xml
-
-sArena.lua
-trinkets.lua
-AuraWatch.lua
-AuraWatchSpells.lua
-options.lua
+sArena.xml
