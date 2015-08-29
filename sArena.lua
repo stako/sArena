@@ -4,6 +4,7 @@ local DefaultSettings = {
 	Lock = false,
 	TestMode = false,
 	Scale = 1,
+	GrowUpwards = false,
 	ClassColours = {
 		Health = true,
 		Name = true,
@@ -16,6 +17,13 @@ local DefaultSettings = {
 		Scale = 1,
 	},
 }
+
+local function CombatLockdown()
+	if InCombatLockdown() then
+		print("sArena: Must leave combat before doing that!")
+		return true
+	end
+end
 
 local function sArena_Settings()
 		-- Copy Default Settings into SavedVariables table if necessary (never used sArena or new version)
@@ -43,14 +51,6 @@ function sArena_OnEvent(self, event, ...)
 			ArenaPetFrame:SetParent(self)
 			PrepFrame:SetParent(self)
 			
-			if ( i == 1 ) then
-				ArenaFrame:SetPoint("TOP", self, "BOTTOM")
-				PrepFrame:SetPoint("TOP", self, "BOTTOM")
-			end
-			
-			ArenaFrame:SetPoint("RIGHT", -2)
-			PrepFrame:SetPoint("RIGHT", -2)
-			
 			-- Improve positioning of class portraits
 			ArenaFrame.classPortrait:SetSize(26, 26)
 			ArenaFrame.classPortrait:ClearAllPoints()
@@ -59,6 +59,8 @@ function sArena_OnEvent(self, event, ...)
 			PrepFrame.classPortrait:ClearAllPoints()
 			PrepFrame.classPortrait:SetPoint("TOPRIGHT", PrepFrame, -13, -6)
 		end
+		
+		sArena_GrowUpwards()
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
 		sArena_TestMode(false)
 	end
@@ -108,6 +110,47 @@ function sArena_TestMode(setting)
 				CooldownFrame_SetTimer(TrinketCooldown, 0, 0, 0, true)
 			end
 		end
+end
+
+function sArena_GrowUpwards(setting)
+	if ( CombatLockdown() ) then return end
+	if ( setting ~= nil ) then sArenaDB.GrowUpwards = setting end
+	
+	local instanceType = select(2, IsInInstance())
+	
+	for i = 1, MAX_ARENA_ENEMIES do
+		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		local PrepFrame = _G["ArenaPrepFrame"..i]
+		
+		ArenaFrame:ClearAllPoints()
+		PrepFrame:ClearAllPoints()
+		
+		if ( sArenaDB.GrowUpwards ) then
+			if ( i == 1 ) then
+				ArenaFrame:SetPoint("BOTTOM", sArena, "TOP", 0, 20)
+				PrepFrame:SetPoint("BOTTOM", sArena, "TOP", 0, 20)
+			else
+				ArenaFrame:SetPoint("BOTTOM", _G["ArenaEnemyFrame"..i-1], "TOP", 0, 20)
+				PrepFrame:SetPoint("BOTTOM", _G["ArenaPrepFrame"..i-1], "TOP", 0, 20)
+			end
+		else
+			if ( i == 1 ) then
+				ArenaFrame:SetPoint("TOP", sArena, "BOTTOM")
+				PrepFrame:SetPoint("TOP", sArena, "BOTTOM")
+			else
+				ArenaFrame:SetPoint("TOP", _G["ArenaEnemyFrame"..i-1], "BOTTOM", 0, -20)
+				PrepFrame:SetPoint("TOP", _G["ArenaPrepFrame"..i-1], "BOTTOM", 0, -20)
+			end
+		end
+		
+		if instanceType ~= "pvp" then
+			ArenaFrame:SetPoint("RIGHT", -2)
+			PrepFrame:SetPoint("RIGHT", -2)
+		else
+			ArenaFrame:SetPoint("RIGHT", -18)
+			PrepFrame:SetPoint("RIGHT", -18)
+		end
+	end
 end
 
 function sArena_Trinket_OnEvent(self, event, ...)
@@ -198,7 +241,7 @@ function sArena_Trinket_OnHide(self)
 end
 
 function sArena_Trinket_AlwaysShow(setting)
-	if ( setting ) then sArenaDB.Trinket.AlwaysShow = setting end
+	if ( setting ~= nil ) then sArenaDB.Trinket.AlwaysShow = setting end
 	for i = 1, MAX_ARENA_ENEMIES do
 		local Trinket = sArena["Trinket"..i]
 		local TrinketCooldown = sArena["Trinket"..i.."Cooldown"]

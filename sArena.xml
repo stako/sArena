@@ -139,7 +139,7 @@
 		</Layers>
 		<Frames>
 			<Frame name="$parent_General_Box" inherits="OptionsBoxTemplate">
-				<Size x="300" y="62"/>
+				<Size x="300" y="92"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-28"/>
 				</Anchors>
@@ -182,6 +182,24 @@
 						self.setFunc = function(setting)
 							sArenaDB.TestMode = setting == "1" and true or false
 							sArena_TestMode(sArenaDB.TestMode)
+						end
+					</OnEvent>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_GrowUpwards" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_TestMode" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Grow Upwards")
+						self:RegisterEvent("VARIABLES_LOADED")
+					</OnLoad>
+					<OnEvent>
+						self:SetChecked(sArenaDB.GrowUpwards)
+						self.setFunc = function(setting)
+							sArenaDB.GrowUpwards = setting == "1" and true or false
+							sArena_GrowUpwards(sArenaDB.GrowUpwards)
 						end
 					</OnEvent>
 				</Scripts>
