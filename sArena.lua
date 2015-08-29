@@ -77,18 +77,34 @@ function sArena_Lock(setting)
 end
 
 function sArena_TestMode(setting)
-	if ( setting ) then sArenaDB.TestMode = setting end
+	if ( setting ~= nil ) then sArenaDB.TestMode = setting end
 	
 	local instanceType = select(2, IsInInstance())
+	local showArenaEnemyPets = (SHOW_ARENA_ENEMY_PETS == "1")
+	local _, class = UnitClass('player')
+	local _, _, _, specIcon = GetSpecializationInfo(GetSpecialization() or 1)
 	
 		for i = 1, MAX_ARENA_ENEMIES do
 			local ArenaFrame = _G["ArenaEnemyFrame"..i]
 			local TrinketCooldown = sArena["Trinket"..i.."Cooldown"]
 			if ( sArenaDB.TestMode ) then
-				ArenaFrame:Show()
+				ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
+				ArenaEnemyFrame_Unlock(ArenaFrame)
+				ArenaFrame.name:SetText("arena"..i)
+				ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+				ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+				ArenaFrame.specBorder:Show()
+				SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
+				if showArenaEnemyPets then
+					_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
+					_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
+				end
 				CooldownFrame_SetTimer(TrinketCooldown, GetTime(), 120, 1, true)
 			else
-				if ( not instanceType == "pvp" or "arena" ) then ArenaFrame:Hide() end
+				if ( not instanceType == "pvp" or "arena" ) then
+					ArenaFrame:Hide()
+					_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
+				end
 				CooldownFrame_SetTimer(TrinketCooldown, 0, 0, 0, true)
 			end
 		end
@@ -214,11 +230,13 @@ local function sArena_ClassColours(self)
 		local petTexture = _G[self:GetParent():GetName() .. "PetFrameTexture"]
 		local specBorder = _G[self:GetParent():GetName() .. "SpecBorder"]
 		local name = _G[self:GetParent():GetName() .. "Name"]
+		local dead = UnitIsDead(self.unit)
 		
 		texture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		petTexture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		specBorder:SetVertexColor(PlayerFrameTexture:GetVertexColor())
-		name:SetTextColor(1, 0.82, 0, 1)
+		name:SetTextColor(1, dead and 0 or 0.82, 0, 1)
+		if dead then name:SetText(DEAD) end
 		
 		local _, class = UnitClass(self.unit)
 		if not class then return end
@@ -227,7 +245,7 @@ local function sArena_ClassColours(self)
 		
 		if sArenaDB.ClassColours.Health and not self.lockColor then self:SetStatusBarColor(c.r, c.g, c.b) end
 		if sArenaDB.ClassColours.Frame then texture:SetVertexColor(c.r, c.g, c.b) specBorder:SetVertexColor(c.r, c.g, c.b) end
-		if sArenaDB.ClassColours.Name then name:SetTextColor(c.r, c.g, c.b, 1) end
+		if sArenaDB.ClassColours.Name and not dead then name:SetTextColor(c.r, c.g, c.b, 1) end
 	end
 end
 hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena_ClassColours(self) end)
