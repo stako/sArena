@@ -1,7 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
-	<Script file="sArena.lua"/>
-	<Frame name="TrinketTemplate" movable="true" clampedToScreen="true" virtual="true">
+	<Frame name="sArenaTrinketTemplate" movable="true" clampedToScreen="true" virtual="true">
 		<Size x="18" y="18"/>
 		<Anchors>
 			<Anchor point="LEFT" relativePoint="RIGHT"/>
@@ -15,15 +14,9 @@
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate">
 				<Scripts>
 					<OnLoad>
-						self:RegisterEvent("PLAYER_ENTERING_WORLD")
-						self:RegisterEvent("VARIABLES_LOADED")
 						self:SetDrawBling(false)
-						self:SetID(self:GetParent():GetID())
-						sArena["Trinket"..self:GetID().."Cooldown"] = self
+						self:SetID(self:GetParent():GetParent():GetID())
 					</OnLoad>
-					<OnEvent function="sArena_Trinket_OnEvent"/>
-					<OnShow function="sArena_Trinket_OnShow"/>
-					<OnHide function="sArena_Trinket_OnHide"/>
 				</Scripts>
 			</Cooldown>
 			<Frame>
@@ -47,11 +40,11 @@
 		<Scripts>
 		 <OnLoad>
 			SetPortraitToTexture(_G[self:GetName() .. "Icon"], UnitFactionGroup('player') == "Horde" and "Interface\\Icons\\inv_jewelry_trinketpvp_02" or "Interface\\Icons\\inv_jewelry_trinketpvp_01")
-			sArena["Trinket"..self:GetID()] = self
+			--sArena["Trinket"..self:GetID()] = self
 		 </OnLoad>
 		</Scripts>
 	</Frame>
-	<Frame name="TitleTemplate" enableMouse="true" virtual="true">
+	<Frame name="sArenaDragBarTemplate" enableMouse="true" virtual="true">
 		<Backdrop bgFile="Interface\CharacterFrame\UI-Party-Background" tile="true">
 			<Color r="0" g="0" b="0" a="0.6" />
 		</Backdrop>
@@ -65,69 +58,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	<Frame name="sArena" parent="UIParent" movable="true" clampedToScreen="true">
-		<Size x="200" y="16"/>
-		<Anchors>
-			<Anchor point="RIGHT" relativeTo="UIParent" relativePoint="RIGHT" x="-150" y="100"/>
-		</Anchors>
-		<Frames>
-			<Frame name="$parentTitleBar" inherits="TitleTemplate">
-				<Size x="200" y="16"/>
-				<Anchors>
-					<Anchor point="TOP"/>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<FontString name="$parentText" text="sArena" inherits="GameFontHighlight">
-							<Anchors>
-								<Anchor point="CENTER"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnMouseDown>
-						if button == "LeftButton" and not sArena.isMoving then
-							sArena:StartMoving()
-							sArena.isMoving = true
-						end
-					</OnMouseDown>
-					<OnMouseUp>
-						if button == "LeftButton" and sArena.isMoving then
-							sArena:StopMovingOrSizing()
-							sArena.isMoving = false
-						end
-					</OnMouseUp>
-				</Scripts>
-			</Frame>
-			<Frame name="sArenaTrinket1" parent="ArenaEnemyFrame1" inherits="TrinketTemplate" id="1">
-				<Frames>
-					<Frame name="sArenaTrinketTitleBar" inherits="TitleTemplate">
-						<Size x="30" y="16"/>
-						<Anchors>
-							<Anchor point="BOTTOM" relativePoint="TOP"/>
-						</Anchors>
-						<Scripts>
-							<OnMouseDown function="sArena_Trinket_OnMouseDown"/>
-							<OnMouseUp function="sArena_Trinket_OnMouseUp"/>
-						</Scripts>
-					</Frame>
-				</Frames>
-			</Frame>
-			<Frame name="sArenaTrinket2" parent="ArenaEnemyFrame2" inherits="TrinketTemplate" id="2"/>
-			<Frame name="sArenaTrinket3" parent="ArenaEnemyFrame3" inherits="TrinketTemplate" id="3"/>
-			<Frame name="sArenaTrinket4" parent="ArenaEnemyFrame4" inherits="TrinketTemplate" id="4"/>
-			<Frame name="sArenaTrinket5" parent="ArenaEnemyFrame5" inherits="TrinketTemplate" id="5"/>
-		</Frames>
-		<Scripts>
-			<OnLoad>
-				self:RegisterEvent("VARIABLES_LOADED")
-				self:RegisterEvent("PLAYER_ENTERING_WORLD")
-			</OnLoad>
-			<OnEvent function="sArena_OnEvent"/>
-		</Scripts>
-	</Frame>
-	<Frame name="sArena_Options" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="sArenaSettingsTemplate" parent="InterfaceOptionsFramePanelContainer" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString name="$parentTitle" text="sArena" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
@@ -156,15 +87,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Lock")
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.Lock)
-						self.setFunc = function(setting)
-							sArenaDB.Lock = setting == "1" and true or false
-							sArena_Lock(sArenaDB.Lock)
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parent_TestMode" inherits="OptionsCheckButtonTemplate">
@@ -174,16 +97,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Test Mode")
-						self:RegisterEvent("VARIABLES_LOADED")
-						self:RegisterEvent("PLAYER_ENTERING_WORLD")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.TestMode)
-						self.setFunc = function(setting)
-							sArenaDB.TestMode = setting == "1" and true or false
-							sArena_TestMode(sArenaDB.TestMode)
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parent_GrowUpwards" inherits="OptionsCheckButtonTemplate">
@@ -193,15 +107,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Grow Upwards")
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.GrowUpwards)
-						self.setFunc = function(setting)
-							sArenaDB.GrowUpwards = setting == "1" and true or false
-							sArena_GrowUpwards(sArenaDB.GrowUpwards)
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
 			<Slider name="$parent_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="2.50" valueStep="0.05">
@@ -213,23 +119,11 @@
 						_G[self:GetName().."Text"]:SetText("Scale");
 						_G[self:GetName().."Low"]:SetText("Small");
 						_G[self:GetName().."High"]:SetText("Large");
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetValue(sArenaDB.Scale)
-						self.tooltipText = sArenaDB.Scale
-					</OnEvent>
-					<OnValueChanged>
-						sArenaDB.Scale = floor(self:GetValue()*100)/100
-						self:SetValue(sArenaDB.Scale)
-						self.tooltipText = sArenaDB.Scale
-						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
-						sArena:SetScale(sArenaDB.Scale)
-					</OnValueChanged>
 				</Scripts>
 			</Slider>
 			<Frame name="$parent_ClassColours_Box" inherits="OptionsBoxTemplate">
-				<Size x="276" y="94"/>
+				<Size x="276" y="92"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_General_Box" relativePoint="TOPRIGHT" x="14" y="0"/>
 				</Anchors>
@@ -246,14 +140,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Health Bar")
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.ClassColours.Health)
-						self.setFunc = function(setting)
-							sArenaDB.ClassColours.Health = setting == "1" and true or false
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parent_ClassColours_Name" inherits="OptionsCheckButtonTemplate">
@@ -263,14 +150,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Name")
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.ClassColours.Name)
-						self.setFunc = function(setting)
-							sArenaDB.ClassColours.Name = setting == "1" and true or false
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
 			<CheckButton name="$parent_ClassColours_Frame" inherits="OptionsCheckButtonTemplate">
@@ -280,17 +160,55 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Frame")
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.ClassColours.Frame)
-						self.setFunc = function(setting)
-							sArenaDB.ClassColours.Frame = setting == "1" and true or false
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
-			<Frame name="$parent_Trinket_Box" inherits="OptionsBoxTemplate">
+			<Frame name="$parent_AuraWatch_Box" inherits="OptionsBoxTemplate">
+				<Size x="276" y="130"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_ClassColours_Box" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Title"]:SetText("AuraWatch")
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<CheckButton name="$parent_AuraWatch" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_AuraWatch_Box" relativePoint="TOPLEFT" x="6" y="-6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Enable")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<Slider name="$parent_AuraWatch_FontSize" inherits="OptionsSliderTemplate" minValue="4" maxValue="24" valueStep="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_AuraWatch" relativePoint="BOTTOMLEFT" x="12" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Font Size");
+						_G[self:GetName().."Low"]:SetText("Small");
+						_G[self:GetName().."High"]:SetText("Large");
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_AuraWatch_Alpha" inherits="OptionsSliderTemplate" minValue="0" maxValue="1" valueStep="0.05">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_AuraWatch_FontSize" relativePoint="BOTTOMLEFT" x="0" y="-20"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Alpha");
+						_G[self:GetName().."Low"]:SetText("Transparent");
+						_G[self:GetName().."High"]:SetText("Opaque");
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Frame name="$parent_Trinkets_Box" inherits="OptionsBoxTemplate">
 				<Size x="300" y="130"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_General_Box" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
@@ -301,27 +219,19 @@
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<CheckButton name="$parent_Trinket" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parent_Trinkets" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent_Trinket_Box" relativePoint="TOPLEFT" x="6" y="-6"/>
+					<Anchor point="TOPLEFT" relativeTo="$parent_Trinkets_Box" relativePoint="TOPLEFT" x="6" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Enable")
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.Trinket.Enabled)
-						self.setFunc = function(setting)
-							sArenaDB.Trinket.Enabled = setting == "1" and true or false
-							sArena_Trinket_AlwaysShow()
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parent_Trinket_AlwaysShow" inherits="OptionsSmallCheckButtonTemplate">
+			<CheckButton name="$parent_Trinkets_AlwaysShow" inherits="OptionsSmallCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent_Trinket" relativePoint="BOTTOMLEFT" x="16" y="4"/>
+					<Anchor point="TOPLEFT" relativeTo="$parent_Trinkets" relativePoint="BOTTOMLEFT" x="16" y="4"/>
 				</Anchors>
 				<HitRectInsets>
 					<AbsInset left="0" right="-84" top="0" bottom="0"/>
@@ -329,73 +239,34 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Always Show")
-						self:RegisterEvent("VARIABLES_LOADED")
 						self.tooltipText = "Show trinket icons regardless of cooldown state"
 					</OnLoad>
-					<OnEvent>
-						self:SetChecked(sArenaDB.Trinket.AlwaysShow)
-						self.setFunc = function(setting)
-							sArenaDB.Trinket.AlwaysShow = setting == "1" and true or false
-							sArena_Trinket_AlwaysShow()
-						end
-					</OnEvent>
 				</Scripts>
 			</CheckButton>
-			<Slider name="$parent_Trinket_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="3.0" valueStep="0.05">
+			<Slider name="$parent_Trinkets_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="3.0" valueStep="0.05">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent_Trinket" relativePoint="RIGHT" x="100" y="-12"/>
+					<Anchor point="LEFT" relativeTo="$parent_Trinkets" relativePoint="RIGHT" x="100" y="-12"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Scale");
 						_G[self:GetName().."Low"]:SetText("Small");
 						_G[self:GetName().."High"]:SetText("Large");
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetValue(sArenaDB.Trinket.Scale)
-						self.tooltipText = sArenaDB.Trinket.Scale
-					</OnEvent>
-					<OnValueChanged>
-						sArenaDB.Trinket.Scale = floor(self:GetValue()*100)/100
-						self:SetValue(sArenaDB.Trinket.Scale)
-						self.tooltipText = sArenaDB.Trinket.Scale
-						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
-						for i = 1, MAX_ARENA_ENEMIES do
-							sArena["Trinket"..i]:SetScale(sArenaDB.Trinket.Scale)
-						end
-					</OnValueChanged>
 				</Scripts>
 			</Slider>
-			<Slider name="$parent_Trinket_FontSize" inherits="OptionsSliderTemplate" minValue="4" maxValue="24" valueStep="1">
+			<Slider name="$parent_Trinkets_FontSize" inherits="OptionsSliderTemplate" minValue="4" maxValue="24" valueStep="1">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent_Trinket" relativePoint="BOTTOMLEFT" x="12" y="-52"/>
+					<Anchor point="TOPLEFT" relativeTo="$parent_Trinkets" relativePoint="BOTTOMLEFT" x="12" y="-52"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Cooldown Font Size");
 						_G[self:GetName().."Low"]:SetText("Small");
 						_G[self:GetName().."High"]:SetText("Large");
-						self:RegisterEvent("VARIABLES_LOADED")
 					</OnLoad>
-					<OnEvent>
-						self:SetValue(sArenaDB.Trinket.CooldownFontSize)
-						self.tooltipText = sArenaDB.Trinket.CooldownFontSize
-					</OnEvent>
-					<OnValueChanged>
-						sArenaDB.Trinket.CooldownFontSize = self:GetValue()
-						self:SetValue(sArenaDB.Trinket.CooldownFontSize)
-						self.tooltipText = sArenaDB.Trinket.CooldownFontSize
-						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
-						for i = 1, MAX_ARENA_ENEMIES do
-							sArena["Trinket"..i.."Cooldown"]["Text"]:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinket.CooldownFontSize, "OUTLINE")
-						end
-					</OnValueChanged>
 				</Scripts>
 			</Slider>
 		</Frames>
-		<Scripts>
-			<OnLoad function="sArena_Options_OnLoad"/>
-		</Scripts>
 	</Frame>
 </Ui>

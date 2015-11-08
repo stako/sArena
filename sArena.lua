@@ -1,8 +1,11 @@
+local AddonName, sArena = ...
+
 -- Default Settings
-local DefaultSettings = {
-	Version = GetAddOnMetadata("sArena", "Version"),
+sArena.DefaultSettings = {
+	Version = GetAddOnMetadata(AddonName, "Version"),
 	Lock = false,
 	TestMode = false,
+	Position = {"RIGHT", "RIGHT", -150, 100},
 	Scale = 1,
 	GrowUpwards = false,
 	ClassColours = {
@@ -10,13 +13,33 @@ local DefaultSettings = {
 		Name = true,
 		Frame = false,
 	},
-	Trinket = {
-		Enabled = true,
-		CooldownFontSize = 7,
-		AlwaysShow = true,
-		Scale = 1,
-	},
 }
+
+sArena.Frame = CreateFrame("Frame", nil, UIParent)
+sArena.Frame:SetSize(200, 16)
+sArena.Frame:SetMovable(true)
+sArena.Frame:SetScript("OnEvent", function(self, event, ...) return sArena[event](sArena, ...) end)
+
+sArena.Frame.TitleBar = CreateFrame("Frame", nil, sArena.Frame, "sArenaDragBarTemplate")
+sArena.Frame.TitleBar:SetSize(200, 16)
+sArena.Frame.TitleBar:SetPoint("TOP")
+sArena.Frame.TitleBar:SetScript("OnMouseDown", function(self, button)
+	if button == "LeftButton" and not sArena.Frame.isMoving then
+		sArena.Frame:StartMoving()
+		sArena.Frame.isMoving = true
+	end
+end)
+sArena.Frame.TitleBar:SetScript("OnMouseUp", function(self, button)
+	if button == "LeftButton" and sArena.Frame.isMoving then
+		sArena.Frame:StopMovingOrSizing()
+		sArena.Frame.isMoving = false
+		sArenaDB.Position[1], _, sArenaDB.Position[2], sArenaDB.Position[3], sArenaDB.Position[4] = sArena.Frame:GetPoint()
+	end
+end)
+
+sArena.Frame.TitleBar.Text = sArena.Frame.TitleBar:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
+sArena.Frame.TitleBar.Text:SetText(AddonName)
+sArena.Frame.TitleBar.Text:SetPoint("CENTER")
 
 local function CombatLockdown()
 	if InCombatLockdown() then
@@ -25,31 +48,30 @@ local function CombatLockdown()
 	end
 end
 
-local function sArena_Settings()
-		-- Copy Default Settings into SavedVariables table if necessary (never used sArena or new version)
-		if ( not sArenaDB or sArenaDB.Version ~= DefaultSettings.Version ) then
-			sArenaDB = CopyTable(DefaultSettings)
+function sArena:ADDON_LOADED(arg1)
+	if arg1 == AddonName then
+		if not sArenaDB or sArenaDB.Version ~= sArena.DefaultSettings.Version then
+			sArenaDB = CopyTable(sArena.DefaultSettings)
 			print("First time using sArena? Type /sarena for options!")
 		end
+		
 		sArenaDB.TestMode = false
-end
-
-function sArena_OnEvent(self, event, ...)
-	if ( event == "VARIABLES_LOADED" ) then
-		sArena_Settings()
 		
-		self:SetScale(sArenaDB.Scale)
+		sArena.Trinkets:ADDON_LOADED()
+		sArena.AuraWatch:ADDON_LOADED()
+		sArena.Settings:ADDON_LOADED()
 		
-		sArena_Lock()
+		sArena.Frame:SetPoint(sArenaDB.Position[1], UIParent, sArenaDB.Position[2], sArenaDB.Position[3], sArenaDB.Position[4])
+		sArena.Frame:SetScale(sArenaDB.Scale)
 		
 		for i = 1, MAX_ARENA_ENEMIES do
 			local ArenaFrame = _G["ArenaEnemyFrame"..i]
 			local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
 			local PrepFrame = _G["ArenaPrepFrame"..i]
 			
-			ArenaFrame:SetParent(self)
-			ArenaPetFrame:SetParent(self)
-			PrepFrame:SetParent(self)
+			ArenaFrame:SetParent(self.Frame)
+			ArenaPetFrame:SetParent(self.Frame)
+			PrepFrame:SetParent(self.Frame)
 			
 			-- Improve positioning of class portraits
 			ArenaFrame.classPortrait:SetSize(26, 26)
@@ -60,59 +82,69 @@ function sArena_OnEvent(self, event, ...)
 			PrepFrame.classPortrait:SetPoint("TOPRIGHT", PrepFrame, -13, -6)
 		end
 		
-		sArena_GrowUpwards()
-	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
-		sArena_TestMode(false)
+		sArena:Lock()
+		sArena:GrowUpwards()
 	end
 end
+sArena.Frame:RegisterEvent("ADDON_LOADED")
 
-function sArena_Lock(setting)
+function sArena:PLAYER_ENTERING_WORLD()
+	sArena:TestMode(false)
+	sArena.Trinkets:PLAYER_ENTERING_WORLD()
+	sArena.AuraWatch:PLAYER_ENTERING_WORLD()
+end
+sArena.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+function sArena:Lock(setting)
 	if ( setting ) then sArenaDB.Lock = setting end
 	
+	sArena.Trinkets:Lock()
+	
 	if ( sArenaDB.Lock ) then
-		sArenaTitleBar:Hide()
-		sArenaTrinketTitleBar:Hide()
+		sArena.Frame.TitleBar:Hide()
 	else
-		sArenaTitleBar:Show()
-		sArenaTrinketTitleBar:Show()
+		sArena.Frame.TitleBar:Show()
 	end
 end
 
-function sArena_TestMode(setting)
-	if ( setting ~= nil ) then sArenaDB.TestMode = setting end
+function sArena:TestMode(setting)
+	if ( setting ~= nil ) then
+		sArenaDB.TestMode = setting
+		sArenaSettings_TestMode:SetChecked(sArenaDB.TestMode)
+	end
 	
 	local instanceType = select(2, IsInInstance())
 	local showArenaEnemyPets = (SHOW_ARENA_ENEMY_PETS == "1")
 	local _, class = UnitClass('player')
 	local _, _, _, specIcon = GetSpecializationInfo(GetSpecialization() or 1)
 	
-		for i = 1, MAX_ARENA_ENEMIES do
-			local ArenaFrame = _G["ArenaEnemyFrame"..i]
-			local TrinketCooldown = sArena["Trinket"..i.."Cooldown"]
-			if ( sArenaDB.TestMode ) then
-				ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
-				ArenaEnemyFrame_Unlock(ArenaFrame)
-				ArenaFrame.name:SetText("arena"..i)
-				ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
-				ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
-				ArenaFrame.specBorder:Show()
-				SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
-				if showArenaEnemyPets then
-					_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
-					_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
-				end
-				CooldownFrame_SetTimer(TrinketCooldown, GetTime(), 120, 1, true)
-			else
-				if ( not instanceType == "pvp" or "arena" ) then
-					ArenaFrame:Hide()
-					_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
-				end
-				CooldownFrame_SetTimer(TrinketCooldown, 0, 0, 0, true)
+	for i = 1, MAX_ARENA_ENEMIES do
+		local ArenaFrame = _G["ArenaEnemyFrame"..i]
+		if ( sArenaDB.TestMode ) then
+			ArenaEnemyFrame_SetMysteryPlayer(ArenaFrame)
+			ArenaEnemyFrame_Unlock(ArenaFrame)
+			ArenaFrame.name:SetText("arena"..i)
+			ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+			ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+			ArenaFrame.specBorder:Show()
+			SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
+			if showArenaEnemyPets then
+				_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
+				_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
+			end
+		else
+			if ( not instanceType == "pvp" or "arena" ) then
+				ArenaFrame:Hide()
+				_G["ArenaEnemyFrame"..i.."PetFrame"]:Hide()
 			end
 		end
+	end
+		
+	sArena.Trinkets:TestMode()
+	sArena.AuraWatch:TestMode()
 end
 
-function sArena_GrowUpwards(setting)
+function sArena:GrowUpwards(setting)
 	if ( CombatLockdown() ) then return end
 	if ( setting ~= nil ) then sArenaDB.GrowUpwards = setting end
 	
@@ -127,16 +159,16 @@ function sArena_GrowUpwards(setting)
 		
 		if ( sArenaDB.GrowUpwards ) then
 			if ( i == 1 ) then
-				ArenaFrame:SetPoint("BOTTOM", sArena, "TOP", 0, 20)
-				PrepFrame:SetPoint("BOTTOM", sArena, "TOP", 0, 20)
+				ArenaFrame:SetPoint("BOTTOM", sArena.Frame, "TOP", 0, 20)
+				PrepFrame:SetPoint("BOTTOM", sArena.Frame, "TOP", 0, 20)
 			else
 				ArenaFrame:SetPoint("BOTTOM", _G["ArenaEnemyFrame"..i-1], "TOP", 0, 20)
 				PrepFrame:SetPoint("BOTTOM", _G["ArenaPrepFrame"..i-1], "TOP", 0, 20)
 			end
 		else
 			if ( i == 1 ) then
-				ArenaFrame:SetPoint("TOP", sArena, "BOTTOM")
-				PrepFrame:SetPoint("TOP", sArena, "BOTTOM")
+				ArenaFrame:SetPoint("TOP", sArena.Frame, "BOTTOM")
+				PrepFrame:SetPoint("TOP", sArena.Frame, "BOTTOM")
 			else
 				ArenaFrame:SetPoint("TOP", _G["ArenaEnemyFrame"..i-1], "BOTTOM", 0, -20)
 				PrepFrame:SetPoint("TOP", _G["ArenaPrepFrame"..i-1], "BOTTOM", 0, -20)
@@ -153,112 +185,6 @@ function sArena_GrowUpwards(setting)
 	end
 end
 
-function sArena_Trinket_OnEvent(self, event, ...)
-	if ( event == "VARIABLES_LOADED" ) then
-		sArena_Settings()
-		
-		self:GetParent():SetScale(sArenaDB.Trinket.Scale)
-		
-		for _, region in next, {self:GetRegions()} do
-			if region:GetObjectType() == "FontString" then
-				self.Text = region
-			end
-		end
-		self.Text:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinket.CooldownFontSize, "OUTLINE")
-		self:GetParent():SetAlpha(sArenaDB.Trinket.AlwaysShow and 1 or 0)
-		if ( sArenaDB.Trinket.Point ) then
-			self:GetParent():ClearAllPoints()
-			self:GetParent():SetPoint(sArenaDB.Trinket.Point, self:GetParent():GetParent(), sArenaDB.Trinket.X, sArenaDB.Trinket.Y)
-		end
-		
-		hooksecurefunc(self, "SetCooldown", function() sArena_Trinket_AlwaysShow() end)
-	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
-		local instanceType = select(2, IsInInstance())
-		if ( sArenaDB.Trinket.Enabled and instanceType == "arena" ) then
-			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-		elseif ( self:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
-			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-		end
-		CooldownFrame_SetTimer(self, 0, 0, 0, true)
-		
-	elseif ( event == "UNIT_SPELLCAST_SUCCEEDED" ) then
-		local unitID, spell = ...
-		if ( unitID ~= "arena"..self:GetID() ) then return end
-		
-		if ( spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) )  then -- Trinket and EMFH
-			CooldownFrame_SetTimer(self, GetTime(), 120, 1, true)
-		elseif spell == GetSpellInfo(7744) then -- WOTF
-			-- When WOTF is used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
-			local remainingTime = 120000 - ((GetTime() * 1000) - self:GetCooldownTimes())
-			if remainingTime < 30000 then
-				CooldownFrame_SetTimer(self, GetTime(), 30, 1, true)
-			end
-		end
-	end
-end
-
-function sArena_Trinket_OnMouseDown(self, button)
-	if ( button == "LeftButton" and not self:GetParent().isMoving ) then
-		self:GetParent():StartMoving()
-		self:GetParent().isMoving = true
-	end
-end
-
-function sArena_Trinket_OnMouseUp(self, button)
-	if ( button == "LeftButton" and self:GetParent().isMoving ) then
-		self:GetParent():StopMovingOrSizing()
-		self:GetParent():SetUserPlaced(false)
-		self:GetParent().isMoving = false
-		
-		local sX, sY = self:GetParent():GetCenter()
-		local pX, pY = self:GetParent():GetParent():GetCenter()
-		local scale = self:GetParent():GetScale()
-		sX, sY = floor(sX * scale), floor(sY * scale)
-		pX, pY = floor(pX), floor(pY)
-		sX, sY = floor((pX-sX)*(-1)), floor((pY-sY)*(-1))
-		
-		for i = 1, MAX_ARENA_ENEMIES do
-			local Trinket = sArena["Trinket"..i]
-			
-			Trinket:ClearAllPoints()
-			Trinket:SetPoint("CENTER", Trinket:GetParent(), sX/scale, sY/scale)
-		end
-		
-		sArenaDB.Trinket.Point, _, _, sArenaDB.Trinket.X, sArenaDB.Trinket.Y = self:GetParent():GetPoint()
-	end
-end
-
-function sArena_Trinket_OnShow(self)
-	if not sArenaDB.Trinket.AlwaysShow then
-		self:GetParent():SetAlpha(1)
-	end
-end
-
-function sArena_Trinket_OnHide(self)
-	if not sArenaDB.Trinket.AlwaysShow then
-		self:GetParent():SetAlpha(0)
-	end
-end
-
-function sArena_Trinket_AlwaysShow(setting)
-	if ( setting ~= nil ) then sArenaDB.Trinket.AlwaysShow = setting end
-	for i = 1, MAX_ARENA_ENEMIES do
-		local Trinket = sArena["Trinket"..i]
-		local TrinketCooldown = sArena["Trinket"..i.."Cooldown"]
-		
-		local alpha = 0
-		if ( sArenaDB.Trinket.AlwaysShow ) then
-			if ( sArenaDB.Trinket.Enabled ) then
-				alpha = 1
-			end
-		elseif ( sArenaDB.Trinket.Enabled and TrinketCooldown:IsShown() ) then
-			alpha = 1
-		end
-		
-		Trinket:SetAlpha(alpha)
-	end
-end
-
 local HealthBars = {
 	ArenaEnemyFrame1HealthBar = 1,
 	ArenaEnemyFrame2HealthBar = 1,
@@ -267,13 +193,13 @@ local HealthBars = {
 	ArenaEnemyFrame5HealthBar = 1
 }
 
-local function sArena_ClassColours(self)
+function sArena:ClassColours(self)
 	if HealthBars[self:GetName()] then
 		local texture = _G[self:GetParent():GetName() .. "Texture"]
 		local petTexture = _G[self:GetParent():GetName() .. "PetFrameTexture"]
 		local specBorder = _G[self:GetParent():GetName() .. "SpecBorder"]
 		local name = _G[self:GetParent():GetName() .. "Name"]
-		local dead = UnitIsDead(self.unit)
+		local dead = ( UnitIsDead(self.unit) and not UnitAura(self.unit, "Feign Death") )
 		
 		texture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
 		petTexture:SetVertexColor(PlayerFrameTexture:GetVertexColor())
@@ -291,21 +217,5 @@ local function sArena_ClassColours(self)
 		if sArenaDB.ClassColours.Name and not dead then name:SetTextColor(c.r, c.g, c.b, 1) end
 	end
 end
-hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena_ClassColours(self) end)
-hooksecurefunc("UnitFrameHealthBar_Update", function(self) sArena_ClassColours(self) end)
-
-function sArena_Options_OnLoad(self)
-	self.name = "sArena"
-	InterfaceOptions_AddCategory(self)
-	SLASH_sArena1 = "/sarena"
-	SlashCmdList["sArena"] = function(msg, editbox)
-	if msg == '' then
-		InterfaceOptionsFrame_OpenToCategory(sArena_Options)
-		InterfaceOptionsFrame_OpenToCategory(sArena_Options)
-	--[[elseif msg == 'test2' then sArena:Test(2)
-	elseif msg == 'test3' then sArena:Test(3)
-	elseif msg == 'test5' then sArena:Test(5)
-	elseif msg == 'clear' then sArena:HideArenaEnemyFrames()]]
-	end
-end
-end
+hooksecurefunc("HealthBar_OnValueChanged", function(self) sArena:ClassColours(self) end)
+hooksecurefunc("UnitFrameHealthBar_Update", function(self) sArena:ClassColours(self) end)

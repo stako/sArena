@@ -8,3 +8,8 @@
 ## SavedVariables: sArenaDB
 
 sArena.xml
+settings.lua
+trinkets.lua
+aurawatch.lua
+aurawatchspells.lua
+sArena.lua
