@@ -80,6 +80,8 @@ function sArena.AuraWatch:UNIT_AURA(unitID)
 					filter = "HARMFUL"
 				end
 			end
+			
+			if ( buff == nil and debuff == nil ) then break end
 		end
 		
 		-- If an aura is found, set spell texture and cooldown, else set class portrait

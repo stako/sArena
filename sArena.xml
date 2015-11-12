@@ -58,6 +58,22 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	<StatusBar name="sArenaCastingBarTemplate" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" file="Interface\Icons\Spell_Nature_Polymorph">
+				</Texture>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<BarColor r="1.0" g="0.7" b="0.0"/>
+		<Scripts>
+			<OnLoad>
+				self:SetMinMaxValues(0, 100)
+				self:SetValue(100)
+			</OnLoad>
+		</Scripts>
+	</StatusBar>
 	<Frame name="sArenaSettingsTemplate" parent="InterfaceOptionsFramePanelContainer" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
@@ -70,7 +86,7 @@
 		</Layers>
 		<Frames>
 			<Frame name="$parent_General_Box" inherits="OptionsBoxTemplate">
-				<Size x="300" y="92"/>
+				<Size x="325" y="112"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-28"/>
 				</Anchors>
@@ -112,7 +128,7 @@
 			</CheckButton>
 			<Slider name="$parent_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="2.50" valueStep="0.05">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent_Lock" relativePoint="RIGHT" x="100" y="-12"/>
+					<Anchor point="TOPRIGHT" relativeTo="$parent_General_Box" relativePoint="TOPRIGHT" x="-25" y="-25"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -122,8 +138,20 @@
 					</OnLoad>
 				</Scripts>
 			</Slider>
+			<Slider name="$parent_CastingBar_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="2.50" valueStep="0.05">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_Scale" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Casting Bar Scale");
+						_G[self:GetName().."Low"]:SetText("Small");
+						_G[self:GetName().."High"]:SetText("Large");
+					</OnLoad>
+				</Scripts>
+			</Slider>
 			<Frame name="$parent_ClassColours_Box" inherits="OptionsBoxTemplate">
-				<Size x="276" y="92"/>
+				<Size x="251" y="92"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_General_Box" relativePoint="TOPRIGHT" x="14" y="0"/>
 				</Anchors>
@@ -164,7 +192,7 @@
 				</Scripts>
 			</CheckButton>
 			<Frame name="$parent_AuraWatch_Box" inherits="OptionsBoxTemplate">
-				<Size x="276" y="130"/>
+				<Size x="251" y="130"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_ClassColours_Box" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
 				</Anchors>
@@ -209,7 +237,7 @@
 				</Scripts>
 			</Slider>
 			<Frame name="$parent_Trinkets_Box" inherits="OptionsBoxTemplate">
-				<Size x="300" y="130"/>
+				<Size x="325" y="110"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_General_Box" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
 				</Anchors>
@@ -245,7 +273,7 @@
 			</CheckButton>
 			<Slider name="$parent_Trinkets_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="3.0" valueStep="0.05">
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parent_Trinkets" relativePoint="RIGHT" x="100" y="-12"/>
+					<Anchor point="TOPRIGHT" relativeTo="$parent_Trinkets_Box" relativePoint="TOPRIGHT" x="-25" y="-25"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
@@ -257,7 +285,7 @@
 			</Slider>
 			<Slider name="$parent_Trinkets_FontSize" inherits="OptionsSliderTemplate" minValue="4" maxValue="24" valueStep="1">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent_Trinkets" relativePoint="BOTTOMLEFT" x="12" y="-52"/>
+					<Anchor point="TOPLEFT" relativeTo="$parent_Trinkets_Scale" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
