@@ -64,6 +64,28 @@ sArena.AuraWatch.Spells = {
 	139275,	-- Storm Bolt
 	20549,	-- War Stomp
 	137460,	-- Ring of Peace Incapacitate
+	
+	-- Roots
+	122, 	-- Frost Nova
+	33395, 	-- Freeze
+	339, 	-- Entangling Roots
+	113770, -- Entangling Roots
+	170855, -- Entangling Roots (Nature's Grasp)
+	53148, 	-- Charge (Hunter)
+	105771, -- Charge (Warrior)
+	63685, 	-- Frozen Power
+	64695,	-- Earthgrab Totem
+	87194,	-- Glyph of Mind Blast
+	96294, 	-- Chains of Ice
+	102359, -- Mass Entanglement
+	111340, -- Ice Ward
+	114404, -- Void Tendrils
+	116706, -- Disable
+	135373, -- Entrapment
+	136634, -- Narrow Escape
+	55536, 	-- Frostweave Net
+	157997,	-- Ice Nova
+	45334,	-- Wild Charge
 
 	-- Immune
 	33786,	-- Cyclone
@@ -87,6 +109,7 @@ sArena.AuraWatch.Spells = {
 	48707,	-- Anti-Magic Shell
 	23920,	-- Spell Reflection
 	114028,	-- Mass Spell Reflection
+	5384,	-- Feign Death
 
 	-- Silence
 	47476,	-- Strangulate

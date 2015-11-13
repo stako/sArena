@@ -7,12 +7,12 @@ function sArena.Settings:ADDON_LOADED()
 	InterfaceOptions_AddCategory(sArena.Settings)
 	SLASH_sArena1 = "/sarena"
 	SlashCmdList["sArena"] = function(msg, editbox)
-		if msg == '' then
+		if ( msg == '' ) then
 			InterfaceOptionsFrame_OpenToCategory(sArena.Settings)
 			InterfaceOptionsFrame_OpenToCategory(sArena.Settings)
-		elseif msg == 'test' then sArena:TestMode(not sArenaDB.TestMode)
-		elseif msg == 'clear' then sArena:TestMode(false) sArenaSettings_TestMode:SetChecked(sArenaDB.TestMode)
-		elseif msg == 'lock' then sArena:Lock(not sArenaDB.Lock)
+		elseif ( msg == 'test' ) then sArena:TestMode(not sArenaDB.TestMode)
+		elseif ( msg == 'clear' ) then sArena:TestMode(false) sArenaSettings_TestMode:SetChecked(sArenaDB.TestMode)
+		elseif ( msg == 'lock' ) then sArena:Lock(not sArenaDB.Lock)
 		end
 	end
 	
@@ -56,22 +56,35 @@ function sArena.Settings:ADDON_LOADED()
 		end
 	end)
 	
+	sArenaSettings_SpecIcon_Scale:SetValue(sArenaDB.SpecIconScale or 1)
+	sArenaSettings_SpecIcon_Scale.tooltipText = sArenaDB.SpecIconScale or 1
+	sArenaSettings_SpecIcon_Scale:SetScript("OnValueChanged", function(self)
+		sArenaDB.SpecIconScale = floor(self:GetValue()*100+0.5)/100
+		self:SetValue(sArenaDB.SpecIconScale)
+		self.tooltipText = sArenaDB.SpecIconScale
+		GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
+		for i = 1, MAX_ARENA_ENEMIES do
+			sArena.SpecIcons["arena"..i]:SetScale(sArenaDB.SpecIconScale)
+			sArena.SpecIcons["prep"..i]:SetScale(sArenaDB.SpecIconScale)
+		end
+	end)
+	
 	sArenaSettings_ClassColours_Health:SetChecked(sArenaDB.ClassColours.Health)
 	sArenaSettings_ClassColours_Health.setFunc = function(setting)
 		sArenaDB.ClassColours.Health = setting == "1" and true or false
-		if sArenaDB.TestMode then sArena:TestMode() end
+		if ( sArenaDB.TestMode ) then sArena:TestMode() end
 	end
 	
 	sArenaSettings_ClassColours_Name:SetChecked(sArenaDB.ClassColours.Name)
 	sArenaSettings_ClassColours_Name.setFunc = function(setting)
 		sArenaDB.ClassColours.Name = setting == "1" and true or false
-		if sArenaDB.TestMode then sArena:TestMode() end
+		if ( sArenaDB.TestMode ) then sArena:TestMode() end
 	end
 	
 	sArenaSettings_ClassColours_Frame:SetChecked(sArenaDB.ClassColours.Frame)
 	sArenaSettings_ClassColours_Frame.setFunc = function(setting)
 		sArenaDB.ClassColours.Frame = setting == "1" and true or false
-		if sArenaDB.TestMode then sArena:TestMode() end
+		if ( sArenaDB.TestMode ) then sArena:TestMode() end
 	end
 	
 	sArenaSettings_AuraWatch:SetChecked(sArenaDB.AuraWatch.Enabled)

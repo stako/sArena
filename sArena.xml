@@ -1,5 +1,11 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
+	<Frame name="sArenaSpecIconTemplate" movable="true" clampedToScreen="true" virtual="true">
+		<Size x="1" y="1"/>
+		<Anchors>
+			<Anchor point="CENTER" relativePoint="CENTER" x="43" y="-12"/>
+		</Anchors>
+	</Frame>
 	<Frame name="sArenaTrinketTemplate" movable="true" clampedToScreen="true" virtual="true">
 		<Size x="18" y="18"/>
 		<Anchors>
@@ -86,7 +92,7 @@
 		</Layers>
 		<Frames>
 			<Frame name="$parent_General_Box" inherits="OptionsBoxTemplate">
-				<Size x="325" y="112"/>
+				<Size x="325" y="150"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-28"/>
 				</Anchors>
@@ -145,6 +151,18 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Casting Bar Scale");
+						_G[self:GetName().."Low"]:SetText("Small");
+						_G[self:GetName().."High"]:SetText("Large");
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_SpecIcon_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="2.50" valueStep="0.05">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_CastingBar_Scale" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Spec Icon Scale");
 						_G[self:GetName().."Low"]:SetText("Small");
 						_G[self:GetName().."High"]:SetText("Large");
 					</OnLoad>
