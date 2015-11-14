@@ -166,4 +166,8 @@ sArena.AuraWatch.Spells = {
 	111397,	-- Blood Horror
 	108416,	-- Sacrificial Pact
 	55694	-- Enraged Regeneration
+	
+	-- Other Stuff
+	770,	-- Faerie Fire
+	102355,	-- Faerie Swarm
 }
