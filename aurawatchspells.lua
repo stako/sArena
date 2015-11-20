@@ -165,7 +165,7 @@ sArena.AuraWatch.Spells = {
 	108271,	-- Astral Shift
 	111397,	-- Blood Horror
 	108416,	-- Sacrificial Pact
-	55694	-- Enraged Regeneration
+	55694,	-- Enraged Regeneration
 	
 	-- Other Stuff
 	770,	-- Faerie Fire

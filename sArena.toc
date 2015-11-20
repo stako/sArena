@@ -12,4 +12,5 @@ settings.lua
 trinkets.lua
 aurawatch.lua
 aurawatchspells.lua
+drtracker.lua
 sArena.lua

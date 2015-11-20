@@ -62,6 +62,7 @@ function sArena:ADDON_LOADED(arg1)
 		
 		sArena.Trinkets:ADDON_LOADED()
 		sArena.AuraWatch:ADDON_LOADED()
+		sArena.DRTracker:ADDON_LOADED()
 		sArena.Settings:ADDON_LOADED()
 		
 		sArena.Frame:SetPoint(sArenaDB.Position[1], UIParent, sArenaDB.Position[2], sArenaDB.Position[3], sArenaDB.Position[4])
