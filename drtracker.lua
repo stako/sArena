@@ -8,6 +8,8 @@ sArena.DRTracker.DefaultSettings = {
 	Enabled = true,
 	CooldownFontSize = 7,
 	Scale = 1,
+	Position = { -70, 20 },
+	GrowRight = false,
 }
 
 local Severity = {
@@ -40,10 +42,34 @@ function sArena.DRTracker:ADDON_LOADED()
 		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Disorient")
 		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Stun")
 		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Root")
-		--sArena.DRTracker:CreateIcon(ArenaFrame, i, "Knockback")
+		--sArena.DRTracker:CreateIcon(ArenaFrame, i, "Knockback")		
 	end
 	
-	sArena.DRTracker:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	sArena.DRTracker.TitleBar = CreateFrame("Frame", nil, sArena.DRTracker["arena1"]["Incapacitate"], "sArenaDragBarTemplate")
+	sArena.DRTracker.TitleBar:SetSize(24, 16)
+	sArena.DRTracker.TitleBar:SetPoint("BOTTOM", sArena.DRTracker["arena1"]["Incapacitate"], "TOP")
+	
+	sArena.DRTracker.TitleBar:SetScript("OnMouseDown", function(self, button)
+		if ( button == "LeftButton" and not self:GetParent().isMoving ) then
+			self:GetParent():StartMoving()
+			self:GetParent().isMoving = true
+		end
+	end)
+	
+	sArena.DRTracker.TitleBar:SetScript("OnMouseUp", function(self, button)
+		if ( button == "LeftButton" and self:GetParent().isMoving ) then
+			self:GetParent():StopMovingOrSizing()
+			self:GetParent():SetUserPlaced(false)
+			self:GetParent().isMoving = false
+			
+			sArenaDB.DRTracker.Position[1], sArenaDB.DRTracker.Position[2] = sArena:CalcPoint(self:GetParent())
+			
+			for i = 1, MAX_ARENA_ENEMIES do
+				sArena.DRTracker:Positioning("arena"..i)
+			end
+		end
+	end)
+
 end
 
 function sArena.DRTracker:CreateIcon(ArenaFrame, id, category)
@@ -75,6 +101,16 @@ function sArena.DRTracker:CreateIcon(ArenaFrame, id, category)
 	end)
 end
 
+function sArena.DRTracker:PLAYER_ENTERING_WORLD()
+	local instanceType = select(2, IsInInstance())
+	
+	if ( sArenaDB.DRTracker.Enabled and instanceType == "arena" ) then
+		sArena.DRTracker:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	elseif ( sArena.DRTracker:IsEventRegistered("COMBAT_LOG_EVENT_UNFILTERED") ) then
+		sArena.DRTracker:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	end
+end
+
 function sArena.DRTracker:COMBAT_LOG_EVENT_UNFILTERED(_, eventType, _, _, _, _, _, destGUID, _, _, _, spellID, spellName, _, auraType)
 	if ( auraType == "DEBUFF" ) then
 		if ( eventType == "SPELL_AURA_REMOVED" or eventType == "SPELL_AURA_BROKEN" ) then
@@ -90,7 +126,12 @@ function sArena.DRTracker:Positioning(id)
 	
 	for _,v in ipairs(Categories) do
 		if ( sArena.DRTracker[id][v]:GetAlpha() == 1 ) then
-			sArena.DRTracker[id][v]:SetPoint("BOTTOMRIGHT", sArena.DRTracker[id][v]:GetParent(), "TOPLEFT", -24 * Active, 0)
+			sArena.DRTracker[id][v]:ClearAllPoints()
+			if ( Active == 0 ) then
+				sArena.DRTracker[id][v]:SetPoint("CENTER", sArena.DRTracker[id][v]:GetParent(), "CENTER", sArenaDB.DRTracker.Position[1], sArenaDB.DRTracker.Position[2])
+			else
+				sArena.DRTracker[id][v]:SetPoint("CENTER", sArena.DRTracker[id][v]:GetParent(), "CENTER", sArenaDB.DRTracker.Position[1] + (Active * (sArenaDB.DRTracker.GrowRight and 24 or -24)), sArenaDB.DRTracker.Position[2])
+			end
 			Active = Active + 1
 		end
 	end
@@ -111,18 +152,41 @@ function sArena.DRTracker:TimerStart(GUID, spellID, spellName, applied)
 	if ( not unitID ) then return end
 	
 	local duration = select(6, UnitDebuff(unitID, spellName))
-	CooldownFrame_SetTimer(sArena.DRTracker[unitID][category].Cooldown, GetTime(), applied and 18.5+duration or 18.5, 1)
+	CooldownFrame_SetTimer(sArena.DRTracker[unitID][category].Cooldown, GetTime(), applied and 18.5+duration or 18.5, 1, true)
+	
+	if ( not applied ) then return end
 	
 	local icon = select(3, GetSpellInfo(spellID))
 	sArena.DRTracker[unitID][category].Icon:SetTexture(icon)
-	
-	if ( not applied ) then return end
 	
 	sArena.DRTracker[unitID][category].Border:SetVertexColor(unpack(Severity[sArena.DRTracker[unitID][category].Severity]))
 	
 	sArena.DRTracker[unitID][category].Severity = sArena.DRTracker[unitID][category].Severity + 1
 	if ( sArena.DRTracker[unitID][category].Severity > 3) then
 		sArena.DRTracker[unitID][category].Severity = 3
+	end
+end
+
+function sArena.DRTracker:TestMode()
+	for i = 1, MAX_ARENA_ENEMIES do
+		local unitID = "arena"..i
+		for _,v in ipairs(Categories) do
+			if ( sArenaDB.TestMode and sArenaDB.DRTracker.Enabled ) then
+				CooldownFrame_SetTimer(sArena.DRTracker[unitID][v].Cooldown, GetTime(), 18.5, 1, true)
+				sArena.DRTracker[unitID][v].Icon:SetTexture("Interface\\Icons\\Spell_Nature_Polymorph")
+			else
+				CooldownFrame_SetTimer(sArena.DRTracker[unitID][v].Cooldown, 0, 0, 0, true)
+			end
+		end
+	end
+end
+
+function sArena.DRTracker:SetScale(scale)
+	for i = 1, MAX_ARENA_ENEMIES do
+		local unitID = "arena"..i
+		for _,v in ipairs(Categories) do
+				sArena.DRTracker[unitID][v]:SetScale(scale)
+		end
 	end
 end
 

@@ -104,6 +104,7 @@ function sArena:PLAYER_ENTERING_WORLD()
 	sArena:TestMode(false)
 	sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	sArena.AuraWatch:PLAYER_ENTERING_WORLD()
+	sArena.DRTracker:PLAYER_ENTERING_WORLD()
 end
 sArena.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -119,11 +120,13 @@ function sArena:Lock(setting)
 		sArena.Frame.TitleBar:Hide()
 		sArena.CastingBar.TitleBar:Hide()
 		sArena.SpecIcons.TitleBar:Hide()
+		sArena.DRTracker.TitleBar:Hide()
 		
 	else
 		sArena.Frame.TitleBar:Show()
 		sArena.CastingBar.TitleBar:Show()
 		sArena.SpecIcons.TitleBar:Show()
+		sArena.DRTracker.TitleBar:Show()
 	end
 end
 
@@ -192,6 +195,7 @@ function sArena:TestMode(setting)
 		
 	sArena.Trinkets:TestMode()
 	sArena.AuraWatch:TestMode()
+	sArena.DRTracker:TestMode()
 end
 
 function sArena:GrowUpwards(setting)

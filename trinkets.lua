@@ -78,7 +78,7 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	
 	if ( sArenaDB.Trinkets.Enabled and instanceType == "arena" ) then
 		sArena.Trinkets:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	elseif ( sArena.Frame:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
+	elseif ( sArena.Trinkets:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
 		sArena.Trinkets:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	end
 end

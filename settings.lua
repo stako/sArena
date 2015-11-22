@@ -153,4 +153,29 @@ function sArena.Settings:ADDON_LOADED()
 			sArena.Trinkets["arena"..i].Cooldown.Text:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinkets.CooldownFontSize, "OUTLINE")
 		end
 	end)
+	
+	sArenaSettings_DRTracker_Enable:SetChecked(sArenaDB.DRTracker.Enabled)
+	sArenaSettings_DRTracker_Enable.setFunc = function(setting)
+		sArenaDB.DRTracker.Enabled = setting == "1" and true or false
+		sArena.DRTracker:PLAYER_ENTERING_WORLD()
+		sArena.DRTracker:TestMode()
+	end
+	
+	sArenaSettings_DRTracker_GrowRight:SetChecked(sArenaDB.DRTracker.GrowRight)
+	sArenaSettings_DRTracker_GrowRight.setFunc = function(setting)
+		sArenaDB.DRTracker.GrowRight = setting == "1" and true or false
+		for i = 1, MAX_ARENA_ENEMIES do
+			sArena.DRTracker:Positioning("arena"..i)
+		end
+	end
+	
+	sArenaSettings_DRTracker_Scale:SetValue(sArenaDB.DRTracker.Scale)
+	sArenaSettings_DRTracker_Scale.tooltipText = sArenaDB.DRTracker.Scale
+	sArenaSettings_DRTracker_Scale:SetScript("OnValueChanged", function(self)
+		sArenaDB.DRTracker.Scale = floor(self:GetValue()*100+0.5)/100
+		self:SetValue(sArenaDB.DRTracker.Scale)
+		self.tooltipText = sArenaDB.DRTracker.Scale
+		GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
+		sArena.DRTracker:SetScale(sArenaDB.DRTracker.Scale)
+	end)
 end

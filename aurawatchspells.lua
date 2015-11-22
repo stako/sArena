@@ -3,7 +3,8 @@ local AddonName, sArena = ...
 sArena.AuraWatch.Spells = {
 	-- Higher up = higher display priority
 
-	-- CCs    
+	-- CCs
+	33786,	-- Cyclone
 	108194,	-- Asphyxiate
 	115001,	-- Remorseless Winter Stun
 	91800,	-- Gnaw
@@ -88,7 +89,6 @@ sArena.AuraWatch.Spells = {
 	45334,	-- Wild Charge
 
 	-- Immune
-	33786,	-- Cyclone
 	19263,	-- Deterrence
 	45438,	-- Ice Block
 	642,	-- Divine Shield    

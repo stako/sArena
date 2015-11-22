@@ -61,6 +61,9 @@
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate">
 				<Scripts>
 					<OnLoad>
+						self:ClearAllPoints()
+						self:SetPoint("TOPLEFT", self:GetParent(), 1, -1)
+						self:SetPoint("BOTTOMRIGHT", self:GetParent(), -1, 1)
 						self:SetDrawBling(false)
 						self:SetSwipeColor(0,0,0,0.5)
 					</OnLoad>
@@ -341,6 +344,49 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Cooldown Font Size");
+						_G[self:GetName().."Low"]:SetText("Small");
+						_G[self:GetName().."High"]:SetText("Large");
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Frame name="$parent_DRTracker_Box" inherits="OptionsBoxTemplate">
+				<Size x="251" y="112"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_AuraWatch_Box" relativePoint="BOTTOMLEFT" x="0" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Title"]:SetText("DR Tracker")
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<CheckButton name="$parent_DRTracker_Enable" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_DRTracker_Box" relativePoint="TOPLEFT" x="6" y="-6"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Enable")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_DRTracker_GrowRight" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_DRTracker_Enable" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Grow Right")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<Slider name="$parent_DRTracker_Scale" inherits="OptionsSliderTemplate" minValue="0.50" maxValue="3.0" valueStep="0.05">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_DRTracker_GrowRight" relativePoint="BOTTOMLEFT" x="12" y="-16"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Scale");
 						_G[self:GetName().."Low"]:SetText("Small");
 						_G[self:GetName().."High"]:SetText("Large");
 					</OnLoad>
