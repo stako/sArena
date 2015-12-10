@@ -12,6 +12,8 @@ sArena.DRTracker.DefaultSettings = {
 	GrowRight = false,
 }
 
+local DRTime = 18.5
+
 local Severity = {
 	[1] = { 0, 1, 0, 1},
 	[2] = { 1, 1, 0, 1},
@@ -152,7 +154,18 @@ function sArena.DRTracker:TimerStart(GUID, spellID, spellName, applied)
 	if ( not unitID ) then return end
 	
 	local duration = select(6, UnitDebuff(unitID, spellName))
-	CooldownFrame_SetTimer(sArena.DRTracker[unitID][category].Cooldown, GetTime(), applied and 18.5+duration or 18.5, 1, true)
+	--CooldownFrame_SetTimer(sArena.DRTracker[unitID][category].Cooldown, GetTime(), applied and DRTime+duration or DRTime, 1, true)
+	if ( applied ) then
+		sArena.DRTracker[unitID][category].fTime = GetTime() + DRTime + duration
+		sArena.DRTracker[unitID][category].fDuration = DRTime + duration
+		CooldownFrame_SetTimer(sArena.DRTracker[unitID][category].Cooldown, GetTime(), DRTime+duration, 1, true)
+	else
+		local rDuration = sArena.DRTracker[unitID][category].fTime - GetTime()
+		local fraction =  rDuration / sArena.DRTracker[unitID][category].fDuration
+		local fDuration = rDuration / fraction
+		local sTime = GetTime() + DRTime - fDuration
+		CooldownFrame_SetTimer(sArena.DRTracker[unitID][category].Cooldown, sTime, fDuration, 1, true)
+	end
 	
 	if ( not applied ) then return end
 	
@@ -172,7 +185,7 @@ function sArena.DRTracker:TestMode()
 		local unitID = "arena"..i
 		for _,v in ipairs(Categories) do
 			if ( sArenaDB.TestMode and sArenaDB.DRTracker.Enabled ) then
-				CooldownFrame_SetTimer(sArena.DRTracker[unitID][v].Cooldown, GetTime(), 18.5, 1, true)
+				CooldownFrame_SetTimer(sArena.DRTracker[unitID][v].Cooldown, GetTime(), DRTime, 1, true)
 				sArena.DRTracker[unitID][v].Icon:SetTexture("Interface\\Icons\\Spell_Nature_Polymorph")
 			else
 				CooldownFrame_SetTimer(sArena.DRTracker[unitID][v].Cooldown, 0, 0, 0, true)

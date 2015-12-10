@@ -40,8 +40,6 @@ function sArena.Trinkets:ADDON_LOADED()
 		
 		sArena.Trinkets["arena"..i].Cooldown:SetScript("OnShow", function(self) if not sArenaDB.Trinkets.AlwaysShow then self:GetParent():SetAlpha(1) end end)
 		sArena.Trinkets["arena"..i].Cooldown:SetScript("OnHide", function(self) if not sArenaDB.Trinkets.AlwaysShow then self:GetParent():SetAlpha(0) end end)
-		
-		hooksecurefunc(sArena.Trinkets["arena"..i].Cooldown, "SetCooldown", function() sArena.Trinkets:AlwaysShow() end)
 	end
 	
 	sArena.Trinkets.TitleBar = CreateFrame("Frame", nil, sArena.Trinkets["arena1"], "sArenaDragBarTemplate")

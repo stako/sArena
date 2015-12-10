@@ -96,6 +96,25 @@ function sArena:ADDON_LOADED(arg1)
 		
 		sArena:Lock()
 		sArena:GrowUpwards()
+		
+		-- Trying to fix incorrect classes/specs showing during prep
+		hooksecurefunc("UpdatePrepFrames", function()
+			local numOpps = GetNumArenaOpponentSpecs();
+			for i=1, MAX_ARENA_ENEMIES do
+				local arenaFrame = _G["ArenaEnemyFrame"..i];
+				if (i <= numOpps) then 
+					local specID, gender = GetArenaOpponentSpec(i);
+					if (specID > 0) then 
+						local _, _, _, specIcon, _, _, class = GetSpecializationInfoByID(specID, gender);
+						if( class ) then
+							arenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles");
+							arenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[strupper(class)]));
+						end
+						SetPortraitToTexture(arenaFrame.specPortrait, specIcon);
+					end
+				end
+			end
+		end)
 	end
 end
 sArena.Frame:RegisterEvent("ADDON_LOADED")

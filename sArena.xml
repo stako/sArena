@@ -21,7 +21,6 @@
 				<Scripts>
 					<OnLoad>
 						self:SetDrawBling(false)
-						self:SetID(self:GetParent():GetParent():GetID())
 					</OnLoad>
 				</Scripts>
 			</Cooldown>
@@ -46,7 +45,6 @@
 		<Scripts>
 		 <OnLoad>
 			SetPortraitToTexture(_G[self:GetName() .. "Icon"], UnitFactionGroup('player') == "Horde" and "Interface\\Icons\\inv_jewelry_trinketpvp_02" or "Interface\\Icons\\inv_jewelry_trinketpvp_01")
-			--sArena["Trinket"..self:GetID()] = self
 		 </OnLoad>
 		</Scripts>
 	</Frame>
