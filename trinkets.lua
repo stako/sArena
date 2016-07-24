@@ -85,12 +85,12 @@ function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
 	if not sArena.Trinkets[unitID] then return end
 	
 	if ( spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) )  then -- Trinket and EMFH
-		CooldownFrame_SetTimer(sArena.Trinkets[unitID].Cooldown, GetTime(), 120, 1, true)
+		CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 120, 1, true)
 	elseif ( spell == GetSpellInfo(7744) ) then -- WOTF
 		-- When WOTF is used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
 		local remainingTime = 120000 - ((GetTime() * 1000) - sArena.Trinkets[unitID].Cooldown:GetCooldownTimes())
 		if remainingTime < 30000 then
-			CooldownFrame_SetTimer(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
+			CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
 		end
 	end
 end
@@ -106,9 +106,9 @@ end
 function sArena.Trinkets:TestMode()
 	for i = 1, MAX_ARENA_ENEMIES do
 		if ( sArenaDB.TestMode ) then
-			CooldownFrame_SetTimer(sArena.Trinkets["arena"..i].Cooldown, GetTime(), 120, 1, true)
+			CooldownFrame_Set(sArena.Trinkets["arena"..i].Cooldown, GetTime(), 120, 1, true)
 		else
-			CooldownFrame_SetTimer(sArena.Trinkets["arena"..i].Cooldown, 0, 0, 0, true)
+			CooldownFrame_Set(sArena.Trinkets["arena"..i].Cooldown, 0, 0, 0, true)
 		end
 	end
 end

@@ -2,7 +2,7 @@ local AddonName, sArena = ...
 
 -- Default Settings
 sArena.DefaultSettings = {
-	Version = "1.2.1", -- Last version of sArena in which the settings table changed
+	Version = "1.2.3", -- Last version of sArena in which the settings table changed
 	Lock = false,
 	TestMode = false,
 	Position = {"RIGHT", "RIGHT", -150, 100},
@@ -192,7 +192,7 @@ function sArena:TestMode(setting)
 				_G["ArenaEnemyFrame"..i.."PetFrame"]:Show()
 				_G["ArenaEnemyFrame"..i.."PetFramePortrait"]:SetTexture("Interface\\CharacterFrame\\TempPortrait")
 			end
-			
+
 			local _, class = UnitClass('player')
 			if ( class ) then
 				local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
@@ -305,7 +305,8 @@ function sArena.CastingBar:CreateTestBar(frame)
 	end
 	
 	sArena.CastingBar["arena"..id] = CastingBar
-	_G["sArenaCastingBar"..id.."Icon"]:SetAllPoints(_G["ArenaEnemyFrame"..id.."CastingBarIcon"])
+	_G["sArenaCastingBar"..id.."Icon"]:SetPoint("TOPLEFT",frame, "TOPLEFT", -15, 0)
+	_G["sArenaCastingBar"..id.."Icon"]:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT", -80, 0)
 	
 	if ( id == 1 ) then
 		sArena.CastingBar.TitleBar = CreateFrame("Frame", nil, sArena.CastingBar["arena1"], "sArenaDragBarTemplate")
