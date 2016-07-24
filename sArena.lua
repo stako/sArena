@@ -2,7 +2,7 @@ local AddonName, sArena = ...
 
 -- Default Settings
 sArena.DefaultSettings = {
-	Version = "1.2.3", -- Last version of sArena in which the settings table changed
+	Version = "1.2.1", -- Last version of sArena in which the settings table changed
 	Lock = false,
 	TestMode = false,
 	Position = {"RIGHT", "RIGHT", -150, 100},
