@@ -91,7 +91,7 @@ function sArena.AuraWatch:UNIT_AURA(unitID)
 		if ( spellId ) then
 			local name, rank = GetSpellInfo(spellId)
 			local _, _, icon, _, _, duration, expires = UnitAura(unitID, name, rank, filter)
-			CooldownFrame_SetTimer(sArena.AuraWatch[unitID], expires - duration, duration, 1, true)
+			CooldownFrame_Set(sArena.AuraWatch[unitID], expires - duration, duration, 1, true)
 			if ( sArena.AuraWatch[unitID].Icon == icon ) then return end
 			SetPortraitToTexture(sArena.AuraWatch[unitID].classPortrait, icon)
 			sArena.AuraWatch[unitID].Icon = icon
@@ -100,7 +100,7 @@ function sArena.AuraWatch:UNIT_AURA(unitID)
 			sArena.AuraWatch[unitID].Icon = nil
 			sArena.AuraWatch[unitID].classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 			sArena.AuraWatch[unitID].classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass(unitID))]))
-			CooldownFrame_SetTimer(sArena.AuraWatch[unitID], 0, 0, 0, true)
+			CooldownFrame_Set(sArena.AuraWatch[unitID], 0, 0, 0, true)
 		end
 	end
 end
@@ -108,11 +108,11 @@ end
 function sArena.AuraWatch:TestMode()
 	for i = 1, MAX_ARENA_ENEMIES do
 		if ( sArenaDB.TestMode and sArenaDB.AuraWatch.Enabled ) then
-			CooldownFrame_SetTimer(sArena.AuraWatch["arena"..i], GetTime(), 30, 1, true)
+			CooldownFrame_Set(sArena.AuraWatch["arena"..i], GetTime(), 30, 1, true)
 			SetPortraitToTexture(sArena.AuraWatch["arena"..i].classPortrait, "Interface\\Icons\\Spell_Nature_Polymorph")
 			sArena.AuraWatch["arena"..i].classPortrait:SetTexCoord(0,1,0,1)
 		else
-			CooldownFrame_SetTimer(sArena.AuraWatch["arena"..i], 0, 0, 0, true)
+			CooldownFrame_Set(sArena.AuraWatch["arena"..i], 0, 0, 0, true)
 			sArena.AuraWatch["arena"..i].classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 			sArena.AuraWatch["arena"..i].classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass('player'))]))
 		end
