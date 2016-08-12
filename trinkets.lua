@@ -18,7 +18,7 @@ function sArena.Trinkets:ADDON_LOADED()
 	
 	for i = 1, MAX_ARENA_ENEMIES do
 		local ArenaFrame = _G["ArenaEnemyFrame"..i]
-	
+
 		sArena.Trinkets["arena"..i] = CreateFrame("Frame", "sArenaTrinket"..i, ArenaFrame, "sArenaTrinketTemplate")
 		sArena.Trinkets["arena"..i].Cooldown = _G["sArenaTrinket"..i.."Cooldown"]
 		sArena.Trinkets["arena"..i]:SetScale(sArenaDB.Trinkets.Scale)
@@ -81,15 +81,39 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	end
 end
 
-function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
+sArena.Trinkets.spells = {
+		[195710] = 180000, -- Honorable
+		[208683] = 120000, -- Gladiator's
+		[59752] = 120000 -- EMFH
+}
+
+function sArena.Trinkets.getRemainingTime(unitID)
+	local startTime,duration = sArena.Trinkets[unitID].Cooldown:GetCooldownTimes()
+
+	if startTime == 0 and duration == 0 then
+		return 0
+	else
+		return duration - (GetTime() * 1000) - startTime
+	end
+end
+
+function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
 	if not sArena.Trinkets[unitID] then return end
-	
-	if ( spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) )  then -- Trinket and EMFH
-		CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 120, 1, true)
-	elseif ( spell == GetSpellInfo(7744) ) then -- WOTF
-		-- When WOTF is used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
-		local remainingTime = 120000 - ((GetTime() * 1000) - sArena.Trinkets[unitID].Cooldown:GetCooldownTimes())
-		if remainingTime < 30000 then
+
+	for spellid,cooldown in pairs(sArena.Trinkets.spells) do
+		if spellid == spellID then
+			local remainingTime = sArena.Trinkets.getRemainingTime(unitID)
+			if remainingTime ~= 0 and remainingTime < 30000 then -- trinket has nonzero cd < 30sec
+				CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
+			else
+				CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), cooldown / 1000, 1, true)
+			end
+			return
+		end
+	end
+
+	if spellID == 7744 or spellID == 20594 then -- WOTF and Stoneform share a 30 sec CD with trinkets
+		if sArena.Trinkets.getRemainingTime(unitID) < 30000 then -- no cd on trinket or < 30 sec left
 			CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
 		end
 	end
