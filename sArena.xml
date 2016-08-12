@@ -44,7 +44,7 @@
 		</Frames>
 		<Scripts>
 		 <OnLoad>
-			SetPortraitToTexture(_G[self:GetName() .. "Icon"], UnitFactionGroup('player') == "Horde" and "Interface\\Icons\\inv_jewelry_trinketpvp_02" or "Interface\\Icons\\inv_jewelry_trinketpvp_01")
+			SetPortraitToTexture(_G[self:GetName() .. "Icon"], UnitFactionGroup('player') == "Horde" and "Interface\\Icons\\inv_jewelry_trinket_04" or "Interface\\Icons\\inv_jewelry_trinket_04")
 		 </OnLoad>
 		</Scripts>
 	</Frame>
