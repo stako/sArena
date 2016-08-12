@@ -84,10 +84,10 @@ end
 function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, spell)
 	if not sArena.Trinkets[unitID] then return end
 	
-	if ( spell == GetSpellInfo(42292) or spell == GetSpellInfo(59752) )  then -- Trinket and EMFH
-		CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 120, 1, true)
-	elseif ( spell == GetSpellInfo(7744) ) then -- WOTF
-		-- When WOTF is used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
+	if ( spell == GetSpellInfo(195710) )  then -- Honorable Medallion
+		CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 180, 1, true)
+	elseif ( spell == GetSpellInfo(7744)  or spell == GetSpellInfo(59752) or  spell == GetSpellInfo(20594) ) then -- WOTF, EMFH or Stoneform
+		-- When WOTF, EMFH or Stoneform are used, set cooldown timer to 30 seconds, but only if it's not already running or it has less than 30 seconds remaining
 		local remainingTime = 120000 - ((GetTime() * 1000) - sArena.Trinkets[unitID].Cooldown:GetCooldownTimes())
 		if remainingTime < 30000 then
 			CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
