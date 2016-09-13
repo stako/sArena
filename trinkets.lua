@@ -89,9 +89,9 @@ sArena.Trinkets.Spells = {
 
 -- List of shared cooldowns - abilities that will trigger a 30 second cooldown on Medallions
 sArena.Trinkets.SharedCooldowns = {
-		59752,	-- Every Man for Himself
-		7744,	-- Will of the Forsaken
-		20594,	-- Stoneform
+		[59752] = 1,	-- Every Man for Himself
+		[7744] = 1,		-- Will of the Forsaken
+		[20594] = 1,	-- Stoneform
 }
 
 -- Returns remaining time on an active cooldown timer
