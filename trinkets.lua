@@ -81,13 +81,21 @@ function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	end
 end
 
-sArena.Trinkets.spells = {
-		[195710] = 180000, -- Honorable
-		[208683] = 120000, -- Gladiator's
-		[59752] = 120000 -- EMFH
+-- List of Medallions
+sArena.Trinkets.Spells = {
+		[195710] = 180, -- Honorable Medallion
+		[208683] = 120, -- Gladiator's Medallion
 }
 
-function sArena.Trinkets.getRemainingTime(unitID)
+-- List of shared cooldowns - abilities that will trigger a 30 second cooldown on Medallions
+sArena.Trinkets.SharedCooldowns = {
+		59752,	-- Every Man for Himself
+		7744,	-- Will of the Forsaken
+		20594,	-- Stoneform
+}
+
+-- Returns remaining time on an active cooldown timer
+function sArena.Trinkets.GetRemainingTime(unitID)
 	local startTime,duration = sArena.Trinkets[unitID].Cooldown:GetCooldownTimes()
 
 	if startTime == 0 and duration == 0 then
@@ -100,20 +108,12 @@ end
 function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
 	if not sArena.Trinkets[unitID] then return end
 
-	for spellid,cooldown in pairs(sArena.Trinkets.spells) do
-		if spellid == spellID then
-			local remainingTime = sArena.Trinkets.getRemainingTime(unitID)
-			if remainingTime ~= 0 and remainingTime < 30000 then -- trinket has nonzero cd < 30sec
-				CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
-			else
-				CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), cooldown / 1000, 1, true)
-			end
-			return
-		end
-	end
-
-	if spellID == 7744 or spellID == 20594 then -- WOTF and Stoneform share a 30 sec CD with trinkets
-		if sArena.Trinkets.getRemainingTime(unitID) < 30000 then -- no cd on trinket or < 30 sec left
+	-- If Medallion was used, activate cooldown timer for 2 or 3 minutes
+	if sArena.Trinkets.Spells[spellID] then
+		CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), sArena.Trinkets.Spells[spellID], 1, true)
+	-- Else, if a shared cooldown was used AND timer has < 30 seconds remaining, activate cooldown timer for 30 seconds
+	elseif sArena.Trinkets.SharedCooldowns[spellID] then
+		if sArena.Trinkets.GetRemainingTime(unitID) < 30000 then
 			CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
 		end
 	end
