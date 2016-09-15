@@ -207,26 +207,30 @@ sArena.DRTracker.Spells = {
 	--[[ INCAPACITATES ]]--
 	-- Druid
 	[    99] = "Incapacitate", -- Incapacitating Roar (talent)
+	[203126] = "Incapacitate", -- Maim (with blood trauma pvp talent)
 	-- Hunter
 	[  3355] = "Incapacitate", -- Freezing Trap
 	[ 19386] = "Incapacitate", -- Wyvern Sting
+	[209790] = "Incapacitate", -- Freezing Arrow
 	-- Mage
 	[   118] = "Incapacitate", -- Polymorph
 	[ 28272] = "Incapacitate", -- Polymorph (pig)
 	[ 28271] = "Incapacitate", -- Polymorph (turtle)
 	[ 61305] = "Incapacitate", -- Polymorph (black cat)
-	[ 61025] = "Incapacitate", -- Polymorph (serpent) -- FIXME: gone ?
 	[ 61721] = "Incapacitate", -- Polymorph (rabbit)
 	[ 61780] = "Incapacitate", -- Polymorph (turkey)
+	[126819] = "Incapacitate", -- Polymorph (procupine)
+	[161353] = "Incapacitate", -- Polymorph (bear cub)
+	[161354] = "Incapacitate", -- Polymorph (monkey)
+	[161355] = "Incapacitate", -- Polymorph (penguin)
+	[161372] = "Incapacitate", -- Polymorph (peacock)
 	[ 82691] = "Incapacitate", -- Ring of Frost
 	-- Monk
 	[115078] = "Incapacitate", -- Paralysis
-	[123393] = "Incapacitate", -- Breath of Fire (Glyphed)
-	[137460] = "Incapacitate", -- Ring of Peace -- FIXME: correct spellIDs?
 	-- Paladin
 	[ 20066] = "Incapacitate", -- Repentance
 	-- Priest
-	[   605] = "Incapacitate", -- Dominate Mind
+	[   605] = "Incapacitate", -- Mind Control
 	[  9484] = "Incapacitate", -- Shackle Undead
 	[ 64044] = "Incapacitate", -- Psychic Horror (Horror effect)
 	[ 88625] = "Incapacitate", -- Holy Word: Chastise
@@ -235,42 +239,59 @@ sArena.DRTracker.Spells = {
 	[  6770] = "Incapacitate", -- Sap
 	-- Shaman
 	[ 51514] = "Incapacitate", -- Hex
+	[211004] = "Incapacitate", -- Hex (spider)
+	[210873] = "Incapacitate", -- Hex (raptor)
+	[211015] = "Incapacitate", -- Hex (cockroach)
+	[211010] = "Incapacitate", -- Hex (snake)
 	-- Warlock
 	[   710] = "Incapacitate", -- Banish
-	[137143] = "Incapacitate", -- Blood Horror
 	[  6789] = "Incapacitate", -- Mortal Coil
 	-- Pandaren
 	[107079] = "Incapacitate", -- Quaking Palm
 	
 	--[[ SILENCES ]]--
 	-- Death Knight
-	[108194] = "Silence", -- Asphyxiate (if target is immune to stun)
 	[ 47476] = "Silence", -- Strangulate
+	-- Demon Hunter
+	[204490] = "Silence", -- Sigil of Silence
 	-- Druid
-	[114237] = "Silence", -- Glyph of Fae Silence
+	-- Hunter
+	[202933] = "Silence", -- Spider Sting (pvp talent)
 	-- Mage
-	[102051] = "Silence", -- Frostjaw
 	-- Paladin
 	[ 31935] = "Silence", -- Avenger's Shield
 	-- Priest
 	[ 15487] = "Silence", -- Silence
+	[199683] = "Silence", -- Last Word (SW: Death silence)
 	-- Rogue
 	[  1330] = "Silence", -- Garrote
 	-- Blood Elf
 	[ 25046] = "Silence", -- Arcane Torrent (Energy version)
-	[ 28730] = "Silence", -- Arcane Torrent (Mana version)
+	[ 28730] = "Silence", -- Arcane Torrent (Priest/Mage/Lock version)
 	[ 50613] = "Silence", -- Arcane Torrent (Runic power version)
 	[ 69179] = "Silence", -- Arcane Torrent (Rage version)
 	[ 80483] = "Silence", -- Arcane Torrent (Focus version)
+	[129597] = "Silence", -- Arcane Torrent (Monk version)
+	[155145] = "Silence", -- Arcane Torrent (Paladin version)
+	[202719] = "Silence", -- Arcane Torrent (DH version)
 	
 	--[[ DISORIENTS ]]--
+	-- Death Knight
+	[207167] = "Disorient", -- Blinding Sleet (talent) -- FIXME: is this the right category?
+	-- Demon Hunter
+	[207685] = "Disorient", -- Sigil of Misery
 	-- Druid
 	[ 33786] = "Disorient", -- Cyclone
+	-- Hunter
+	[213691] = "Disorient", -- Scatter Shot
+	[186387] = "Disorient", -- Bursting Shot
 	-- Mage
 	[ 31661] = "Disorient", -- Dragon's Breath
+	-- Monk
+	[198909] = "Disorient", -- Song of Chi-ji -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
+	[202274] = "Disorient", -- Incendiary Brew -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
 	-- Paladin
 	[105421] = "Disorient", -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
-	[ 10326] = "Disorient", -- Turn Evil
 	-- Priest
 	[  8122] = "Disorient", -- Psychic Scream
 	-- Rogue
@@ -287,33 +308,45 @@ sArena.DRTracker.Spells = {
 	
 	--[[ STUNS ]]--
 	-- Death Knight
-	[108194] = "Stun", -- Asphyxiate
+	-- Abomination's Might note: 207165 is the stun, but is never applied to players,
+	-- so I haven't included it.
+	[108194] = "Stun", -- Asphyxiate (talent for unholy)
+	[221562] = "Stun", -- Asphyxiate (baseline for blood)
 	[ 91800] = "Stun", -- Gnaw (Ghoul)
 	[ 91797] = "Stun", -- Monstrous Blow (Dark Transformation Ghoul)
-	[115001] = "Stun", -- Remorseless Winter
+	[207171] = "Stun", -- Winter is Coming (Remorseless winter stun)
+	-- Demon Hunter
+	[179057] = "Stun", -- Chaos Nova
+	[200166] = "Stun", -- Metamorphosis
+	[205630] = "Stun", -- Illidan's Grasp, primary effect
+	[208618] = "Stun", -- Illidan's Grasp, secondary effect
+	[211881] = "Stun", -- Fel Eruption
 	-- Druid
-	[ 22570] = "Stun", -- Maim
+	[203123] = "Stun", -- Maim
 	[  5211] = "Stun", -- Mighty Bash
 	[163505] = "Stun", -- Rake (Stun from Prowl)
 	-- Hunter
 	[117526] = "Stun", -- Binding Shot
 	[ 24394] = "Stun", -- Intimidation
 	-- Mage
-	[ 44572] = "Stun", -- Deep Freeze
+
 	-- Monk
-	[119392] = "Stun", -- Charging Ox Wave
-	[120086] = "Stun", -- Fists of Fury
 	[119381] = "Stun", -- Leg Sweep
 	-- Paladin
 	[   853] = "Stun", -- Hammer of Justice
-	[119072] = "Stun", -- Holy Wrath
-	[105593] = "Stun", -- Fist of Justice
+	-- Priest
+	[200200] = "Stun", -- Holy word: Chastise
+	[226943] = "Stun", -- Mind Bomb
 	-- Rogue
+	-- Shadowstrike note: 196958 is the stun, but it never applies to players,
+	-- so I haven't included it.
 	[  1833] = "Stun", -- Cheap Shot
 	[   408] = "Stun", -- Kidney Shot
+	[199804] = "Stun", -- Between the Eyes
 	-- Shaman
 	[118345] = "Stun", -- Pulverize (Primal Earth Elemental)
 	[118905] = "Stun", -- Static Charge (Capacitor Totem)
+	[204399] = "Stun", -- Earthfury (pvp talent)
 	-- Warlock
 	[ 89766] = "Stun", -- Axe Toss (Felguard)
 	[ 30283] = "Stun", -- Shadowfury
@@ -327,26 +360,27 @@ sArena.DRTracker.Spells = {
 	--[[ ROOTS ]]--
 	-- Death Knight
 	[ 96294] = "Root", -- Chains of Ice (Chilblains Root)
+	[204085] = "Root", -- Deathchill (pvp talent)
 	-- Druid
 	[   339] = "Root", -- Entangling Roots
 	[102359] = "Root", -- Mass Entanglement (talent)
-	[113770] = "Root", -- Entangling Roots (Treants)
-	[170855] = "Root", -- Entangling Roots (Nature's Grasp)
+	[ 45334] = "Root", -- Immobilized (wild charge, bear form)
 	-- Hunter
 	[ 53148] = "Root", -- Charge (Tenacity pet)
-	[135373] = "Root", -- Entrapment (passive)
-	[136634] = "Root", -- Narrow Escape (passive talent)
+	[162480] = "Root", -- Steel Trap
+	[190927] = "Root", -- Harpoon
+	[200108] = "Root", -- Ranger's Net
+	[212638] = "Root", -- tracker's net
+	[201158] = "Root", -- Super Sticky Tar (Expert Trapper, Hunter talent, Tar Trap effect)
 	-- Mage
 	[   122] = "Root", -- Frost Nova
 	[ 33395] = "Root", -- Freeze (Water Elemental)
-	[111340] = "Root", -- Ice Ward
+	-- [157997] = "Root", -- Ice Nova -- since 6.1, ice nova doesn't DR with anything
+	[228600] = "Root", -- Glacial spike (talent)
 	-- Monk
 	[116706] = "Root", -- Disable
 	-- Priest
-	[ 87194] = "Root", -- Glyph of Mind Blast
-	[114404] = "Root", -- Void Tendrils
 	-- Shaman
-	[ 63685] = "Root", -- Freeze (Frozen Power talent)
 	[ 64695] = "Root", -- Earthgrab Totem
 	
 	--[[ KNOCKBACK ]]--
@@ -356,7 +390,6 @@ sArena.DRTracker.Spells = {
 	--[102793] = "Knockback", -- Ursol's Vortex
 	--[132469] = "Knockback", -- Typhoon
 	-- Hunter
-	--[ 13812] = "Knockback", -- Glyph of Explosive Trap [Missing CLEU event]
 	-- Shaman
 	--[ 51490] = "Knockback", -- Thunderstorm
 	-- Warlock
