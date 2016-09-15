@@ -8,6 +8,7 @@ sArena.AuraWatch.Spells = {
 	108194,	-- Asphyxiate
 	--115001,	-- Remorseless Winter Stun REMOVED IN LEGION
 	91800,	-- Gnaw
+	47481,	-- Gnaw
 	91797,	-- Monstrous Blow (Dark Transformation)
 	99,		-- Incapacitating Roar
 	163505,	-- Rake Stun
@@ -56,12 +57,14 @@ sArena.AuraWatch.Spells = {
 	5484,	-- Howl of Terror
 	6789,	-- Mortal Coil
 	30283,	-- Shadowfury
+	22703,	-- Infernal Awakening Stun
 	89766,	-- Axe Toss (Felguard/Wrathguard)
 	115268,	-- Mesmerize (Shivarra)
 	6358,	-- Seduction (Succubus)
 	--118895,	-- Dragon Roar REMOVED IN LEGION
 	5246,	-- Intimidating Shout (aoe)
 	132168,	-- Shockwave
+	46968,	-- Shockwave
 	--107570,	-- Storm Bolt UNUSED?
 	--145585,	-- Storm Bolt REMOVED IN LEGION
 	132169,	-- Storm Bolt
@@ -69,6 +72,9 @@ sArena.AuraWatch.Spells = {
 	20549,	-- War Stomp
 	--137460,	-- Ring of Peace Incapacitate REMOVED IN LEGION
 	224729,	-- Bursting Shot
+	7922,	-- Warbringer Charge Stun
+	77505,	-- Earthquake Stun
+	107079,	-- Quaking Palm
 	
 	-- Roots
 	122, 	-- Frost Nova
@@ -91,6 +97,7 @@ sArena.AuraWatch.Spells = {
 	55536, 	-- Frostweave Net
 	157997,	-- Ice Nova
 	45334,	-- Wild Charge
+	16979,	-- Wild Charge
 	162480, -- Steel Trap
 
 	-- Immune
@@ -123,6 +130,12 @@ sArena.AuraWatch.Spells = {
 	15487,	-- Silence (Priest)
 	1330,	-- Garrote - Silence
 	31117,	-- Unstable Affliction Silence
+	31935,	-- Avenger's Shield Silence
+	28730,	-- Arcane Torrent (Mana version)
+	80483,	-- Arcane Torrent (Focus version)
+	25046,	-- Arcane Torrent (Energy version)
+	50613,	-- Arcane Torrent (Runic Power version)
+	69179,	-- Arcane Torrent (Rage version)
 
 	-- Offensive Buffs
 	51690,	-- Killing Spree
@@ -151,6 +164,7 @@ sArena.AuraWatch.Spells = {
 	114050,	-- Ascendance
 	107574,	-- Avatar
 	121471,	-- Shadow Blades
+	12292,	-- Bloodbath
 	
 
 	-- Defensive Buffs
@@ -180,6 +194,8 @@ sArena.AuraWatch.Spells = {
 	--55694,	-- Enraged Regeneration REMOVED IN LEGION
 	47788,	-- Guardian Spirit
 	122783,	-- Diffuse Magic
+	12975,	-- Last Stand
+	871,	-- Shield Wall
 	
 	-- Other Stuff
 	--770,	-- Faerie Fire REMOVED IN LEGION
