@@ -304,9 +304,9 @@ function sArena.CastingBar:CreateTestBar(frame)
 		frame:SetPoint(sArenaDB.CastingBar.Point, frame:GetParent(), sArenaDB.CastingBar.X, sArenaDB.CastingBar.Y)
 	end
 	
+	CastingBar.Icon:SetAllPoints(_G["ArenaEnemyFrame"..id.."CastingBar"].Icon)
+	
 	sArena.CastingBar["arena"..id] = CastingBar
-	_G["sArenaCastingBar"..id.."Icon"]:SetPoint("TOPLEFT",frame, "TOPLEFT", -15, 0)
-	_G["sArenaCastingBar"..id.."Icon"]:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT", -80, 0)
 	
 	if ( id == 1 ) then
 		sArena.CastingBar.TitleBar = CreateFrame("Frame", nil, sArena.CastingBar["arena1"], "sArenaDragBarTemplate")
