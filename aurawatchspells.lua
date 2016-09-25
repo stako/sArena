@@ -3,7 +3,7 @@ local AddonName, sArena = ...
 sArena.AuraWatch.Spells = {
 	-- Higher up = higher display priority
 
--- CCs
+	-- CCs
 	33786,	-- Cyclone
 	108194,	-- Asphyxiate
 	--115001,	-- Remorseless Winter Stun REMOVED IN LEGION
@@ -75,6 +75,10 @@ sArena.AuraWatch.Spells = {
 	7922,	-- Warbringer Charge Stun
 	77505,	-- Earthquake Stun
 	107079,	-- Quaking Palm
+	179057,	-- Chaos Nova
+	200166,	-- Metamorphosis Stun
+	205630,	-- Illidan's Grasp
+	208618,	-- Illidans' Grasp
 	
 	-- Roots
 	122, 	-- Frost Nova
@@ -165,6 +169,7 @@ sArena.AuraWatch.Spells = {
 	107574,	-- Avatar
 	121471,	-- Shadow Blades
 	12292,	-- Bloodbath
+	162264,	-- Metamorphosis
 	
 
 	-- Defensive Buffs
@@ -196,6 +201,7 @@ sArena.AuraWatch.Spells = {
 	122783,	-- Diffuse Magic
 	12975,	-- Last Stand
 	871,	-- Shield Wall
+	212800,	-- Blur
 	
 	-- Other Stuff
 	--770,	-- Faerie Fire REMOVED IN LEGION

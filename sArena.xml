@@ -1,11 +1,15 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
+	
+	<!-- Spec Icon Template -->
 	<Frame name="sArenaSpecIconTemplate" movable="true" clampedToScreen="true" virtual="true">
 		<Size x="1" y="1"/>
 		<Anchors>
 			<Anchor point="CENTER" relativePoint="CENTER" x="43" y="-12"/>
 		</Anchors>
 	</Frame>
+	
+	<!-- Trinket Template -->
 	<Frame name="sArenaTrinketTemplate" movable="true" clampedToScreen="true" virtual="true">
 		<Size x="18" y="18"/>
 		<Anchors>
@@ -48,6 +52,8 @@
 		 </OnLoad>
 		</Scripts>
 	</Frame>
+	
+	<!-- DR Tracker Template -->
 	<Frame name="sArenaDRTrackerTemplate" movable="true" clampedToScreen="true" virtual="true">
 		<Size x="24" y="24"/>
 		<Layers>
@@ -85,6 +91,8 @@
 			</Frame>
 		</Frames>
 	</Frame>
+	
+	<!-- Drag-bar Template -->
 	<Frame name="sArenaDragBarTemplate" enableMouse="true" virtual="true">
 		<Backdrop bgFile="Interface\CharacterFrame\UI-Party-Background" tile="true">
 			<Color r="0" g="0" b="0" a="0.6" />
@@ -99,6 +107,8 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	
+	<!-- Casting Bar Template -->
 	<StatusBar name="sArenaCastingBarTemplate" hidden="true" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
@@ -114,6 +124,8 @@
 			</OnLoad>
 		</Scripts>
 	</StatusBar>
+	
+	<!-- Settings Template -->
 	<Frame name="sArenaSettingsTemplate" parent="InterfaceOptionsFramePanelContainer" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
@@ -125,6 +137,8 @@
 			</Layer>
 		</Layers>
 		<Frames>
+		
+			<!-- General Options Box -->
 			<Frame name="$parent_General_Box" inherits="OptionsBoxTemplate">
 				<Size x="325" y="150"/>
 				<Anchors>
@@ -202,6 +216,8 @@
 					</OnLoad>
 				</Scripts>
 			</Slider>
+			
+			<!-- Class Colours Options Box -->
 			<Frame name="$parent_ClassColours_Box" inherits="OptionsBoxTemplate">
 				<Size x="251" y="92"/>
 				<Anchors>
@@ -243,6 +259,8 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			
+			<!-- AuraWatch Options Box -->
 			<Frame name="$parent_AuraWatch_Box" inherits="OptionsBoxTemplate">
 				<Size x="251" y="130"/>
 				<Anchors>
@@ -288,6 +306,8 @@
 					</OnLoad>
 				</Scripts>
 			</Slider>
+			
+			<!-- Trinkets Options Box -->
 			<Frame name="$parent_Trinkets_Box" inherits="OptionsBoxTemplate">
 				<Size x="325" y="110"/>
 				<Anchors>
@@ -347,6 +367,8 @@
 					</OnLoad>
 				</Scripts>
 			</Slider>
+			
+			<!-- DR Tracker Options Box -->
 			<Frame name="$parent_DRTracker_Box" inherits="OptionsBoxTemplate">
 				<Size x="251" y="112"/>
 				<Anchors>
