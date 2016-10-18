@@ -69,6 +69,20 @@ function sArena.Settings:ADDON_LOADED()
 		end
 	end)
 	
+	sArenaSettings_StatusText_Size:SetValue(sArenaDB.StatusTextSize or 10)
+	sArenaSettings_StatusText_Size.tooltipText = sArenaDB.StatusTextSize or 10
+	sArenaSettings_StatusText_Size:SetScript("OnValueChanged", function(self)
+		sArenaDB.StatusTextSize = floor(self:GetValue()+0.5)
+		self:SetValue(sArenaDB.StatusTextSize)
+		self.tooltipText = sArenaDB.StatusTextSize
+		GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
+		local font,_,flags = _G["ArenaEnemyFrame1HealthBarText"]:GetFont()
+		for i = 1, MAX_ARENA_ENEMIES do
+			_G["ArenaEnemyFrame"..i.."HealthBarText"]:SetFont(font, sArenaDB.StatusTextSize or 10, flags)
+			_G["ArenaEnemyFrame"..i.."ManaBarText"]:SetFont(font, sArenaDB.StatusTextSize or 10, flags)
+		end
+	end)
+	
 	sArenaSettings_ClassColours_Health:SetChecked(sArenaDB.ClassColours.Health)
 	sArenaSettings_ClassColours_Health.setFunc = function(setting)
 		sArenaDB.ClassColours.Health = setting == "1" and true or false

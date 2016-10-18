@@ -1,4 +1,9 @@
-== 1.2.4 ===
+=== 1.2.5 ===
+* Added option to change status text fontsize (again)
+* Updated DR's for Legion
+* Added some Legion spells to AuraWatch (Incomplete)
+
+=== 1.2.4 ===
 * Fixed APIs for 7.0
 * Fixed large Polymorph icon in Test Mode
 * Updated Trinket/Medallion tracking

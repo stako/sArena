@@ -68,6 +68,8 @@ function sArena:ADDON_LOADED(arg1)
 		sArena.Frame:SetPoint(sArenaDB.Position[1], UIParent, sArenaDB.Position[2], sArenaDB.Position[3], sArenaDB.Position[4])
 		sArena.Frame:SetScale(sArenaDB.Scale)
 		
+		local font,_,flags = _G["ArenaEnemyFrame1HealthBarText"]:GetFont()
+		
 		for i = 1, MAX_ARENA_ENEMIES do
 			local ArenaFrame = _G["ArenaEnemyFrame"..i]
 			local ArenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
@@ -79,6 +81,10 @@ function sArena:ADDON_LOADED(arg1)
 			
 			_G["ArenaPrepFrame"..i].specPortrait = _G["ArenaPrepFrame"..i.."SpecPortrait"]
 			_G["ArenaPrepFrame"..i].specBorder = _G["ArenaPrepFrame"..i.."SpecBorder"]
+			
+			-- Set status text size
+			_G["ArenaEnemyFrame"..i.."HealthBarText"]:SetFont(font, sArenaDB.StatusTextSize or 10, flags)
+			_G["ArenaEnemyFrame"..i.."ManaBarText"]:SetFont(font, sArenaDB.StatusTextSize or 10, flags)
 			
 			-- Improve positioning of class portraits
 			ArenaFrame.classPortrait:SetSize(26, 26)

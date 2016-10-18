@@ -26,6 +26,7 @@ sArena.AuraWatch.Spells = {
 	61721,	-- Polymorph: Rabbit
 	61780,	-- Polymorph: Turkey
 	28271,	-- Polymorph: Turtle
+	161353,	-- Polymorph: Polar Bear Cub
 	82691,	-- Ring of Frost	
 	--119392,	-- Charging Ox Wave REMOVED IN LEGION
 	120086,	-- Fists of Fury
@@ -79,6 +80,7 @@ sArena.AuraWatch.Spells = {
 	200166,	-- Metamorphosis Stun
 	205630,	-- Illidan's Grasp
 	208618,	-- Illidans' Grasp
+	221527,	-- Imprison
 	
 	-- Roots
 	122, 	-- Frost Nova
@@ -202,6 +204,9 @@ sArena.AuraWatch.Spells = {
 	12975,	-- Last Stand
 	871,	-- Shield Wall
 	212800,	-- Blur
+	55233,	-- Vampiric Blood
+	194679,	-- Rune Tap
+	207319,	-- Corpse Shield
 	
 	-- Other Stuff
 	--770,	-- Faerie Fire REMOVED IN LEGION

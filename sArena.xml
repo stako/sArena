@@ -140,7 +140,7 @@
 		
 			<!-- General Options Box -->
 			<Frame name="$parent_General_Box" inherits="OptionsBoxTemplate">
-				<Size x="325" y="150"/>
+				<Size x="325" y="200"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT" x="0" y="-28"/>
 				</Anchors>
@@ -211,6 +211,18 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Spec Icon Scale");
+						_G[self:GetName().."Low"]:SetText("Small");
+						_G[self:GetName().."High"]:SetText("Large");
+					</OnLoad>
+				</Scripts>
+			</Slider>
+			<Slider name="$parent_StatusText_Size" inherits="OptionsSliderTemplate" minValue="4" maxValue="18" valueStep="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_SpecIcon_Scale" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Status Text Size");
 						_G[self:GetName().."Low"]:SetText("Small");
 						_G[self:GetName().."High"]:SetText("Large");
 					</OnLoad>
