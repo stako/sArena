@@ -212,6 +212,7 @@ sArena.DRTracker.Spells = {
 	[  3355] = "Incapacitate", -- Freezing Trap
 	[ 19386] = "Incapacitate", -- Wyvern Sting
 	[209790] = "Incapacitate", -- Freezing Arrow
+	[213691] = "Incapacitate", -- Scatter Shot
 	-- Mage
 	[   118] = "Incapacitate", -- Polymorph
 	[ 28272] = "Incapacitate", -- Polymorph (pig)
@@ -283,7 +284,6 @@ sArena.DRTracker.Spells = {
 	-- Druid
 	[ 33786] = "Disorient", -- Cyclone
 	-- Hunter
-	[213691] = "Disorient", -- Scatter Shot
 	[186387] = "Disorient", -- Bursting Shot
 	-- Mage
 	[ 31661] = "Disorient", -- Dragon's Breath
