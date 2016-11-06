@@ -34,6 +34,12 @@ function sArena.Settings:ADDON_LOADED()
 		sArena.GrowUpwards(sArenaDB.GrowUpwards)
 	end
 	
+	sArenaSettings_HideStatusText:SetChecked(sArenaDB.HideStatusText)
+	sArenaSettings_HideStatusText.setFunc = function(setting)
+		sArenaDB.HideStatusText = setting == "1" and true or false
+		sArena.StatusText(sArenaDB.HideStatusText)
+	end
+	
 	sArenaSettings_Scale:SetValue(sArenaDB.Scale)
 	sArenaSettings_Scale.tooltipText = sArenaDB.Scale
 	sArenaSettings_Scale:SetScript("OnValueChanged", function(self)

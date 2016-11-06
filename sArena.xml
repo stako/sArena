@@ -70,6 +70,7 @@
 						self:SetPoint("BOTTOMRIGHT", self:GetParent(), -1, 1)
 						self:SetDrawBling(false)
 						self:SetSwipeColor(0,0,0,0.5)
+						self:SetReverse(true)
 					</OnLoad>
 				</Scripts>
 			</Cooldown>
@@ -177,6 +178,16 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("Grow Upwards")
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parent_HideStatusText" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_GrowUpwards" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("Hide Status Text")
 					</OnLoad>
 				</Scripts>
 			</CheckButton>

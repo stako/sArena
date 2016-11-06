@@ -58,6 +58,8 @@ function sArena:ADDON_LOADED(arg1)
 			print("First time using sArena? Type /sarena for options!")
 		end
 		
+		sArena.StatusText()
+		
 		sArenaDB.TestMode = false
 		
 		sArena.Trinkets:ADDON_LOADED()
@@ -132,6 +134,30 @@ function sArena:PLAYER_ENTERING_WORLD()
 	sArena.DRTracker:PLAYER_ENTERING_WORLD()
 end
 sArena.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+function sArena:StatusText(setting)
+	if ( setting ~= nil ) then
+		sArenaDB.HideStatusText = setting
+		sArenaSettings_HideStatusText:SetChecked(sArenaDB.HideStatusText)
+	end
+	
+	if sArenaDB.HideStatusText == nil then
+		sArenaDB.HideStatusText = false
+	end
+	
+	for i = 1, MAX_ARENA_ENEMIES do
+		_G["ArenaEnemyFrame"..i.."HealthBar"].textLockable = not sArenaDB.HideStatusText
+		_G["ArenaEnemyFrame"..i.."ManaBar"].textLockable = not sArenaDB.HideStatusText
+		
+		if sArenaDB.HideStatusText == true then
+			_G["ArenaEnemyFrame"..i.."HealthBar"].TextString:Hide()
+			_G["ArenaEnemyFrame"..i.."ManaBar"].TextString:Hide()
+		else
+			_G["ArenaEnemyFrame"..i.."HealthBar"].TextString:Show()
+			_G["ArenaEnemyFrame"..i.."ManaBar"].TextString:Show()
+		end
+	end
+end
 
 function sArena:Lock(setting)
 	if ( setting ~= nil ) then
