@@ -15,6 +15,7 @@ sArena.AuraWatch.Spells = {
 	22570,	-- Maim
 	5211,	-- Mighty Bash
 	3355,	-- Freezing Trap
+	209790, -- Freezing Arrow
 	117526,	-- Binding Shot
 	19386,	-- Wyvern Sting
 	24394,	-- Intimidation
@@ -27,6 +28,7 @@ sArena.AuraWatch.Spells = {
 	61780,	-- Polymorph: Turkey
 	28271,	-- Polymorph: Turtle
 	161353,	-- Polymorph: Polar Bear Cub
+	213691,	-- Scatter Shot
 	82691,	-- Ring of Frost	
 	--119392,	-- Charging Ox Wave REMOVED IN LEGION
 	120086,	-- Fists of Fury
