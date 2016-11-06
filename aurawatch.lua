@@ -31,6 +31,7 @@ function sArena.AuraWatch:ADDON_LOADED()
 		
 		sArena.AuraWatch["arena"..i]:SetSwipeColor(0, 0, 0, sArenaDB.AuraWatch.Alpha)
 		sArena.AuraWatch["arena"..i]:SetDrawBling(false)
+		sArena.AuraWatch["arena"..i]:SetReverse(true)
 		sArena.AuraWatch["arena"..i]:ClearAllPoints()
 		sArena.AuraWatch["arena"..i]:SetPoint("TOPLEFT", ArenaFrame.classPortrait, "TOPLEFT", 2, -2)
 		sArena.AuraWatch["arena"..i]:SetPoint("BOTTOMRIGHT", ArenaFrame.classPortrait, "BOTTOMRIGHT", -2, 2)
