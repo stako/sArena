@@ -249,6 +249,9 @@ sArena.DRTracker.Spells = {
 	[  6789] = "Incapacitate", -- Mortal Coil
 	-- Pandaren
 	[107079] = "Incapacitate", -- Quaking Palm
+	-- Demon Hunter
+	[217832] = "Incapacitate", -- Imprison
+	[221527] = "Incapacitate", -- Improved Imprison
 	
 	--[[ SILENCES ]]--
 	-- Death Knight
@@ -283,6 +286,7 @@ sArena.DRTracker.Spells = {
 	[207685] = "Disorient", -- Sigil of Misery
 	-- Druid
 	[ 33786] = "Disorient", -- Cyclone
+	[209753] = "Disorient", -- Cyclone (Balance)
 	-- Hunter
 	[186387] = "Disorient", -- Bursting Shot
 	-- Mage
@@ -331,6 +335,8 @@ sArena.DRTracker.Spells = {
 	-- Mage
 
 	-- Monk
+	[120086] = "Stun", -- Fists of Fury (with Heavy-Handed Strikes, pvp talent)
+	[232055] = "Stun", -- Fists of Fury (new ID in 7.1)
 	[119381] = "Stun", -- Leg Sweep
 	-- Paladin
 	[   853] = "Stun", -- Hammer of Justice
