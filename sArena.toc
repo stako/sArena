@@ -1,15 +1,15 @@
-## Interface: 70100
+## Interface: 70200
 ## Title: sArena
 ## Notes: Enhanced arena frames.
 ## Author: Stako
-## Version: 1.2.6
+## Version: 1.2.7b
 ## RequiredDeps: Blizzard_ArenaUI
 
 ## SavedVariables: sArenaDB
 
 sArena.xml
 settings.lua
-trinkets.lua
+## trinkets.lua
 aurawatch.lua
 aurawatchspells.lua
 drtracker.lua

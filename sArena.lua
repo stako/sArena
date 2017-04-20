@@ -62,7 +62,7 @@ function sArena:ADDON_LOADED(arg1)
 		
 		sArenaDB.TestMode = false
 		
-		sArena.Trinkets:ADDON_LOADED()
+		--sArena.Trinkets:ADDON_LOADED()
 		sArena.AuraWatch:ADDON_LOADED()
 		sArena.DRTracker:ADDON_LOADED()
 		sArena.Settings:ADDON_LOADED()
@@ -100,13 +100,49 @@ function sArena:ADDON_LOADED(arg1)
 			
 			sArena.SpecIcons:CreateFrame(ArenaFrame)
 			sArena.SpecIcons:CreateFrame(PrepFrame)
+			
+			ArenaFrame.CC:SetMovable(true)
+			
+			if ( sArenaDB.NewTrinkets ) then
+				ArenaFrame.CC:ClearAllPoints()
+				ArenaFrame.CC:SetPoint(sArenaDB.NewTrinkets[1], ArenaFrame.CC:GetParent(), sArenaDB.NewTrinkets[2], sArenaDB.NewTrinkets[3])
+			end
 		end
+		
+		-- 7.2 Trinkets
+		sArena.NewTrinkets = CreateFrame("Frame", nil, ArenaEnemyFrame1.CC, "sArenaDragBarTemplate")
+		sArena.NewTrinkets:SetSize(18, 16)
+		sArena.NewTrinkets:SetPoint("BOTTOM", ArenaEnemyFrame1.CC, "TOP")
+		sArena.NewTrinkets:SetScript("OnMouseDown", function(self, button)
+			if ( button == "LeftButton" and not sArena.NewTrinkets.isMoving ) then
+				ArenaEnemyFrame1.CC:StartMoving()
+				sArena.NewTrinkets.isMoving = true
+			end
+		end)
+		
+		sArena.NewTrinkets:SetScript("OnMouseUp", function(self, button)
+			if ( button == "LeftButton" and sArena.NewTrinkets.isMoving ) then
+				ArenaEnemyFrame1.CC:StopMovingOrSizing()
+				ArenaEnemyFrame1.CC:SetUserPlaced(false)
+				sArena.NewTrinkets.isMoving = false
+				
+				local FrameX, FrameY = sArena:CalcPoint(ArenaEnemyFrame1.CC)
+				
+				for i = 1, MAX_ARENA_ENEMIES do
+					_G["ArenaEnemyFrame"..i].CC:ClearAllPoints()
+					_G["ArenaEnemyFrame"..i].CC:SetPoint("CENTER", _G["ArenaEnemyFrame"..i].CC:GetParent(), FrameX, FrameY)
+				end
+				
+				if not sArenaDB.NewTrinkets then sArenaDB.NewTrinkets = {} end
+				sArenaDB.NewTrinkets[1], _, _, sArenaDB.NewTrinkets[2], sArenaDB.NewTrinkets[3] = ArenaEnemyFrame1.CC:GetPoint()
+			end
+		end)
 		
 		sArena:Lock()
 		sArena:GrowUpwards()
 		
 		-- Trying to fix incorrect classes/specs showing during prep
-		hooksecurefunc("UpdatePrepFrames", function()
+		--[[hooksecurefunc("UpdatePrepFrames", function()
 			local numOpps = GetNumArenaOpponentSpecs();
 			for i=1, MAX_ARENA_ENEMIES do
 				local arenaFrame = _G["ArenaEnemyFrame"..i];
@@ -122,14 +158,14 @@ function sArena:ADDON_LOADED(arg1)
 					end
 				end
 			end
-		end)
+		end)]]
 	end
 end
 sArena.Frame:RegisterEvent("ADDON_LOADED")
 
 function sArena:PLAYER_ENTERING_WORLD()
 	sArena:TestMode(false)
-	sArena.Trinkets:PLAYER_ENTERING_WORLD()
+	--sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	sArena.AuraWatch:PLAYER_ENTERING_WORLD()
 	sArena.DRTracker:PLAYER_ENTERING_WORLD()
 end
@@ -165,19 +201,20 @@ function sArena:Lock(setting)
 		sArenaSettings_Lock:SetChecked(sArenaDB.Lock)
 	end
 	
-	sArena.Trinkets:Lock()
+	--sArena.Trinkets:Lock()
 	
 	if ( sArenaDB.Lock ) then
 		sArena.Frame.TitleBar:Hide()
 		sArena.CastingBar.TitleBar:Hide()
 		sArena.SpecIcons.TitleBar:Hide()
 		sArena.DRTracker.TitleBar:Hide()
-		
+		sArena.NewTrinkets:Hide()
 	else
 		sArena.Frame.TitleBar:Show()
 		sArena.CastingBar.TitleBar:Show()
 		sArena.SpecIcons.TitleBar:Show()
 		sArena.DRTracker.TitleBar:Show()
+		sArena.NewTrinkets:Show()
 	end
 end
 
@@ -218,6 +255,7 @@ function sArena:TestMode(setting)
 			ArenaFrame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 			ArenaFrame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
 			ArenaFrame.specBorder:Show()
+			ArenaFrame.CC.Icon:SetTexture("Interface\\Icons\\inv_jewelry_trinketpvp_01")
 			SetPortraitToTexture(ArenaFrame.specPortrait, specIcon)
 			
 			if ( showArenaEnemyPets ) then
@@ -244,7 +282,7 @@ function sArena:TestMode(setting)
 		end
 	end
 		
-	sArena.Trinkets:TestMode()
+	--sArena.Trinkets:TestMode()
 	sArena.AuraWatch:TestMode()
 	sArena.DRTracker:TestMode()
 end

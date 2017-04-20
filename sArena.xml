@@ -338,11 +338,11 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						_G[self:GetName().."Title"]:SetText("Trinkets")
+						_G[self:GetName().."Title"]:SetText("Trinkets - No settings since patch 7.2. Will add stuff later")
 					</OnLoad>
 				</Scripts>
 			</Frame>
-			<CheckButton name="$parent_Trinkets" inherits="OptionsCheckButtonTemplate">
+			<!--<CheckButton name="$parent_Trinkets" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_Trinkets_Box" relativePoint="TOPLEFT" x="6" y="-6"/>
 				</Anchors>
@@ -389,7 +389,7 @@
 						_G[self:GetName().."High"]:SetText("Large");
 					</OnLoad>
 				</Scripts>
-			</Slider>
+			</Slider> -->
 			
 			<!-- DR Tracker Options Box -->
 			<Frame name="$parent_DRTracker_Box" inherits="OptionsBoxTemplate">

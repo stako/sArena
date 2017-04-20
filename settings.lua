@@ -138,7 +138,7 @@ function sArena.Settings:ADDON_LOADED()
 		end
 	end)
 	
-	sArenaSettings_Trinkets:SetChecked(sArenaDB.Trinkets.Enabled)
+	--[[sArenaSettings_Trinkets:SetChecked(sArenaDB.Trinkets.Enabled)
 	sArenaSettings_Trinkets.setFunc = function(setting)
 		sArenaDB.Trinkets.Enabled = setting == "1" and true or false
 		sArena.Trinkets:AlwaysShow()
@@ -172,7 +172,7 @@ function sArena.Settings:ADDON_LOADED()
 		for i = 1, MAX_ARENA_ENEMIES do
 			sArena.Trinkets["arena"..i].Cooldown.Text:SetFont("Fonts\\FRIZQT__.TTF", sArenaDB.Trinkets.CooldownFontSize, "OUTLINE")
 		end
-	end)
+	end)]]
 	
 	sArenaSettings_DRTracker_Enable:SetChecked(sArenaDB.DRTracker.Enabled)
 	sArenaSettings_DRTracker_Enable.setFunc = function(setting)

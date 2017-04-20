@@ -3,6 +3,9 @@ local AddonName, sArena = ...
 sArena.DRTracker = CreateFrame("Frame", nil, UIParent)
 sArena.DRTracker:SetScript("OnEvent", function(self, event, ...) return self[event](self, ...) end)
 
+local _
+local select = select
+
 -- Default Settings
 sArena.DRTracker.DefaultSettings = {
 	Enabled = true,
@@ -26,7 +29,6 @@ local Categories = {
 	"Disorient",
 	"Stun",
 	"Root",
-	--"Knockback",
 }
 
 function sArena.DRTracker:ADDON_LOADED()
@@ -39,12 +41,9 @@ function sArena.DRTracker:ADDON_LOADED()
 		
 		sArena.DRTracker["arena"..i] = {}
 		
-		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Incapacitate")
-		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Silence")
-		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Disorient")
-		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Stun")
-		sArena.DRTracker:CreateIcon(ArenaFrame, i, "Root")
-		--sArena.DRTracker:CreateIcon(ArenaFrame, i, "Knockback")		
+		for _,v in ipairs(Categories) do
+			sArena.DRTracker:CreateIcon(ArenaFrame, i, v)
+		end		
 	end
 	
 	sArena.DRTracker.TitleBar = CreateFrame("Frame", nil, sArena.DRTracker["arena1"]["Incapacitate"], "sArenaDragBarTemplate")
@@ -153,18 +152,17 @@ function sArena.DRTracker:TimerStart(GUID, spellID, spellName, applied)
 	
 	if ( not unitID ) then return end
 	
-	local duration = select(6, UnitDebuff(unitID, spellName))
-	--CooldownFrame_Set(sArena.DRTracker[unitID][category].Cooldown, GetTime(), applied and DRTime+duration or DRTime, 1, true)
-	if ( applied ) then
-		sArena.DRTracker[unitID][category].fTime = GetTime() + DRTime + duration
-		sArena.DRTracker[unitID][category].fDuration = DRTime + duration
-		CooldownFrame_Set(sArena.DRTracker[unitID][category].Cooldown, GetTime(), DRTime+duration, 1, true)
-	else
-		local rDuration = sArena.DRTracker[unitID][category].fTime - GetTime()
-		local fraction =  rDuration / sArena.DRTracker[unitID][category].fDuration
-		local fDuration = rDuration / fraction
-		local sTime = GetTime() + DRTime - fDuration
-		CooldownFrame_Set(sArena.DRTracker[unitID][category].Cooldown, sTime, fDuration, 1, true)
+	if ( applied ) then -- CC has been applied
+		local auraDuration = select(6, UnitDebuff(unitID, spellName))
+		CooldownFrame_Set(sArena.DRTracker[unitID][category].Cooldown, GetTime(), DRTime + auraDuration, 1, true)
+	else -- CC has been removed (completed, dispelled, broken, etc.)
+		-- Adjust timer for early CC breaks
+		local startTime, startDuration = sArena.DRTracker[unitID][category].Cooldown:GetCooldownTimes()
+		startTime, startDuration = startTime/1000, startDuration/1000
+		
+		local newDuration = DRTime / (1 - ((GetTime() - startTime) / startDuration))
+		local newStartTime = DRTime + GetTime() - newDuration
+		CooldownFrame_Set(sArena.DRTracker[unitID][category].Cooldown, newStartTime, newDuration, 1, true)
 	end
 	
 	if ( not applied ) then return end
@@ -204,201 +202,121 @@ function sArena.DRTracker:SetScale(scale)
 end
 
 sArena.DRTracker.Spells = {
-	--[[ INCAPACITATES ]]--
-	-- Druid
-	[    99] = "Incapacitate", -- Incapacitating Roar (talent)
-	[203126] = "Incapacitate", -- Maim (with blood trauma pvp talent)
-	-- Hunter
-	[  3355] = "Incapacitate", -- Freezing Trap
-	[ 19386] = "Incapacitate", -- Wyvern Sting
-	[209790] = "Incapacitate", -- Freezing Arrow
-	[213691] = "Incapacitate", -- Scatter Shot
-	-- Mage
-	[   118] = "Incapacitate", -- Polymorph
-	[ 28272] = "Incapacitate", -- Polymorph (pig)
-	[ 28271] = "Incapacitate", -- Polymorph (turtle)
-	[ 61305] = "Incapacitate", -- Polymorph (black cat)
-	[ 61721] = "Incapacitate", -- Polymorph (rabbit)
-	[ 61780] = "Incapacitate", -- Polymorph (turkey)
-	[126819] = "Incapacitate", -- Polymorph (procupine)
-	[161353] = "Incapacitate", -- Polymorph (bear cub)
-	[161354] = "Incapacitate", -- Polymorph (monkey)
-	[161355] = "Incapacitate", -- Polymorph (penguin)
-	[161372] = "Incapacitate", -- Polymorph (peacock)
-	[ 82691] = "Incapacitate", -- Ring of Frost
-	-- Monk
-	[115078] = "Incapacitate", -- Paralysis
-	-- Paladin
-	[ 20066] = "Incapacitate", -- Repentance
-	-- Priest
-	[   605] = "Incapacitate", -- Mind Control
-	[  9484] = "Incapacitate", -- Shackle Undead
-	[ 64044] = "Incapacitate", -- Psychic Horror (Horror effect)
-	[ 88625] = "Incapacitate", -- Holy Word: Chastise
-	-- Rogue
-	[  1776] = "Incapacitate", -- Gouge
-	[  6770] = "Incapacitate", -- Sap
-	-- Shaman
-	[ 51514] = "Incapacitate", -- Hex
-	[211004] = "Incapacitate", -- Hex (spider)
-	[210873] = "Incapacitate", -- Hex (raptor)
-	[211015] = "Incapacitate", -- Hex (cockroach)
-	[211010] = "Incapacitate", -- Hex (snake)
-	-- Warlock
-	[   710] = "Incapacitate", -- Banish
-	[  6789] = "Incapacitate", -- Mortal Coil
-	-- Pandaren
-	[107079] = "Incapacitate", -- Quaking Palm
-	-- Demon Hunter
-	[217832] = "Incapacitate", -- Imprison
-	[221527] = "Incapacitate", -- Improved Imprison
+	[  5211] = "Stun",	-- Mighty Bash
+	[108194] = "Stun",	-- Asphyxiate
+	[199804] = "Stun",	-- Between the Eyes
+	[118905] = "Stun",	-- Static Charge
+	[  1833] = "Stun",	-- Cheap Shot
+	[   853] = "Stun",	-- Hammer of Justice
+	[117526] = "Stun",	-- Binding Shot
+	[179057] = "Stun",	-- Chaos Nova
+	[207171] = "Stun",	-- Winter is Coming
+	[132169] = "Stun",	-- Storm Bolt
+	[   408] = "Stun",	-- Kidney Shot
+	[163505] = "Stun",	-- Rake
+	[119381] = "Stun",	-- Leg Sweep UNCONFIRMED SPELLID & CATEGORY
+	[232055] = "Stun",	-- Fists of Fury
+	[ 89766] = "Stun",	-- Axe Toss
+	[ 30283] = "Stun",	-- Shadowfury UNCONFIRMED SPELLID & CATEGORY
+	[200166] = "Stun",	-- Metamorphosis Stun
+	[226943] = "Stun",	-- Mind Bomb
+	[ 24394] = "Stun",	-- Intimidation
+	[211881] = "Stun",	-- Fel Eruption UNCONFIRMED SPELLID
+	[221562] = "Stun",	-- Asphyxiate, Blood Spec UNCONFIRMED SPELLID
+	[ 91800] = "Stun",	-- Gnaw UNCONFIRMED SPELLID
+	[ 91797] = "Stun",	-- Monstrous Blow UNCONFIRMED SPELLID
+	[205630] = "Stun",	-- Illidan's Grasp UNCONFIRMED SPELLID & CATEGORY
+	[208618] = "Stun",	-- Illidan's Grasp UNCONFIRMED SPELLID & CATEGORY
+	[203123] = "Stun",	-- Maim UNCONFIRMED SPELLID
+	[200200] = "Stun",	-- Holy Word: Chastise, Censure Talent UNCONFIRMED CATEGORY
+	[118345] = "Stun",	-- Pulverize UNCONFIRMED SPELLID
+	[ 22703] = "Stun",	-- Infernal Awakening UNCONFIRMED SPELLID
+	[132168] = "Stun",	-- Shockwave UNCONFIRMED SPELLID
+	[ 20549] = "Stun",	-- War Stomp UNCONFIRMED SPELLID
 	
-	--[[ SILENCES ]]--
-	-- Death Knight
-	[ 47476] = "Silence", -- Strangulate
-	-- Demon Hunter
-	[204490] = "Silence", -- Sigil of Silence
-	-- Druid
-	-- Hunter
-	[202933] = "Silence", -- Spider Sting (pvp talent)
-	-- Mage
-	-- Paladin
-	[ 31935] = "Silence", -- Avenger's Shield
-	-- Priest
-	[ 15487] = "Silence", -- Silence
-	[199683] = "Silence", -- Last Word (SW: Death silence)
-	-- Rogue
-	[  1330] = "Silence", -- Garrote
-	-- Blood Elf
-	[ 25046] = "Silence", -- Arcane Torrent (Energy version)
-	[ 28730] = "Silence", -- Arcane Torrent (Priest/Mage/Lock version)
-	[ 50613] = "Silence", -- Arcane Torrent (Runic power version)
-	[ 69179] = "Silence", -- Arcane Torrent (Rage version)
-	[ 80483] = "Silence", -- Arcane Torrent (Focus version)
-	[129597] = "Silence", -- Arcane Torrent (Monk version)
-	[155145] = "Silence", -- Arcane Torrent (Paladin version)
-	[202719] = "Silence", -- Arcane Torrent (DH version)
+	[ 33786] = "Disorient",	-- Cyclone
+	[209753] = "Disorient",	-- Cyclone, Honor Talent
+	[  5246] = "Disorient",	-- Intimidating Shout
+	[238559] = "Disorient",	-- Bursting Shot
+	[  8122] = "Disorient",	-- Psychic Scream
+	[  2094] = "Disorient",	-- Blind
+	[  5484] = "Disorient",	-- Howl of Terror UNCONFIRMED SPELLID
+	[   605] = "Disorient",	-- Mind Control
+	[105421] = "Disorient",	-- Blinding Light
+	[207167] = "Disorient",	-- Blinding Sleet UNCONFIRMED SPELLID & CATEGORY
+	[ 31661] = "Disorient",	-- Dragon's Breath UNCONFIRMED SPELLID & CATEGORY
+	[207685] = "Disorient", -- Sigil of Misery UNCONFIRMED SPELLID & CATEGORY
+	[198909] = "Disorient", -- Song of Chi-ji UNCONFIRMED SPELLID & CATEGORY
+	[202274] = "Disorient", -- Incendiary Brew UNCONFIRMED SPELLID & CATEGORY
+	[  5782] = "Disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
+	[118699] = "Disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
+	[130616] = "Disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
+	[115268] = "Disorient", -- Mesmerize UNCONFIRMED SPELLID & CATEGORY
+	[  6358] = "Disorient", -- Seduction UNCONFIRMED SPELLID & CATEGORY
 	
-	--[[ DISORIENTS ]]--
-	-- Death Knight
-	[207167] = "Disorient", -- Blinding Sleet (talent) -- FIXME: is this the right category?
-	-- Demon Hunter
-	[207685] = "Disorient", -- Sigil of Misery
-	-- Druid
-	[ 33786] = "Disorient", -- Cyclone
-	[209753] = "Disorient", -- Cyclone (Balance)
-	-- Hunter
-	[186387] = "Disorient", -- Bursting Shot
-	-- Mage
-	[ 31661] = "Disorient", -- Dragon's Breath
-	-- Monk
-	[198909] = "Disorient", -- Song of Chi-ji -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
-	[202274] = "Disorient", -- Incendiary Brew -- FIXME: is this the right category( tooltip specifically says disorient, so I guessed here)
-	-- Paladin
-	[105421] = "Disorient", -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
-	-- Priest
-	[  8122] = "Disorient", -- Psychic Scream
-	-- Rogue
-	[  2094] = "Disorient", -- Blind
-	-- Warlock
-	[  5782] = "Disorient", -- Fear -- probably unused
-	[118699] = "Disorient", -- Fear -- new debuff ID since MoP
-	[130616] = "Disorient", -- Fear (with Glyph of Fear)
-	[  5484] = "Disorient", -- Howl of Terror (talent)
-	[115268] = "Disorient", -- Mesmerize (Shivarra)
-	[  6358] = "Disorient", -- Seduction (Succubus)
-	-- Warrior
-	[  5246] = "Disorient", -- Intimidating Shout (main target)
+	[ 51514] = "Incapacitate",	-- Hex UNCONFIRMED SPELLID
+	[211004] = "Incapacitate",	-- Hex: Spider UNCONFIRMED SPELLID
+	[210873] = "Incapacitate",	-- Hex: Raptor UNCONFIRMED SPELLID
+	[211015] = "Incapacitate",	-- Hex: Cockroach UNCONFIRMED SPELLID
+	[211010] = "Incapacitate",	-- Hex: Snake UNCONFIRMED SPELLID
+	[   118] = "Incapacitate",	-- Polymorph
+	[ 61305] = "Incapacitate",	-- Polymorph: Black Cat UNCONFIRMED SPELLID
+	[ 28272] = "Incapacitate",	-- Polymorph: Pig UNCONFIRMED SPELLID
+	[ 61721] = "Incapacitate",	-- Polymorph: Rabbit UNCONFIRMED SPELLID
+	[ 61780] = "Incapacitate",	-- Polymorph: Turkey UNCONFIRMED SPELLID
+	[ 28271] = "Incapacitate",	-- Polymorph: Turtle UNCONFIRMED SPELLID
+	[161353] = "Incapacitate",	-- Polymorph: Polar Bear Cub UNCONFIRMED SPELLID
+	[126819] = "Incapacitate",	-- Polymorph: Porcupine UNCONFIRMED SPELLID
+	[161354] = "Incapacitate",	-- Polymorph: Monkey UNCONFIRMED SPELLID
+	[161355] = "Incapacitate",	-- Polymorph: Penguin UNCONFIRMED SPELLID
+	[161372] = "Incapacitate",	-- Polymorph: Peacock UNCONFIRMED SPELLID
+	[  3355] = "Incapacitate",	-- Freezing Trap
+	[203337] = "Incapacitate",	-- Freezing Trap, Diamond Ice Honor Talent UNCONFIRMED CATEGORY
+	[115078] = "Incapacitate",	-- Paralysis
+	[213691] = "Incapacitate",	-- Scatter Shot
+	[  6770] = "Incapacitate",	-- Sap
+	[199743] = "Incapacitate",	-- Parley UNCONFIRMED SPELLID
+	[ 20066] = "Incapacitate",	-- Repentance
+	[ 19386] = "Incapacitate",	-- Wyvern Sting
+	[  6789] = "Incapacitate",	-- Mortal Coil UNCONFIRMED SPELLID & CATEGORY
+	[200196] = "Incapacitate",	-- Holy Word: Chastise
+	[221527] = "Incapacitate",	-- Imprison, Detainment Honor Talent UNCONFIRMED CATEGORY
+	[217832] = "Incapacitate",	-- Imprison UNCONFIRMED CATEGORY
+	[    99] = "Incapacitate",	-- Incapacitating Roar UNCONFIRMED SPELLID
+	[ 82691] = "Incapacitate",	-- Ring of Frost UNCONFIRMED SPELLID
+	[  9484] = "Incapacitate",	-- Shackle Undead UNCONFIRMED SPELLID
+	[ 64044] = "Incapacitate",	-- Psychic Horror UNCONFIRMED SPELLID & CATEGORY
+	[  1776] = "Incapacitate",	-- Gouge UNCONFIRMED SPELLID
+	[   710] = "Incapacitate",	-- Banish UNCONFIRMED SPELLID & CATEGORY
+	[107079] = "Incapacitate",	-- Quaking Palm UNCONFIRMED SPELLID & CATEGORY
 	
-	--[[ STUNS ]]--
-	-- Death Knight
-	-- Abomination's Might note: 207165 is the stun, but is never applied to players,
-	-- so I haven't included it.
-	[108194] = "Stun", -- Asphyxiate (talent for unholy)
-	[221562] = "Stun", -- Asphyxiate (baseline for blood)
-	[ 91800] = "Stun", -- Gnaw (Ghoul)
-	[ 91797] = "Stun", -- Monstrous Blow (Dark Transformation Ghoul)
-	[207171] = "Stun", -- Winter is Coming (Remorseless winter stun)
-	-- Demon Hunter
-	[179057] = "Stun", -- Chaos Nova
-	[200166] = "Stun", -- Metamorphosis
-	[205630] = "Stun", -- Illidan's Grasp, primary effect
-	[208618] = "Stun", -- Illidan's Grasp, secondary effect
-	[211881] = "Stun", -- Fel Eruption
-	-- Druid
-	[203123] = "Stun", -- Maim
-	[  5211] = "Stun", -- Mighty Bash
-	[163505] = "Stun", -- Rake (Stun from Prowl)
-	-- Hunter
-	[117526] = "Stun", -- Binding Shot
-	[ 24394] = "Stun", -- Intimidation
-	-- Mage
-
-	-- Monk
-	[120086] = "Stun", -- Fists of Fury (with Heavy-Handed Strikes, pvp talent)
-	[232055] = "Stun", -- Fists of Fury (new ID in 7.1)
-	[119381] = "Stun", -- Leg Sweep
-	-- Paladin
-	[   853] = "Stun", -- Hammer of Justice
-	-- Priest
-	[200200] = "Stun", -- Holy word: Chastise
-	[226943] = "Stun", -- Mind Bomb
-	-- Rogue
-	-- Shadowstrike note: 196958 is the stun, but it never applies to players,
-	-- so I haven't included it.
-	[  1833] = "Stun", -- Cheap Shot
-	[   408] = "Stun", -- Kidney Shot
-	[199804] = "Stun", -- Between the Eyes
-	-- Shaman
-	[118345] = "Stun", -- Pulverize (Primal Earth Elemental)
-	[118905] = "Stun", -- Static Charge (Capacitor Totem)
-	[204399] = "Stun", -- Earthfury (pvp talent)
-	-- Warlock
-	[ 89766] = "Stun", -- Axe Toss (Felguard)
-	[ 30283] = "Stun", -- Shadowfury
-	[ 22703] = "Stun", -- Summon Infernal
-	-- Warrior
-	[132168] = "Stun", -- Shockwave
-	[132169] = "Stun", -- Storm Bolt
-	-- Tauren
-	[ 20549] = "Stun", -- War Stomp
+	[   339] = "Root",	-- Entangling Roots
+	[   122] = "Root",	-- Frost Nova
+	[102359] = "Root",	-- Mass Entanglement
+	[ 64695] = "Root",	-- Earthgrab
+	[200108] = "Root",	-- Ranger's Net
+	[212638] = "Root",	-- Tracker's Net
+	[162480] = "Root",	-- Steel Trap
+	[204085] = "Root",	-- Deathchill UNCONFIRMED IF THIS IS ON DR TABLE
+	[233582] = "Root",	-- Entrenched in Flame UNCONFIRMED IF THIS IS ON DR TABLE
+	[201158] = "Root",	-- Super Sticky Tar UNCONFIRMED SPELLID
+	[ 33395] = "Root",	-- Freeze UNCONFIRMED SPELLID
+	[228600] = "Root",	-- Glacial Spike UNCONFIRMED IF THIS IS ON DR TABLE
+	[116706] = "Root",	-- Disable UNCONFIRMED SPELLID
 	
-	--[[ ROOTS ]]--
-	-- Death Knight
-	[ 96294] = "Root", -- Chains of Ice (Chilblains Root)
-	[204085] = "Root", -- Deathchill (pvp talent)
-	-- Druid
-	[   339] = "Root", -- Entangling Roots
-	[102359] = "Root", -- Mass Entanglement (talent)
-	[ 45334] = "Root", -- Immobilized (wild charge, bear form)
-	-- Hunter
-	[ 53148] = "Root", -- Charge (Tenacity pet)
-	[162480] = "Root", -- Steel Trap
-	[190927] = "Root", -- Harpoon
-	[200108] = "Root", -- Ranger's Net
-	[212638] = "Root", -- tracker's net
-	[201158] = "Root", -- Super Sticky Tar (Expert Trapper, Hunter talent, Tar Trap effect)
-	-- Mage
-	[   122] = "Root", -- Frost Nova
-	[ 33395] = "Root", -- Freeze (Water Elemental)
-	-- [157997] = "Root", -- Ice Nova -- since 6.1, ice nova doesn't DR with anything
-	[228600] = "Root", -- Glacial spike (talent)
-	-- Monk
-	[116706] = "Root", -- Disable
-	-- Priest
-	-- Shaman
-	[ 64695] = "Root", -- Earthgrab Totem
-	
-	--[[ KNOCKBACK ]]--
-	-- Death Knight
-	--[108199] = "Knockback", -- Gorefiend's Grasp
-	-- Druid
-	--[102793] = "Knockback", -- Ursol's Vortex
-	--[132469] = "Knockback", -- Typhoon
-	-- Hunter
-	-- Shaman
-	--[ 51490] = "Knockback", -- Thunderstorm
-	-- Warlock
-	--[  6360] = "Knockback", -- Whiplash
-	--[115770] = "Knockback", -- Fellash
+	[ 81261] = "Silence",	-- Solar Beam
+	[ 25046] = "Silence",	-- Arcane Torrent
+	[ 28730] = "Silence",	-- Arcane Torrent
+	[ 50613] = "Silence",	-- Arcane Torrent
+	[ 69179] = "Silence",	-- Arcane Torrent
+	[ 80483] = "Silence",	-- Arcane Torrent
+	[129597] = "Silence",	-- Arcane Torrent
+	[155145] = "Silence",	-- Arcane Torrent
+	[202719] = "Silence",	-- Arcane Torrent
+	[202933] = "Silence",	-- Spider Sting
+	[  1330] = "Silence",	-- Garrote
+	[ 15487] = "Silence",	-- Silence UNCONFIRMED SPELLID
+	[199683] = "Silence",	-- Last Word UNCONFIRMED IF THIS IS ON DR TABLE
+	[ 47476] = "Silence",	-- Strangulate UNCONFIRMED SPELLID
+	[204490] = "Silence",	-- Sigil of Silence UNCONFIRMED SPELLID
 }
