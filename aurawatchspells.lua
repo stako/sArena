@@ -24,22 +24,24 @@ sArena.AuraWatch.Spells = {
 	226943,	-- Mind Bomb (Stun)
 	24394,	-- Intimidation (Stun)
 	211881,	-- Fel Eruption (Stun) UNCONFIRMED
-	221562,	-- Asphyxiate, Blood Spec UNCONFIRMED
-	91800,	-- Gnaw UNCONFIRMED
-	91797,	-- Monstrous Blow UNCONFIRMED
-	205630,	-- Illidan's Grasp UNCONFIRMED
-	208618,	-- Illidan's Grasp UNCONFIRMED
-	203123,	-- Maim UNCONFIRMED
-	200200,	-- Holy Word: Chastise, Censure Talent
-	118345,	-- Pulverize UNCONFIRMED
-	22703,	-- Infernal Awakening UNCONFIRMED
-	132168,	-- Shockwave UNCONFIRMED
-	20549,	-- War Stomp UNCONFIRMED
+	221562,	-- Asphyxiate, Blood Spec (Stun) UNCONFIRMED
+	91800,	-- Gnaw (Stun) UNCONFIRMED
+	91797,	-- Monstrous Blow (Stun) UNCONFIRMED
+	205630,	-- Illidan's Grasp (Stun)
+	208618,	-- Illidan's Grasp (Stun)
+	203123,	-- Maim (Stun) UNCONFIRMED
+	200200,	-- Holy Word: Chastise, Censure Talent (Stun)
+	118345,	-- Pulverize (Stun)
+	22703,	-- Infernal Awakening (Stun) UNCONFIRMED
+	132168,	-- Shockwave (Stun) UNCONFIRMED
+	20549,	-- War Stomp (Stun) UNCONFIRMED
+	199085,	-- Warpath (Stun)
 	
 	33786,	-- Cyclone (Disorient)
 	209753,	-- Cyclone, Honor Talent (Disorient)
 	5246,	-- Intimidating Shout (Disorient)
 	238559,	-- Bursting Shot (Disorient)
+	224729,	-- Bursting Shot on NPC's (Disorient)
 	8122,	-- Psychic Scream (Disorient)
 	2094,	-- Blind (Disorient)
 	5484,	-- Howl of Terror (Disorient) UNCONFIRMED
@@ -47,7 +49,7 @@ sArena.AuraWatch.Spells = {
 	105421,	-- Blinding Light (Disorient)
 	207167,	-- Blinding Sleet (Disorient) UNCONFIRMED
 	31661,	-- Dragon's Breath (Disorient) UNCONFIRMED
-	207685,	-- Sigil of Misery UNCONFIRMED
+	207685,	-- Sigil of Misery
 	198909,	-- Song of Chi-ji UNCONFIRMED
 	202274,	-- Incendiary Brew UNCONFIRMED
 	5782,	-- Fear UNCONFIRMED
@@ -91,6 +93,7 @@ sArena.AuraWatch.Spells = {
 	1776,	-- Gouge (Incapacitate) UNCONFIRMED
 	710,	-- Banish (Incapacitate) UNCONFIRMED
 	107079,	-- Quaking Palm (Incapacitate) UNCONFIRMED
+	236025,	-- Enraged Maim (Incapacitate) UNCONFIRMED
 	
 	-- Immunities
 	642,	-- Divine Shield
@@ -105,6 +108,7 @@ sArena.AuraWatch.Spells = {
 	
 	-- Anti CCs
 	23920,	-- Spell Reflection
+	213610,	-- Holy Ward
 	212295,	-- Nether Ward
 	48707,	-- Anti-Magic Shell
 	5384,	-- Feign Death
@@ -192,191 +196,8 @@ sArena.AuraWatch.Spells = {
 	
 	-- Miscellaneous
 	236077,	-- Disarm
+	199450,	-- Ultimate Sacrifice
 	1044,	-- Blessing of Freedom
 	195901,	-- Adapted (Adaptation Honor Talent)
+	195488,	-- Vim and Vigor
 }
-
---[[sArena.AuraWatch.Spells = {
-	-- Higher up = higher display priority
-
-	-- CCs
-	33786,	-- Cyclone
-	209753, -- Cyclone (Balance)
-	108194,	-- Asphyxiate
-	91800,	-- Gnaw
-	47481,	-- Gnaw
-	91797,	-- Monstrous Blow (Dark Transformation)
-	99,		-- Incapacitating Roar
-	163505,	-- Rake Stun
-	22570,	-- Maim
-	5211,	-- Mighty Bash
-	3355,	-- Freezing Trap
-	209790, -- Freezing Arrow
-	117526,	-- Binding Shot
-	19386,	-- Wyvern Sting
-	24394,	-- Intimidation
-	31661,	-- Dragon's Breath
-	118,	-- Polymorph
-	61305,	-- Polymorph: Black Cat
-	28272,	-- Polymorph: Pig
-	61721,	-- Polymorph: Rabbit
-	61780,	-- Polymorph: Turkey
-	28271,	-- Polymorph: Turtle
-	161353,	-- Polymorph: Polar Bear Cub
-	213691,	-- Scatter Shot
-	82691,	-- Ring of Frost	
-	120086,	-- Fists of Fury (with Heavy-Handed Strikes, pvp talent)
-	232055, -- Fists of Fury
-	119381,	-- Leg Sweep
-	115078,	-- Paralysis
-	105421,	-- Blinding Light
-	853,	-- Hammer of Justice
-	20066,	-- Repentance
-	605,	-- Mind Control
-	88625,	-- Holy Word: Chastise
-	64044,	-- Psychic Horror
-	8122,	-- Psychic Scream
-	9484,	-- Shackle Undead
-	226943,	-- Mind Bomb Stun
-	87204,	-- Sin and Punishment
-	2094,	-- Blind
-	1833,	-- Cheap Shot
-	1776,	-- Gouge
-	408,	-- Kidney Shot
-	199804,	-- Between the Eyes
-	6770,	-- Sap
-	51514,	-- Hex
-	118905,	-- Static Charge (Lightning Surge Totem)
-	118345,	-- Pulverize
-	118699,	-- Fear
-	130616,	-- Fear (Glyph of Fear)
-	5484,	-- Howl of Terror
-	6789,	-- Mortal Coil
-	30283,	-- Shadowfury
-	22703,	-- Infernal Awakening Stun
-	89766,	-- Axe Toss (Felguard/Wrathguard)
-	115268,	-- Mesmerize (Shivarra)
-	6358,	-- Seduction (Succubus)
-	5246,	-- Intimidating Shout (aoe)
-	132168,	-- Shockwave
-	46968,	-- Shockwave
-	132169,	-- Storm Bolt
-	20549,	-- War Stomp
-	238559,	-- Bursting Shot
-	7922,	-- Warbringer Charge Stun
-	77505,	-- Earthquake Stun
-	107079,	-- Quaking Palm
-	179057,	-- Chaos Nova
-	200166,	-- Metamorphosis Stun
-	205630,	-- Illidan's Grasp
-	208618,	-- Illidans' Grasp
-	221527,	-- Improved Imprison
-	217832, -- Imprison
-	
-	-- Roots
-	122, 	-- Frost Nova
-	33395, 	-- Freeze
-	339, 	-- Entangling Roots
-	170855, -- Entangling Roots (Nature's Grasp)
-	201158,	-- Super Sticky Tar
-	212638, -- Tracker's Net
-	64695,	-- Earthgrab Totem
-	96294, 	-- Chains of Ice
-	102359, -- Mass Entanglement
-	114404, -- Void Tendrils
-	116706, -- Disable
-	135373, -- Entrapment
-	136634, -- Narrow Escape
-	55536, 	-- Frostweave Net
-	157997,	-- Ice Nova
-	45334,	-- Wild Charge
-	16979,	-- Wild Charge
-	162480, -- Steel Trap
-
-	-- Immune
-	19263,	-- Deterrence
-	186265, -- Aspect of the Turtle
-	45438,	-- Ice Block
-	642,	-- Divine Shield    
-	115018,	-- Desecrated Ground
-	31821,	-- Aura Mastery
-	1022,	-- Hand of Protection
-	47585,	-- Dispersion
-	31224,	-- Cloak of Shadows
-	8178,	-- Grounding Totem Effect (Grounding Totem)
-	76577,	-- Smoke Bomb
-	88611,	-- Smoke Bomb
-	46924,	-- Bladestorm
-
-	-- Anti CC
-	48792,	-- Icebound Fortitude
-	48707,	-- Anti-Magic Shell
-	23920,	-- Spell Reflection
-	114028,	-- Mass Spell Reflection
-	5384,	-- Feign Death
-
-	-- Silence
-	47476,	-- Strangulate
-	81261,	-- Solar Beam
-	15487,	-- Silence (Priest)
-	1330,	-- Garrote - Silence
-	31117,	-- Unstable Affliction Silence
-	31935,	-- Avenger's Shield Silence
-	28730,	-- Arcane Torrent (Mana version)
-	80483,	-- Arcane Torrent (Focus version)
-	25046,	-- Arcane Torrent (Energy version)
-	50613,	-- Arcane Torrent (Runic Power version)
-	69179,	-- Arcane Torrent (Rage version)
-
-	-- Offensive Buffs
-	51690,	-- Killing Spree
-	13750,	-- Adrenaline Rush
-	31884,	-- Avenging Wrath
-	1719,	-- Battle Cry
-	102543,	-- Incarnation: King of the Jungle
-	106951,	-- Berserk
-	102560,	-- Incarnation: Chosen of Elune
-	12472,	-- Icy Veins
-	193526, -- Trueshot
-	19574,	-- Bestial Wrath
-	186289,	-- Aspect of the Eagle
-	51271,	-- Pillar of Frost
-	152279,	-- Breath of Sindragosa
-	105809,	-- Holy Avenger
-	16166,	-- Elemental Mastery
-	114050,	-- Ascendance
-	107574,	-- Avatar
-	121471,	-- Shadow Blades
-	12292,	-- Bloodbath
-	162264,	-- Metamorphosis
-	
-
-	-- Defensive Buffs
-	122470,	-- Touch of Karma
-	116849,	-- Life Cocoon
-	33206,	-- Pain Suppression
-	49039,	-- Lichborne
-	5277,	-- Evasion
-	199754,	-- Riposte
-	108359,	-- Dark Regeneration
-	104773,	-- Unending Resolve
-	18499,	-- Berserker Rage
-	61336,	-- Survival Instincts
-	22812,	-- Barkskin
-	102342,	-- Iron Bark
-	6940,	-- Hand of Sacrifice
-	110909,	-- Alter Time
-	118038,	-- Die by the Sword
-	33891,	-- Incarnation: Tree of Life
-	74001,	-- Combat Readiness
-	108271,	-- Astral Shift
-	108416,	-- Dark Pact
-	47788,	-- Guardian Spirit
-	122783,	-- Diffuse Magic
-	12975,	-- Last Stand
-	871,	-- Shield Wall
-	212800,	-- Blur
-	55233,	-- Vampiric Blood
-	194679,	-- Rune Tap
-	207319,	-- Corpse Shield
-}]]

@@ -10,8 +10,7 @@ sArena.AuraWatch.DefaultSettings = {
 	Alpha = 0.5,
 }
 
-local DEBUFF_MAX_DISPLAY = DEBUFF_MAX_DISPLAY
-local BUFF_MAX_DISPLAY = BUFF_MAX_DISPLAY
+local select, DEBUFF_MAX_DISPLAY, BUFF_MAX_DISPLAY, SetPortraitToTexture = select, DEBUFF_MAX_DISPLAY, BUFF_MAX_DISPLAY, SetPortraitToTexture
 
 function sArena.AuraWatch:ADDON_LOADED()
 	if ( not sArenaDB.AuraWatch ) then
