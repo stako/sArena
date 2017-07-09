@@ -101,6 +101,7 @@ sArena.AuraWatch.Spells = {
 	45438,	-- Ice Block
 	47585,	-- Dispersion
 	1022,	-- Blessing of Protection
+	216113,	-- Way of the Crane
 	31224,	-- Cloak of Shadows UNCONFIRMED
 	212182,	-- Smoke Bomb UNCONFIRMED
 	212183,	-- Smoke Bomb UNCONFIRMED
@@ -167,16 +168,18 @@ sArena.AuraWatch.Spells = {
 	12472,	-- Icy Veins
 	198144,	-- Ice Form
 	31884,	-- Avenging Wrath (Retribution) UNCONFIRMED
-	196098,	-- Soul Harvest UNCONFIRMED
+	196098,	-- Soul Harvest
 	
 	-- Defensive Buffs
 	210256,	-- Blessing of Sanctuary UNCONFIRMED
 	6940,	-- Blessing of Sacrifice UNCONFIRMED
+	122470,	-- Touch of Karma
 	5277,	-- Evasion
 	199754,	-- Riposte
 	212800,	-- Blur
 	102342,	-- Ironbark
 	22812,	-- Barkskin
+	198065,	-- Prismatic Cloak
 	198111,	-- Temporal Shield
 	108271,	-- Astral Shift
 	114052,	-- Ascendance
