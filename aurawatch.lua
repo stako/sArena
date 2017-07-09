@@ -46,6 +46,7 @@ function sArena.AuraWatch:ADDON_LOADED()
 		sArena.AuraWatch["arena"..i].Text:SetPoint("CENTER", sArena.AuraWatch["arena"..i], "CENTER", 0, 1)
 		
 		sArena.AuraWatch["arena"..i].classPortrait = ArenaFrame.classPortrait
+		
 	end
 end
 
@@ -92,12 +93,9 @@ function sArena.AuraWatch:UNIT_AURA(unitID)
 			local name, rank = GetSpellInfo(spellId)
 			local _, _, icon, _, _, duration, expires = UnitAura(unitID, name, rank, filter)
 			CooldownFrame_Set(sArena.AuraWatch[unitID], expires - duration, duration, 1, true)
-			if ( sArena.AuraWatch[unitID].Icon == icon ) then return end
 			SetPortraitToTexture(sArena.AuraWatch[unitID].classPortrait, icon)
-			sArena.AuraWatch[unitID].Icon = icon
 			sArena.AuraWatch[unitID].classPortrait:SetTexCoord(0,1,0,1)
 		elseif ( UnitClass(unitID) ) then
-			sArena.AuraWatch[unitID].Icon = nil
 			sArena.AuraWatch[unitID].classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 			sArena.AuraWatch[unitID].classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass(unitID))]))
 			CooldownFrame_Set(sArena.AuraWatch[unitID], 0, 0, 0, true)
