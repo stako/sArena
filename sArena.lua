@@ -103,6 +103,12 @@ function sArena:ADDON_LOADED(arg1)
 			
 			ArenaFrame.CC:SetMovable(true)
 			
+			for _, region in next, {ArenaFrame.CC.Cooldown:GetRegions()} do
+				if ( region:GetObjectType() == "FontString" ) then
+					region:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
+				end
+			end
+			
 			if ( sArenaDB.NewTrinkets ) then
 				ArenaFrame.CC:ClearAllPoints()
 				ArenaFrame.CC:SetPoint(sArenaDB.NewTrinkets[1], ArenaFrame.CC:GetParent(), sArenaDB.NewTrinkets[2], sArenaDB.NewTrinkets[3])
