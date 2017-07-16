@@ -16,27 +16,27 @@ sArena.AuraWatch.Spells = {
 	132169,	-- Storm Bolt (Stun)
 	408,	-- Kidney Shot (Stun)
 	163505,	-- Rake (Stun)
-	119381,	-- Leg Sweep (Stun) UNCONFIRMED
+	119381,	-- Leg Sweep (Stun)
 	232055,	-- Fists of Fury (Stun)
 	89766,	-- Axe Toss (Stun)
-	30283,	-- Shadowfury (Stun) UNCONFIRMED
+	30283,	-- Shadowfury (Stun)
 	200166,	-- Metamorphosis (Stun)
 	226943,	-- Mind Bomb (Stun)
 	24394,	-- Intimidation (Stun)
-	211881,	-- Fel Eruption (Stun) UNCONFIRMED
-	221562,	-- Asphyxiate, Blood Spec (Stun) UNCONFIRMED
-	91800,	-- Gnaw (Stun) UNCONFIRMED
-	91797,	-- Monstrous Blow (Stun) UNCONFIRMED
+	211881,	-- Fel Eruption (Stun)
+	221562,	-- Asphyxiate, Blood Spec (Stun)
+	91800,	-- Gnaw (Stun)
+	91797,	-- Monstrous Blow (Stun)
 	205630,	-- Illidan's Grasp (Stun)
 	208618,	-- Illidan's Grasp (Stun)
-	203123,	-- Maim (Stun) UNCONFIRMED
+	203123,	-- Maim (Stun)
 	200200,	-- Holy Word: Chastise, Censure Talent (Stun)
 	118345,	-- Pulverize (Stun)
-	22703,	-- Infernal Awakening (Stun) UNCONFIRMED
-	132168,	-- Shockwave (Stun) UNCONFIRMED
-	20549,	-- War Stomp (Stun) UNCONFIRMED
+	22703,	-- Infernal Awakening (Stun)
+	132168,	-- Shockwave (Stun)
+	20549,	-- War Stomp (Stun)
 	199085,	-- Warpath (Stun)
-	
+
 	33786,	-- Cyclone (Disorient)
 	209753,	-- Cyclone, Honor Talent (Disorient)
 	5246,	-- Intimidating Shout (Disorient)
@@ -44,57 +44,57 @@ sArena.AuraWatch.Spells = {
 	224729,	-- Bursting Shot on NPC's (Disorient)
 	8122,	-- Psychic Scream (Disorient)
 	2094,	-- Blind (Disorient)
-	5484,	-- Howl of Terror (Disorient) UNCONFIRMED
+	5484,	-- Howl of Terror (Disorient)
 	605,	-- Mind Control (Disorient)
 	105421,	-- Blinding Light (Disorient)
-	207167,	-- Blinding Sleet (Disorient) UNCONFIRMED
-	31661,	-- Dragon's Breath (Disorient) UNCONFIRMED
+	207167,	-- Blinding Sleet (Disorient)
+	31661,	-- Dragon's Breath (Disorient)
 	207685,	-- Sigil of Misery
-	198909,	-- Song of Chi-ji UNCONFIRMED
-	202274,	-- Incendiary Brew UNCONFIRMED
-	5782,	-- Fear UNCONFIRMED
-	118699,	-- Fear UNCONFIRMED
-	130616,	-- Fear UNCONFIRMED
-	115268,	-- Mesmerize UNCONFIRMED
-	6358,	-- Seduction UNCONFIRMED
-	
-	51514,	-- Hex (Incapacitate) UNCONFIRMED
-	211004,	-- Hex: Spider (Incapacitate) UNCONFIRMED
-	210873,	-- Hex: Raptor (Incapacitate) UNCONFIRMED
-	211015,	-- Hex: Cockroach (Incapacitate) UNCONFIRMED
-	211010,	-- Hex: Snake (Incapacitate) UNCONFIRMED
+	198909,	-- Song of Chi-ji
+	202274,	-- Incendiary Brew
+	5782,	-- Fear
+	118699,	-- Fear
+	130616,	-- Fear
+	115268,	-- Mesmerize
+	6358,	-- Seduction
+
+	51514,	-- Hex (Incapacitate)
+	211004,	-- Hex: Spider (Incapacitate)
+	210873,	-- Hex: Raptor (Incapacitate)
+	211015,	-- Hex: Cockroach (Incapacitate)
+	211010,	-- Hex: Snake (Incapacitate)
 	118,	-- Polymorph (Incapacitate)
-	61305,	-- Polymorph: Black Cat (Incapacitate) UNCONFIRMED
-	28272,	-- Polymorph: Pig (Incapacitate) UNCONFIRMED
-	61721,	-- Polymorph: Rabbit (Incapacitate) UNCONFIRMED
-	61780,	-- Polymorph: Turkey (Incapacitate) UNCONFIRMED
-	28271,	-- Polymorph: Turtle (Incapacitate) UNCONFIRMED
-	161353,	-- Polymorph: Polar Bear Cub (Incapacitate) UNCONFIRMED
-	126819,	-- Polymorph: Porcupine (Incapacitate) UNCONFIRMED
-	161354,	-- Polymorph: Monkey (Incapacitate) UNCONFIRMED
-	161355,	-- Polymorph: Penguin (Incapacitate) UNCONFIRMED
-	161372,	-- Polymorph: Peacock (Incapacitate) UNCONFIRMED
+	61305,	-- Polymorph: Black Cat (Incapacitate)
+	28272,	-- Polymorph: Pig (Incapacitate)
+	61721,	-- Polymorph: Rabbit (Incapacitate)
+	61780,	-- Polymorph: Turkey (Incapacitate)
+	28271,	-- Polymorph: Turtle (Incapacitate)
+	161353,	-- Polymorph: Polar Bear Cub (Incapacitate)
+	126819,	-- Polymorph: Porcupine (Incapacitate)
+	161354,	-- Polymorph: Monkey (Incapacitate)
+	161355,	-- Polymorph: Penguin (Incapacitate)
+	161372,	-- Polymorph: Peacock (Incapacitate)
 	3355,	-- Freezing Trap (Incapacitate)
 	203337,	-- Freezing Trap, Diamond Ice Honor Talent (Incapacitate)
 	115078,	-- Paralysis (Incapacitate)
 	213691,	-- Scatter Shot (Incapacitate)
 	6770,	-- Sap (Incapacitate)
-	199743,	-- Parley (Incapacitate) UNCONFIRMED
+	199743,	-- Parley (Incapacitate)
 	20066,	-- Repentance (Incapacitate)
 	19386,	-- Wyvern Sting (Incapacitate)
-	6789,	-- Mortal Coil (Incapacitate) UNCONFIRMED
+	6789,	-- Mortal Coil (Incapacitate)
 	200196,	-- Holy Word: Chastise (Incapacitate)
 	221527,	-- Imprison, Detainment Honor Talent (Incapacitate)
 	217832,	-- Imprison (Incapacitate)
-	99,		-- Incapacitating Roar (Incapacitate) UNCONFIRMED
-	82691,	-- Ring of Frost (Incapacitate) UNCONFIRMED
-	9484,	-- Shackle Undead (Incapacitate) UNCONFIRMED
-	64044,	-- Psychic Horror (Incapacitate) UNCONFIRMED
-	1776,	-- Gouge (Incapacitate) UNCONFIRMED
-	710,	-- Banish (Incapacitate) UNCONFIRMED
-	107079,	-- Quaking Palm (Incapacitate) UNCONFIRMED
-	236025,	-- Enraged Maim (Incapacitate) UNCONFIRMED
-	
+	99,		-- Incapacitating Roar (Incapacitate)
+	82691,	-- Ring of Frost (Incapacitate)
+	9484,	-- Shackle Undead (Incapacitate)
+	64044,	-- Psychic Horror (Incapacitate)
+	1776,	-- Gouge (Incapacitate)
+	710,	-- Banish (Incapacitate)
+	107079,	-- Quaking Palm (Incapacitate)
+	236025,	-- Enraged Maim (Incapacitate)
+
 	-- Immunities
 	642,	-- Divine Shield
 	186265, -- Aspect of the Turtle
@@ -102,18 +102,19 @@ sArena.AuraWatch.Spells = {
 	47585,	-- Dispersion
 	1022,	-- Blessing of Protection
 	216113,	-- Way of the Crane
-	31224,	-- Cloak of Shadows UNCONFIRMED
-	212182,	-- Smoke Bomb UNCONFIRMED
-	212183,	-- Smoke Bomb UNCONFIRMED
+	31224,	-- Cloak of Shadows
+	212182,	-- Smoke Bomb
+	212183,	-- Smoke Bomb
 	8178,	-- Grounding Totem Effect
-	
+
 	-- Anti CCs
 	23920,	-- Spell Reflection
 	213610,	-- Holy Ward
 	212295,	-- Nether Ward
 	48707,	-- Anti-Magic Shell
 	5384,	-- Feign Death
-	
+	213602,	-- Greater Fade
+
 	-- Roots
 	339,	-- Entangling Roots
 	122,	-- Frost Nova
@@ -124,28 +125,31 @@ sArena.AuraWatch.Spells = {
 	162480,	-- Steel Trap
 	204085,	-- Deathchill
 	233582,	-- Entrenched in Flame
-	201158,	-- Super Sticky Tar UNCONFIRMED
-	33395,	-- Freeze UNCONFIRMED
+	201158,	-- Super Sticky Tar
+	33395,	-- Freeze
 	228600,	-- Glacial Spike
-	116706,	-- Disable UNCONFIRMED
-	
+	116706,	-- Disable
+
 	-- Silences
 	81261,	-- Solar Beam
-	25046,	-- Arcane Torrent UNCONFIRMED
-	28730,	-- Arcane Torrent UNCONFIRMED
-	50613,	-- Arcane Torrent UNCONFIRMED
-	69179,	-- Arcane Torrent UNCONFIRMED
-	80483,	-- Arcane Torrent UNCONFIRMED
+	25046,	-- Arcane Torrent
+	28730,	-- Arcane Torrent
+	50613,	-- Arcane Torrent
+	69179,	-- Arcane Torrent
+	80483,	-- Arcane Torrent
 	129597,	-- Arcane Torrent
-	155145,	-- Arcane Torrent UNCONFIRMED
-	202719,	-- Arcane Torrent UNCONFIRMED
+	155145,	-- Arcane Torrent
+	202719,	-- Arcane Torrent
 	202933,	-- Spider Sting
 	1330,	-- Garrote
-	15487,	-- Silence UNCONFIRMED
+	15487,	-- Silence
 	199683,	-- Last Word
-	47476,	-- Strangulate UNCONFIRMED
-	204490,	-- Sigil of Silence UNCONFIRMED
-	
+	47476,	-- Strangulate
+	31935,	-- Avenger's Shield
+	204490,	-- Sigil of Silence
+
+	236077,	-- Disarm
+
 	-- Offensive Buffs
 	186289,	-- Aspect of the Eagle
 	193526, -- Trueshot
@@ -155,11 +159,14 @@ sArena.AuraWatch.Spells = {
 	194223,	-- Celestial Alignment
 	1719,	-- Battle Cry
 	162264,	-- Metamorphosis
-	211048,	-- Chaos Blades UNCONFIRMED
+	211048,	-- Chaos Blades
 	190319,	-- Combustion
 	194249,	-- Voidform
 	51271,	-- Pillar of Frost
+	114051,	-- Ascendance (Enhancement)
+	114050,	-- Ascendance (Elemental)
 	107574,	-- Avatar
+	12292,	-- Bloodbath
 	204945,	-- Doom Winds
 	13750,	-- Adrenaline Rush
 	102543,	-- Incarnation: King of the Jungle
@@ -167,40 +174,47 @@ sArena.AuraWatch.Spells = {
 	12042,	-- Arcane Power
 	12472,	-- Icy Veins
 	198144,	-- Ice Form
-	31884,	-- Avenging Wrath (Retribution) UNCONFIRMED
+	31884,	-- Avenging Wrath (Retribution)
 	196098,	-- Soul Harvest
-	
+	16166,	-- Elemental Mastery
+	10060,	-- Power Infusion
+
 	-- Defensive Buffs
-	210256,	-- Blessing of Sanctuary UNCONFIRMED
-	6940,	-- Blessing of Sacrifice UNCONFIRMED
+	210256,	-- Blessing of Sanctuary
+	6940,	-- Blessing of Sacrifice
 	122470,	-- Touch of Karma
+	47788,	-- Guardian Spirit
 	5277,	-- Evasion
 	199754,	-- Riposte
 	212800,	-- Blur
 	102342,	-- Ironbark
 	22812,	-- Barkskin
+	33891,	-- Incarnation: Tree of Life
 	198065,	-- Prismatic Cloak
 	198111,	-- Temporal Shield
 	108271,	-- Astral Shift
-	114052,	-- Ascendance
+	114052,	-- Ascendance (Restoration)
 	207319,	-- Corpse Shield
 	104773,	-- Unending Resolve
 	48792,	-- Icebound Fortitude
-	55233,	-- Vampiric Blood UNCONFIRMED
+	55233,	-- Vampiric Blood
 	61336,	-- Survival Instincts
 	116849,	-- Life Cocoon
+	33206,	-- Pain Suppression
 	197862,	-- Archangel
 	31850,	-- Ardent Defender
 	120954,	-- Fortifying Brew
 	108416,	-- Dark Pact
-	216331,	-- Avenging Crusader UNCONFIRMED
-	31842,	-- Avenging Wrath (Holy) UNCONFIRMED
+	216331,	-- Avenging Crusader
+	31842,	-- Avenging Wrath (Holy)
+	118038,	-- Die by the Sword
+	12975,	-- Last Stand
+	498,	-- Divine Protection
+	871,	-- Shield Wall
+	53480,	-- Roar of Sacrifice
 	197690,	-- Defensive Stance
-	
+
 	-- Miscellaneous
-	236077,	-- Disarm
 	199450,	-- Ultimate Sacrifice
 	1044,	-- Blessing of Freedom
-	195901,	-- Adapted (Adaptation Honor Talent)
-	195488,	-- Vim and Vigor
 }
