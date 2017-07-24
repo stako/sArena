@@ -302,8 +302,8 @@ sArena.DRTracker.Spells = {
 	[233582] = "Root",	-- Entrenched in Flame UNCONFIRMED IF THIS IS ON DR TABLE
 	[201158] = "Root",	-- Super Sticky Tar UNCONFIRMED SPELLID
 	[ 33395] = "Root",	-- Freeze UNCONFIRMED SPELLID
-	[228600] = "Root",	-- Glacial Spike UNCONFIRMED IF THIS IS ON DR TABLE
 	[116706] = "Root",	-- Disable UNCONFIRMED SPELLID
+	[198121] = "Root",	-- Frostbite UNCONFIRMED IF THIS IS ON DR TABLE
 	
 	[ 81261] = "Silence",	-- Solar Beam
 	[ 25046] = "Silence",	-- Arcane Torrent

@@ -106,9 +106,11 @@ sArena.AuraWatch.Spells = {
 	212182,	-- Smoke Bomb
 	212183,	-- Smoke Bomb
 	8178,	-- Grounding Totem Effect
+	199448,	-- Blessing of Sacrifice
 
 	-- Anti CCs
 	23920,	-- Spell Reflection
+	216890, -- Spell Reflection (Honor Talent)
 	213610,	-- Holy Ward
 	212295,	-- Nether Ward
 	48707,	-- Anti-Magic Shell
@@ -171,6 +173,7 @@ sArena.AuraWatch.Spells = {
 	13750,	-- Adrenaline Rush
 	102543,	-- Incarnation: King of the Jungle
 	137639,	-- Storm, Earth, and Fire
+	152173,	-- Serenity
 	12042,	-- Arcane Power
 	12472,	-- Icy Veins
 	198144,	-- Ice Form
@@ -182,14 +185,14 @@ sArena.AuraWatch.Spells = {
 	-- Defensive Buffs
 	210256,	-- Blessing of Sanctuary
 	6940,	-- Blessing of Sacrifice
-	122470,	-- Touch of Karma
+	125174,	-- Touch of Karma
 	47788,	-- Guardian Spirit
 	5277,	-- Evasion
 	199754,	-- Riposte
 	212800,	-- Blur
 	102342,	-- Ironbark
 	22812,	-- Barkskin
-	33891,	-- Incarnation: Tree of Life
+	117679,	-- Incarnation: Tree of Life
 	198065,	-- Prismatic Cloak
 	198111,	-- Temporal Shield
 	108271,	-- Astral Shift
