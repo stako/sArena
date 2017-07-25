@@ -187,6 +187,7 @@ sArena.AuraWatch.Spells = {
 	6940,	-- Blessing of Sacrifice
 	125174,	-- Touch of Karma
 	47788,	-- Guardian Spirit
+	197268,	-- Ray of Hope
 	5277,	-- Evasion
 	199754,	-- Riposte
 	212800,	-- Blur
