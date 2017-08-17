@@ -2,7 +2,7 @@
 ## Title: sArena
 ## Notes: Enhanced arena frames.
 ## Author: Stako
-## Version: 1.2.7b
+## Version: 1.2.8
 ## RequiredDeps: Blizzard_ArenaUI
 
 ## SavedVariables: sArenaDB
