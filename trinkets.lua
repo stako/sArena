@@ -21,6 +21,7 @@ function sArena.Trinkets:ADDON_LOADED()
 
 		sArena.Trinkets["arena"..i] = CreateFrame("Frame", "sArenaTrinket"..i, ArenaFrame, "sArenaTrinketTemplate")
 		sArena.Trinkets["arena"..i].Cooldown = _G["sArenaTrinket"..i.."Cooldown"]
+		sArena.Trinkets["arena"..i].Icon = _G["sArenaTrinket"..i.."Icon"]
 		sArena.Trinkets["arena"..i]:SetScale(sArenaDB.Trinkets.Scale)
 		
 		for _, region in next, {sArena.Trinkets["arena"..i].Cooldown:GetRegions()} do
@@ -71,12 +72,22 @@ function sArena.Trinkets:ADDON_LOADED()
 	end)
 end
 
-function sArena.Trinkets:PLAYER_ENTERING_WORLD()
+--[[function sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	local instanceType = select(2, IsInInstance())
 	
 	if ( sArenaDB.Trinkets.Enabled and instanceType == "arena" ) then
 		sArena.Trinkets:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	elseif ( sArena.Trinkets:IsEventRegistered("UNIT_SPELLCAST_SUCCEEDED") ) then
+		sArena.Trinkets:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	end
+end]]
+
+function sArena.Trinkets:PLAYER_ENTERING_WORLD()
+	local instanceType = select(2, IsInInstance())
+	
+	if ( instanceType == "arena" ) then
+		sArena.Trinkets:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	else
 		sArena.Trinkets:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	end
 end
@@ -105,7 +116,7 @@ function sArena.Trinkets.GetRemainingTime(unitID)
 	end
 end
 
-function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
+--[[function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
 	if not sArena.Trinkets[unitID] then return end
 
 	-- If Medallion was used, activate cooldown timer for 2 or 3 minutes
@@ -116,6 +127,23 @@ function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
 		if sArena.Trinkets.GetRemainingTime(unitID) < 30000 then
 			CooldownFrame_Set(sArena.Trinkets[unitID].Cooldown, GetTime(), 30, 1, true)
 		end
+	end
+end]]
+
+local frames = {
+	["arena1"] = ArenaEnemyFrame1.CC.Cooldown,
+	["arena2"] = ArenaEnemyFrame2.CC.Cooldown,
+	["arena3"] = ArenaEnemyFrame3.CC.Cooldown,
+	["arena4"] = ArenaEnemyFrame4.CC.Cooldown,
+	["arena5"] = ArenaEnemyFrame5.CC.Cooldown,
+}
+
+function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
+	if not sArena.Trinkets[unitID] then return end
+
+	-- If Medallion was used, activate cooldown timer for 2 or 3 minutes
+	if sArena.Trinkets.Spells[spellID] then
+		CooldownFrame_Set(frames[unitID], GetTime(), sArena.Trinkets.Spells[spellID], 1, true)
 	end
 end
 

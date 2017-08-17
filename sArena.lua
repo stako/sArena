@@ -171,7 +171,7 @@ sArena.Frame:RegisterEvent("ADDON_LOADED")
 
 function sArena:PLAYER_ENTERING_WORLD()
 	sArena:TestMode(false)
-	--sArena.Trinkets:PLAYER_ENTERING_WORLD()
+	sArena.Trinkets:PLAYER_ENTERING_WORLD()
 	sArena.AuraWatch:PLAYER_ENTERING_WORLD()
 	sArena.DRTracker:PLAYER_ENTERING_WORLD()
 end
