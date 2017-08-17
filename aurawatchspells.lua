@@ -116,22 +116,7 @@ sArena.AuraWatch.Spells = {
 	48707,	-- Anti-Magic Shell
 	5384,	-- Feign Death
 	213602,	-- Greater Fade
-
-	-- Roots
-	339,	-- Entangling Roots
-	122,	-- Frost Nova
-	102359,	-- Mass Entanglement
-	64695,	-- Earthgrab
-	200108,	-- Ranger's Net
-	212638,	-- Tracker's Net
-	162480,	-- Steel Trap
-	204085,	-- Deathchill
-	233582,	-- Entrenched in Flame
-	201158,	-- Super Sticky Tar
-	33395,	-- Freeze
-	228600,	-- Glacial Spike
-	116706,	-- Disable
-
+	
 	-- Silences
 	81261,	-- Solar Beam
 	25046,	-- Arcane Torrent
@@ -150,7 +135,23 @@ sArena.AuraWatch.Spells = {
 	31935,	-- Avenger's Shield
 	204490,	-- Sigil of Silence
 
+	-- Roots
+	339,	-- Entangling Roots
+	122,	-- Frost Nova
+	102359,	-- Mass Entanglement
+	64695,	-- Earthgrab
+	200108,	-- Ranger's Net
+	212638,	-- Tracker's Net
+	162480,	-- Steel Trap
+	204085,	-- Deathchill
+	233582,	-- Entrenched in Flame
+	201158,	-- Super Sticky Tar
+	33395,	-- Freeze
+	228600,	-- Glacial Spike
+	116706,	-- Disable
+
 	236077,	-- Disarm
+	209749,	-- Faerie Swarm (Disarm)
 
 	-- Offensive Buffs
 	186289,	-- Aspect of the Eagle
@@ -170,6 +171,10 @@ sArena.AuraWatch.Spells = {
 	107574,	-- Avatar
 	12292,	-- Bloodbath
 	204945,	-- Doom Winds
+	2825,	-- Bloodlust
+	32182,	-- Heroism
+	204361,	-- Bloodlust (Honor Talent)
+	204362,	-- Heroism (Honor Talent)
 	13750,	-- Adrenaline Rush
 	102543,	-- Incarnation: King of the Jungle
 	137639,	-- Storm, Earth, and Fire
