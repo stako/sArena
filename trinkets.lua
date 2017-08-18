@@ -139,8 +139,8 @@ local frames = {
 }
 
 function sArena.Trinkets:UNIT_SPELLCAST_SUCCEEDED(unitID, _, _, _, spellID)
-	if not sArena.Trinkets[unitID] then return end
-
+	if not frames[unitID] then return end
+	
 	-- If Medallion was used, activate cooldown timer for 2 or 3 minutes
 	if sArena.Trinkets.Spells[spellID] then
 		CooldownFrame_Set(frames[unitID], GetTime(), sArena.Trinkets.Spells[spellID], 1, true)
