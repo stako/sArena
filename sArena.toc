@@ -1,16 +1,13 @@
 ## Interface: 70200
 ## Title: sArena
-## Notes: Enhanced arena frames.
+## Notes: Enhanced arena frames
 ## Author: Stako
-## Version: 1.2.8b
+## Version: 2.0.0
+## X-Category: PvP/Arena
+## X-Credits: Tekkub, Starship, Kouri, Kollektiv, Lyn, haste, evl, Zork, jturel
 ## RequiredDeps: Blizzard_ArenaUI
 
 ## SavedVariables: sArenaDB
 
+embeds.xml
 sArena.xml
-settings.lua
-trinkets.lua
-aurawatch.lua
-aurawatchspells.lua
-drtracker.lua
-sArena.lua

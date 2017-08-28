@@ -1,0 +1,43 @@
+------------------------------------------------------------------------
+r1157 | h.leppkes@gmail.com | 2017-03-28 12:10:54 -0500 (Tue, 28 Mar 2017) | 1 line
+Changed paths:
+   M /trunk/changelog.txt
+
+Update changelog
+------------------------------------------------------------------------
+r1156 | h.leppkes@gmail.com | 2017-03-28 12:09:39 -0500 (Tue, 28 Mar 2017) | 1 line
+Changed paths:
+   M /trunk/Ace3.toc
+
+Update TOC to 7.2
+------------------------------------------------------------------------
+r1155 | h.leppkes@gmail.com | 2017-03-28 12:09:25 -0500 (Tue, 28 Mar 2017) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+
+AceGUI-3.0: Fire OnShow events from Frame and Windows containers (Ticket #396)
+------------------------------------------------------------------------
+r1154 | h.leppkes@gmail.com | 2017-03-28 12:06:59 -0500 (Tue, 28 Mar 2017) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
+
+AceGUI-3.0: Add SetJustifyV/H API to the Label/InteractiveLabel widgets (Ticket #397)
+------------------------------------------------------------------------
+r1153 | nevcairiel | 2016-11-20 03:57:15 -0600 (Sun, 20 Nov 2016) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+
+Remove pre-legion compat
+------------------------------------------------------------------------
+r1152 | (no author) | 2016-11-17 03:49:10 -0600 (Thu, 17 Nov 2016) | 1 line
+Changed paths:
+   M /trunk/Ace3.toc
+
+Update TOC for 7.1
+------------------------------------------------------------------------
+
