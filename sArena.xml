@@ -9,6 +9,23 @@
 		</Scripts>
 	</Frame>
 	
+	<!-- Cast Bar Template -->
+	<StatusBar name="sArenaCastBarTemplate" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="Icon" file="Interface\Icons\Spell_Nature_Polymorph"/>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<BarColor r="1.0" g="0.7" b="0.0"/>
+		<Scripts>
+			<OnLoad>
+				self:SetMinMaxValues(0, 100)
+				self:SetValue(100)
+			</OnLoad>
+		</Scripts>
+	</StatusBar>
+	
 	<!-- DR Tracker Template -->
 	<Frame name="sArenaDRTrackerTemplate" movable="true" clampedToScreen="true" virtual="true">
 		<Layers>
