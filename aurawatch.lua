@@ -1,13 +1,14 @@
 local sArena = LibStub("AceAddon-3.0"):GetAddon("sArena")
 
 sArena.aurawatch = {}
-local UnitAura, GetSpellInfo = UnitAura, GetSpellInfo
+local UnitAura, GetSpellInfo, SetPortraitToTexture = UnitAura, GetSpellInfo, SetPortraitToTexture
 
 sArena.options.plugins = sArena.options.plugins or {}
 sArena.options.plugins["AuraWatch"] = {
 	aurawatch = {
 		name = "AuraWatch",
 		type = "group",
+		desc = "Displays important buffs and debuffs on the class icon",
 		args = {
 			enable = {
 				name = "Enable",
@@ -355,7 +356,7 @@ function sArena.aurawatch:UNIT_AURA(_, unitID)
 	local spellId, filter, buff, debuff
 	
 	-- Loop through unit's auras
-	for i = 1, BUFF_MAX_DISPLAY do
+	for i = 1, 32 do -- BUFF_MAX_DISPLAY = 32
 		_, _, _, _, _, _, _, _, _, _, buff = UnitAura(unitID, i, "HELPFUL")
 		-- See if buff exists in our table
 		if buff and auraList[buff] then
@@ -366,7 +367,7 @@ function sArena.aurawatch:UNIT_AURA(_, unitID)
 			end
 		end
 		
-		if i <= DEBUFF_MAX_DISPLAY then
+		if i <= 16 then -- DEBUFF_MAX_DISPLAY = 16
 			_, _, _, _, _, _, _, _, _, _, debuff = UnitAura(unitID, i, "HARMFUL")
 		end
 		
