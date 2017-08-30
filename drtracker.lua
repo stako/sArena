@@ -21,6 +21,7 @@ sArena.options.plugins["DR Tracker"] = {
 	drtracker = {
 		name = "DR Tracker",
 		type = "group",
+		desc = "Displays icons to indicate when a type of CC will have diminished effects",
 		args = {
 			enable = {
 				name = "Enable",
@@ -85,7 +86,7 @@ function sArena.drtracker:OnEnable()
 		for c = 1, #categories do
 			local frame = CreateFrame("Frame", nil, arenaFrame, "sArenaDRTrackerTemplate")
 			frame:SetAlpha(0)
-			frame:EnableMouse(true)
+			if c == 1 then frame:EnableMouse(true) end
 			
 			for _, region in next, { frame.Cooldown:GetRegions() } do
 				if region:GetObjectType() == "FontString" then
@@ -142,6 +143,11 @@ function sArena.drtracker:TestMode()
 			if sArena.testMode == true and sArena.db.profile.drtracker.enabled == true then
 				CooldownFrame_Set(self[unitID][v].Cooldown, GetTime(), drTime, 1, true)
 				self[unitID][v].Icon:SetTexture(136071)
+				if c == 1 then
+					self[unitID][v].Border:SetVertexColor(1, 0.25, 0, 1)
+				else
+					self[unitID][v].Border:SetVertexColor(1, 1, 1, 1)
+				end
 			else
 				CooldownFrame_Set(self[unitID][v].Cooldown, 0, 0, 0, true)
 			end
