@@ -3,11 +3,11 @@ ToDo List:
 
 Fix interface taint that is caused by manipulating UVars
 Add functionality to allow arena frames to grow in different directions
-Make cast bar movable
-Make cast bar resizable
 Make status text resizable & hidable
 Add LibSharedMedia to customize fonts
 Pet Frames - add mirrored frame functionality & make them movable
+Add interrupts to aurawatch
+Fix status text left & right
 ]]
 
 local sArena = LibStub("AceAddon-3.0"):NewAddon("sArena", "AceConsole-3.0", "AceHook-3.0", "AceEvent-3.0")
@@ -75,6 +75,19 @@ sArena.options = {
 					get = function() return sArena.db.profile.trinketScale end,
 					set = function(info, val) if sArena:Combat() then return end sArena.db.profile.trinketScale = val sArena:RefreshConfig() end,
 				},
+				castBarScale = {
+					name = "Cast Bar Scale",
+					type = "range",
+					order = 3,
+					min = 0.1,
+					max = 5.0,
+					softMin = 0.5,
+					softMax = 3.0,
+					step = 0.01,
+					bigStep = 0.1,
+					get = function() return sArena.db.profile.castBarScale end,
+					set = function(info, val) if sArena:Combat() then return end sArena.db.profile.castBarScale = val sArena:RefreshConfig() end,
+				},
 				trinketFontSize = {
 					name = "Trinket Font Size",
 					desc = "Font size of Blizzard's built-in cooldown count",
@@ -89,11 +102,25 @@ sArena.options = {
 					get = function() return sArena.db.profile.trinketFontSize end,
 					set = function(info, val) sArena.db.profile.trinketFontSize = val sArena:RefreshConfig() end,
 				},
+				statusTextFontSize = {
+					name = "Health/Mana Font Size",
+					desc = "Font size of text for health & mana bars",
+					type = "range",
+					order = 5,
+					min = 4,
+					max = 32,
+					softMin = 4,
+					softMax = 32,
+					step = 1,
+					bigStep = 1,
+					get = function() return sArena.db.profile.statusTextFontSize end,
+					set = function(info, val) sArena.db.profile.statusTextFontSize = val sArena:RefreshConfig() end,
+				},
 				simpleFrames = {
 					name = "Simple arena frames",
-					desc = "Removes the unitframe texture and makes icons square",
+					desc = "Removes the unitframe texture and makes icons square-shaped",
 					type = "toggle",
-					order = 5,
+					order = 6,
 					width = "double",
 					get = function() return sArena.db.profile.simpleFrames end,
 					set = function(info, val) sArena.db.profile.simpleFrames = val sArena:RefreshConfig() end,
@@ -101,7 +128,7 @@ sArena.options = {
 				mirroredFrames = {
 					name = "Mirrored arena frames",
 					type = "toggle",
-					order = 6,
+					order = 7,
 					width = "double",
 					get = function() return sArena.db.profile.mirroredFrames end,
 					set = function(info, val) sArena.db.profile.mirroredFrames = val sArena:RefreshConfig() end,
@@ -109,7 +136,7 @@ sArena.options = {
 				classColours = {
 					name = "Class-coloured health bars",
 					type = "toggle",
-					order = 7,
+					order = 8,
 					width = "double",
 					get = function() return sArena.db.profile.classColours end,
 					set = function(info, val) sArena.db.profile.classColours = val sArena:RefreshConfig() end,
@@ -117,15 +144,24 @@ sArena.options = {
 				hideNames = {
 					name = "Hide player names",
 					type = "toggle",
-					order = 8,
+					order = 9,
 					width = "double",
 					get = function() return sArena.db.profile.hideNames end,
 					set = function(info, val) sArena.db.profile.hideNames = val sArena:RefreshConfig() end,
 				},
+				statusText = {
+					name = "Health/mana text",
+					desc = "Must have party text enabled in Blizz options for this to work",
+					type = "toggle",
+					order = 10,
+					width = "double",
+					get = function() return sArena.db.profile.statusText end,
+					set = function(info, val) sArena.db.profile.statusText = val sArena:RefreshConfig() end,
+				},
 				legacyOptions = {
 					name = "Legacy Options",
 					type = "group",
-					order = 9,
+					order = 11,
 					inline = true,
 					args = {
 						description = {
@@ -167,23 +203,35 @@ sArena.defaults = {
 		position = { "TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -100, -25 },
 		specPosition = { "CENTER", nil, "CENTER", 43, -12 },
 		trinketPosition = { "RIGHT", nil, "LEFT", -12, -3 },
+		castBarPosition = { "RIGHT", nil, "LEFT", -32, -3 },
+		statusTextFontSize = 10,
 		trinketFontSize = 16,
 		trinketScale = 1.0,
 		scale = 1.0,
 		specScale = 1.0,
+		castBarScale = 1.0,
 		classColours = true,
 		hideNames = false,
 		mirroredFrames = false,
 		simpleFrames = false,
+		statusText = true,
 	},
 }
 
-local arenaFrames = {
+local trinketFrames = {
 	["arena1"] = ArenaEnemyFrame1.CC.Cooldown,
 	["arena2"] = ArenaEnemyFrame2.CC.Cooldown,
 	["arena3"] = ArenaEnemyFrame3.CC.Cooldown,
 	["arena4"] = ArenaEnemyFrame4.CC.Cooldown,
 	["arena5"] = ArenaEnemyFrame5.CC.Cooldown,
+}
+
+local arenaFrames = {
+	ArenaEnemyFrame1,
+	ArenaEnemyFrame2,
+	ArenaEnemyFrame3,
+	ArenaEnemyFrame4,
+	ArenaEnemyFrame5
 }
 
 local healthBars = {
@@ -267,6 +315,17 @@ function sArena:OnEnable()
 						cc.Cooldown.Text = region
 					end
 				end
+				
+				-- Create mock castbars for test mode
+				frame.castFrame = CreateFrame("StatusBar", nil, frame, "sArenaCastBarTemplate")
+				frame.castFrame:SetAllPoints(frame.castBar)
+				frame.castFrame.Icon:SetAllPoints(frame.castBar.Icon)
+				frame.castFrame:EnableMouse(true)
+				
+				frame.castBar:SetMovable(true)
+				frame.castBar:SetClampedToScreen(true)
+				
+				
 			else
 				frame.name = _G[v.."Name"]
 				frame.healthbar = _G[v.."HealthBar"]
@@ -276,6 +335,8 @@ function sArena:OnEnable()
 			end
 			
 			frame.texture = _G[v.."Texture"]
+			frame.healthtext = _G[v.."HealthBarText"]
+			frame.manatext = _G[v.."ManaBarText"]
 			
 			_G[v.."Background"]:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", 0, 0)
 			_G[v.."Background"]:SetPoint("BOTTOMRIGHT", frame.manabar, "BOTTOMRIGHT", 0, 0)
@@ -321,6 +382,8 @@ function sArena:RefreshConfig()
 	
 	local _, instanceType = IsInInstance()
 	
+	local font, _, flags = ArenaEnemyFrame1.healthtext:GetFont()
+	
 	-- Loop through all of the arena frames
 	for i = 1, MAX_ARENA_ENEMIES do
 		-- Make a 'for loop' to modify both ArenaEnemyFramex and ArenaPrepFramex
@@ -342,22 +405,18 @@ function sArena:RefreshConfig()
 				_G[v.."Texture"]:SetTexCoord(0.796, 0, 0, 0.5)
 				frame.name:SetPoint("BOTTOMLEFT", 32, 24)
 				frame.healthbar:SetPoint("TOPLEFT", 29, -12)
-				_G[v.."HealthBarText"]:SetPoint("CENTER", 7, 3)
+				frame.healthtext:SetPoint("CENTER", 7, 3)
 				frame.manabar:SetPoint("TOPLEFT", 29, -20)
-				_G[v.."ManaBarText"]:SetPoint("CENTER", 7, -6)
+				frame.manatext:SetPoint("CENTER", 7, -6)
 				frame.classPortrait:SetPoint("TOPRIGHT", -81, -4)
-				--frame.specBorder:SetPoint("TOPLEFT", frame.classPortrait, "CENTER", -32, 4)
-				--frame.specPortrait:SetPoint("TOPLEFT", frame.classPortrait, "CENTER", -29, 2)
 			else
 				_G[v.."Texture"]:SetTexCoord(0, 0.796, 0, 0.5)
 				frame.name:SetPoint("BOTTOMLEFT", 3, 24)
 				frame.healthbar:SetPoint("TOPLEFT", 2, -12)
-				_G[v.."HealthBarText"]:SetPoint("CENTER", -20, 3)
+				frame.healthtext:SetPoint("CENTER", -20, 3)
 				frame.manabar:SetPoint("TOPLEFT", 2, -20)
-				_G[v.."ManaBarText"]:SetPoint("CENTER", -20, -6)
+				frame.manatext:SetPoint("CENTER", -20, -6)
 				frame.classPortrait:SetPoint("TOPRIGHT", -11, -4)
-				--frame.specBorder:SetPoint("TOPLEFT", frame.classPortrait, "CENTER", 0, 4)
-				--frame.specPortrait:SetPoint("TOPLEFT", frame.classPortrait, "CENTER", 2, 2)
 			end
 			
 			-- Make frame movable
@@ -397,10 +456,23 @@ function sArena:RefreshConfig()
 				frame["CC"].Cooldown:SetHideCountdownNumbers(false)
 				self:SetupDrag(frame["CC"], nil, self.db.profile.trinketPosition, true, true)
 				
-				if self.db.profile.hideNames == true then
-					frame.overrideName = "nil"
+				frame.castBar:SetScale(self.db.profile.castBarScale)
+				frame.castBar:ClearAllPoints()
+				frame.castBar:SetPoint(self.db.profile.castBarPosition[1], frame, self.db.profile.castBarPosition[3], self.db.profile.castBarPosition[4], self.db.profile.castBarPosition[5])
+				self:SetupDrag(frame.castFrame, frame.castBar, self.db.profile.castBarPosition, true, true)
+				
+				frame.healthtext:SetFont(font, self.db.profile.statusTextFontSize, flags)
+				frame.manatext:SetFont(font, self.db.profile.statusTextFontSize, flags)
+				
+				frame.healthbar.textLockable = self.db.profile.statusText
+				frame.manabar.textLockable = self.db.profile.statusText
+				
+				if self.db.profile.statusText then
+					frame.healthtext:Show()
+					frame.manatext:Show()
 				else
-					frame.overrideName = nil
+					frame.healthtext:Hide()
+					frame.manatext:Hide()
 				end
 			end
 		end
@@ -420,6 +492,10 @@ function sArena:TestMode(setting)
 		-- If test mode is disabled & we are outside of a pvp environment, hide the frames and return out of this function
 		local _, instanceType = IsInInstance()
 		if instanceType ~= "pvp" and instanceType ~= "arena" then self.ArenaEnemyFrames:Hide() end
+		for i = 1, 3 do
+			local arenaFrame = _G["ArenaEnemyFrame"..i]
+			arenaFrame.castFrame:Hide()
+		end
 	else
 		self.ArenaEnemyFrames:Show()
 		
@@ -429,6 +505,8 @@ function sArena:TestMode(setting)
 			
 			arenaFrame:Show()
 			if SHOW_ARENA_ENEMY_PETS == "1" then petFrame:Show() else petFrame:Hide() end
+			
+			arenaFrame.castFrame:Show()
 			
 			arenaFrame.CC.Icon:SetTexture("Interface\\Icons\\ability_pvp_gladiatormedallion")
 			CooldownFrame_Set(arenaFrame.CC.Cooldown, GetTime(), 120, 1, true)
@@ -503,11 +581,11 @@ function sArena:UNIT_SPELLCAST_SUCCEEDED(_, ...)
 	self.events:Fire("sArena_UNIT_SPELLCAST_SUCCEEDED", ...)
 	
 	local unitID, _, _, _, spellID = ...
-	if not arenaFrames[unitID] then return end
+	if not trinketFrames[unitID] then return end
 	
 	-- If Medallion was used, activate cooldown timer
 	if medallions[spellID] then
-		CooldownFrame_Set(arenaFrames[unitID], GetTime(), medallions[spellID], 1, true)
+		CooldownFrame_Set(trinketFrames[unitID], GetTime(), medallions[spellID], 1, true)
 	end
 end
 
@@ -551,6 +629,9 @@ function sArena:ArenaEnemyFrame_UpdatePlayer(frame)
 				frame.specBorder:Hide()
 				frame.specPortrait:SetTexture(specIcon)
 			end
+	end
+	if self.db.profile.hideNames == true and frame.name then
+		frame.name:SetText("")
 	end
 end
 
