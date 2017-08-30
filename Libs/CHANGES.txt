@@ -1,43 +1,75 @@
 ------------------------------------------------------------------------
-r1157 | h.leppkes@gmail.com | 2017-03-28 12:10:54 -0500 (Tue, 28 Mar 2017) | 1 line
+r1165 | nevcairiel | 2017-08-29 02:16:45 -0500 (Tue, 29 Aug 2017) | 1 line
 Changed paths:
    M /trunk/changelog.txt
 
 Update changelog
 ------------------------------------------------------------------------
-r1156 | h.leppkes@gmail.com | 2017-03-28 12:09:39 -0500 (Tue, 28 Mar 2017) | 1 line
+r1164 | nevcairiel | 2017-08-29 02:13:47 -0500 (Tue, 29 Aug 2017) | 1 line
 Changed paths:
    M /trunk/Ace3.toc
 
-Update TOC to 7.2
+Update TOC for 7.3
 ------------------------------------------------------------------------
-r1155 | h.leppkes@gmail.com | 2017-03-28 12:09:25 -0500 (Tue, 28 Mar 2017) | 1 line
+r1163 | nevcairiel | 2017-08-14 09:04:39 -0500 (Mon, 14 Aug 2017) | 1 line
 Changed paths:
+   M /trunk/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+
+AceConfigDialog-3.0: implement fallback validation feedback in a StaticPopup (Ticket #2)
+------------------------------------------------------------------------
+r1162 | nevcairiel | 2017-08-14 08:49:36 -0500 (Mon, 14 Aug 2017) | 4 lines
+Changed paths:
+   M /trunk/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+
+AceConfigDialog-3.0: refactor validation handling
+
+This simplifies the code so validation is only shown in one place.
+Based on a patch by rainraider, part of Ticket #2
+------------------------------------------------------------------------
+r1161 | funkydude | 2017-08-12 09:30:16 -0500 (Sat, 12 Aug 2017) | 1 line
+Changed paths:
+   M /trunk/AceComm-3.0/AceComm-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfig-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.lua
+   M /trunk/AceEvent-3.0/AceEvent-3.0.lua
    M /trunk/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
    M /trunk/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
-
-AceGUI-3.0: Fire OnShow events from Frame and Windows containers (Ticket #396)
-------------------------------------------------------------------------
-r1154 | h.leppkes@gmail.com | 2017-03-28 12:06:59 -0500 (Tue, 28 Mar 2017) | 1 line
-Changed paths:
-   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua
-   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
-
-AceGUI-3.0: Add SetJustifyV/H API to the Label/InteractiveLabel widgets (Ticket #397)
-------------------------------------------------------------------------
-r1153 | nevcairiel | 2016-11-20 03:57:15 -0600 (Sun, 20 Nov 2016) | 1 line
-Changed paths:
-   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
-   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
-   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
    M /trunk/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
 
-Remove pre-legion compat
+Bump minor versions where required (As affected by PlaySound changes, or by loading order problem)
 ------------------------------------------------------------------------
-r1152 | (no author) | 2016-11-17 03:49:10 -0600 (Thu, 17 Nov 2016) | 1 line
+r1160 | funkydude | 2017-08-12 00:21:06 -0500 (Sat, 12 Aug 2017) | 1 line
 Changed paths:
-   M /trunk/Ace3.toc
+   M /trunk/AceComm-3.0/AceComm-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfig-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+   M /trunk/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.lua
+   M /trunk/AceEvent-3.0/AceEvent-3.0.lua
 
-Update TOC for 7.1
+If we are loading a library that depends on a separate library, we need to verify that separate library exists prior to telling LibStub to create our library. This resolves addons with broken library setups affecting addons with working library setups.
+------------------------------------------------------------------------
+r1159 | funkydude | 2017-06-28 21:45:04 -0500 (Wed, 28 Jun 2017) | 1 line
+Changed paths:
+   M /trunk/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
+
+Update PlaySound usage to work with patch 7.3 PTR, sounds were all audibly verified to be matching.
 ------------------------------------------------------------------------
 
