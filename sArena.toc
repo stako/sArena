@@ -1,8 +1,8 @@
-## Interface: 70200
+## Interface: 70300
 ## Title: sArena
 ## Notes: Enhanced arena frames
 ## Author: Stako
-## Version: 2.0.0
+## Version: 2.0.2
 ## X-Category: PvP/Arena
 ## X-Credits: Tekkub, Starship, Kouri, Kollektiv, Lyn, haste, evl, Zork, jturel
 ## RequiredDeps: Blizzard_ArenaUI
