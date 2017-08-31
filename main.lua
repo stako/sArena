@@ -3,7 +3,6 @@ ToDo List:
 
 Fix interface taint that is caused by manipulating UVars
 Add functionality to allow arena frames to grow in different directions
-Make status text resizable & hidable
 Add LibSharedMedia to customize fonts
 Pet Frames - add mirrored frame functionality & make them movable
 Add interrupts to aurawatch
@@ -240,11 +239,6 @@ local healthBars = {
 	ArenaEnemyFrame3HealthBar = 1,
 	ArenaEnemyFrame4HealthBar = 1,
 	ArenaEnemyFrame5HealthBar = 1
-}
-
-local medallions = {
-		[195710] = 180, -- Honorable Medallion
-		[208683] = 120, -- Gladiator's Medallion
 }
 
 local classIcons = {
@@ -579,14 +573,6 @@ end
 
 function sArena:UNIT_SPELLCAST_SUCCEEDED(_, ...)
 	self.events:Fire("sArena_UNIT_SPELLCAST_SUCCEEDED", ...)
-	
-	local unitID, _, _, _, spellID = ...
-	if not trinketFrames[unitID] then return end
-	
-	-- If Medallion was used, activate cooldown timer
-	if medallions[spellID] then
-		CooldownFrame_Set(trinketFrames[unitID], GetTime(), medallions[spellID], 1, true)
-	end
 end
 
 function sArena:UNIT_AURA(_, ...)
