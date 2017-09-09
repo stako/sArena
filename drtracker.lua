@@ -239,11 +239,12 @@ local spells = {
 	[115268] = "disorient", -- Mesmerize UNCONFIRMED SPELLID & CATEGORY
 	[  6358] = "disorient", -- Seduction UNCONFIRMED SPELLID & CATEGORY
 	
-	[ 51514] = "incapacitate",	-- Hex UNCONFIRMED SPELLID
+	[ 51514] = "incapacitate",	-- Hex
 	[211004] = "incapacitate",	-- Hex: Spider UNCONFIRMED SPELLID
 	[210873] = "incapacitate",	-- Hex: Raptor UNCONFIRMED SPELLID
 	[211015] = "incapacitate",	-- Hex: Cockroach UNCONFIRMED SPELLID
 	[211010] = "incapacitate",	-- Hex: Snake UNCONFIRMED SPELLID
+	[196942] = "incapacitate",	-- Hex
 	[   118] = "incapacitate",	-- Polymorph
 	[ 61305] = "incapacitate",	-- Polymorph: Black Cat UNCONFIRMED SPELLID
 	[ 28272] = "incapacitate",	-- Polymorph: Pig UNCONFIRMED SPELLID
@@ -273,7 +274,7 @@ local spells = {
 	[  1776] = "incapacitate",	-- Gouge UNCONFIRMED SPELLID
 	[   710] = "incapacitate",	-- Banish UNCONFIRMED SPELLID & CATEGORY
 	[107079] = "incapacitate",	-- Quaking Palm UNCONFIRMED SPELLID & CATEGORY
-	[236025] = "incapacitate",	-- Enraged Maim UNCONFIRMED SPELLID & CATEGORY
+	[236025] = "incapacitate",	-- Enraged Maim UNCONFIRMED CATEGORY
 	
 	[   339] = "root",	-- Entangling Roots
 	[   122] = "root",	-- Frost Nova

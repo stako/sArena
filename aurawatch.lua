@@ -103,6 +103,7 @@ local spells = {
 	210873,	-- Hex: Raptor (Incapacitate)
 	211015,	-- Hex: Cockroach (Incapacitate)
 	211010,	-- Hex: Snake (Incapacitate)
+	196942,	-- Hex (Voodoo Totem)
 	118,	-- Polymorph (Incapacitate)
 	61305,	-- Polymorph: Black Cat (Incapacitate)
 	28272,	-- Polymorph: Pig (Incapacitate)
@@ -258,6 +259,7 @@ local spells = {
 	31842,	-- Avenging Wrath (Holy)
 	118038,	-- Die by the Sword
 	12975,	-- Last Stand
+	205191,	-- Eye for an Eye
 	498,	-- Divine Protection
 	871,	-- Shield Wall
 	53480,	-- Roar of Sacrifice
@@ -265,6 +267,7 @@ local spells = {
 
 	-- Miscellaneous
 	199450,	-- Ultimate Sacrifice
+	188501,	-- Spectral Sight
 	1044,	-- Blessing of Freedom
 }
 

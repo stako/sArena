@@ -1,12 +1,16 @@
 --[[
 ToDo List:
 
+Fix SetupDrag - tables?
 Fix interface taint that is caused by manipulating UVars
 Add functionality to allow arena frames to grow in different directions
 Add LibSharedMedia to customize fonts
 Pet Frames - add mirrored frame functionality & make them movable
 Add interrupts to aurawatch
 Fix status text left & right
+Allow DR to activate after CC dissipates
+Help menu
+MoveAnything compatability?
 ]]
 
 local sArena = LibStub("AceAddon-3.0"):NewAddon("sArena", "AceConsole-3.0", "AceHook-3.0", "AceEvent-3.0")
