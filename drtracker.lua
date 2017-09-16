@@ -65,6 +65,17 @@ sArena.options.plugins["DR Tracker"] = {
 				get = function() return sArena.db.profile.drtracker.fontSize end,
 				set = function(info, val) sArena.db.profile.drtracker.fontSize = val sArena:RefreshConfig() end,
 			},
+			displayMode = {
+				name = "Show DR when CC",
+				type = "select",
+				order = 5,
+				get = function() return sArena.db.profile.drtracker.displayMode end,
+				set = function(info, val) sArena.db.profile.drtracker.displayMode = val end,
+				values = {
+					"Starts",
+					"Ends",
+				},
+			},
 		},
 	},
 }
@@ -75,6 +86,7 @@ sArena.defaults.profile.drtracker = {
 	growRight = false,
 	iconSize = 24,
 	fontSize = 16,
+	displayMode = 1,
 }
 
 function sArena.drtracker:OnEnable()
@@ -327,20 +339,25 @@ function sArena.drtracker:ApplyDR(GUID, spellID, spellName, applied)
 		return
 	end
 	
-	if applied then -- CC has been applied
-		local _, _, _, _, _, auraDuration = UnitDebuff(unitID, spellName)
-		CooldownFrame_Set(frame.Cooldown, GetTime(), drTime + auraDuration, 1, true)
-	else -- CC has been removed (completed, dispelled, broken, etc.)
-		-- Adjust timer for early CC breaks
-		local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
-		startTime, startDuration = startTime/1000, startDuration/1000
-		
-		local newDuration = drTime / (1 - ((GetTime() - startTime) / startDuration))
-		local newStartTime = drTime + GetTime() - newDuration
-		CooldownFrame_Set(frame.Cooldown, newStartTime, newDuration, 1, true)
+	if sArena.db.profile.drtracker.displayMode == 1 then
+		if applied then -- CC has been applied
+			local _, _, _, _, _, auraDuration = UnitDebuff(unitID, spellName)
+			CooldownFrame_Set(frame.Cooldown, GetTime(), drTime + auraDuration, 1, true)
+		else -- CC has been removed (completed, dispelled, broken, etc.)
+			-- Adjust timer for early CC breaks
+			local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
+			startTime, startDuration = startTime/1000, startDuration/1000
+			
+			local newDuration = drTime / (1 - ((GetTime() - startTime) / startDuration))
+			local newStartTime = drTime + GetTime() - newDuration
+			CooldownFrame_Set(frame.Cooldown, newStartTime, newDuration, 1, true)
+			return
+		end
+	else
+		if applied then return else
+			CooldownFrame_Set(frame.Cooldown, GetTime(), drTime, 1, true)
+		end
 	end
-	
-	if not applied then return end
 	
 	local _, _, icon = GetSpellInfo(spellID)
 	frame.Icon:SetTexture(icon)
