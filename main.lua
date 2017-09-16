@@ -690,18 +690,18 @@ function sArena:OnMouseUp(frame)
 end
 
 function sArena:SetupDrag(frame, targetFrame, setting, keepRelative, refreshConfig)
-	if not targetFrame then targetFrame = frame end
-	
-	frame.targetFrame = targetFrame
 	frame.setting = setting
-	frame.keepRelative = keepRelative
-	frame.refreshConfig = refreshConfig
 	
-	self:Unhook(frame, "OnMouseDown")
-	self:SecureHookScript(frame, "OnMouseDown", OnMouseDown)
+	if not frame.setupDrag then
+		if not targetFrame then targetFrame = frame end
+		frame.targetFrame = targetFrame
+		frame.keepRelative = keepRelative
+		frame.refreshConfig = refreshConfig
+		frame.setupDrag = true
 	
-	self:Unhook(frame, "OnMouseUp")
-	self:SecureHookScript(frame, "OnMouseUp", OnMouseUp)
+		self:SecureHookScript(frame, "OnMouseDown", OnMouseDown)
+		self:SecureHookScript(frame, "OnMouseUp", OnMouseUp)
+	end
 end
 
 function sArena:CalcPoint(frame)
