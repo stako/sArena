@@ -1,13 +1,12 @@
 --[[
 ToDo List:
 
-Fix SetupDrag - tables?
 Fix interface taint that is caused by manipulating UVars
 Add functionality to allow arena frames to grow in different directions
-Add LibSharedMedia to customize fonts
+Add LibSharedMedia to customize fonts & statusbars
 Pet Frames - add mirrored frame functionality & make them movable
 Add interrupts to aurawatch
-Fix status text left & right
+Fix status text display in test mode
 Allow DR to activate after CC dissipates
 Help menu
 MoveAnything compatability?
@@ -28,11 +27,6 @@ sArena.options = {
 			type = "execute",
 			func = function() sArena:TestMode(not sArena.testMode) end,
 			order = 1,
-		},
-		drag = {
-			name = "|TInterface\\Icons\\ability_creature_cursed_01:22|t |cFFFF4400Ctrl+Shift+Click frames to move them|r |TInterface\\Icons\\ability_creature_cursed_01:22|t",
-			type = "header",
-			order = 2,
 		},
 		general = {
 			name = "General",
@@ -197,6 +191,33 @@ sArena.options = {
 				},
 			},
 		},
+		help = {
+			name = "|cFFFF4400Help|r",
+			type = "group",
+			order = -1,
+			args = {
+				howToMoveHeader = {
+					name = "How do I move stuff?",
+					type = "header",
+					order = 1,
+				},
+				howToMoveDesc = {
+					name = "Ctrl + Shift + Click",
+					type = "description",
+					order = 2,
+				},
+				whatToMoveHeader = {
+					name = "What can I move?",
+					type = "header",
+					order = 3,
+				},
+				whatToMoveDesc = {
+					name = " - Arena frame|n - Spec icon|n - Trinket|n - Cast bar|n - DR Tracker (The |cFFFF4400orange|r one)",
+					type = "description",
+					order = 4,
+				},
+			},
+		},
 	},
 }
 
@@ -262,6 +283,15 @@ local classIcons = {
 
 local testModeClasses = { "ROGUE", "MAGE", "PRIEST" }
 local specIcons = { 132320, 135846, 135940 }
+
+local textTable = {
+	"healthtext",
+	"healthtextleft",
+	"healthtextright",
+	"manatext",
+	"manatextleft",
+	"manatextright",
+}
 
 function sArena:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("sArenaDB", sArena.defaults, true)
@@ -334,7 +364,11 @@ function sArena:OnEnable()
 			
 			frame.texture = _G[v.."Texture"]
 			frame.healthtext = _G[v.."HealthBarText"]
+			frame.healthtextleft = _G[v.."HealthBarTextLeft"]
+			frame.healthtextright = _G[v.."HealthBarTextRight"]
 			frame.manatext = _G[v.."ManaBarText"]
+			frame.manatextleft = _G[v.."ManaBarTextLeft"]
+			frame.manatextright = _G[v.."ManaBarTextRight"]
 			
 			_G[v.."Background"]:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", 0, 0)
 			_G[v.."Background"]:SetPoint("BOTTOMRIGHT", frame.manabar, "BOTTOMRIGHT", 0, 0)
@@ -459,18 +493,17 @@ function sArena:RefreshConfig()
 				frame.castBar:SetPoint(self.db.profile.castBarPosition[1], frame, self.db.profile.castBarPosition[3], self.db.profile.castBarPosition[4], self.db.profile.castBarPosition[5])
 				self:SetupDrag(frame.castFrame, frame.castBar, self.db.profile.castBarPosition, true, true)
 				
-				frame.healthtext:SetFont(font, self.db.profile.statusTextFontSize, flags)
-				frame.manatext:SetFont(font, self.db.profile.statusTextFontSize, flags)
-				
 				frame.healthbar.textLockable = self.db.profile.statusText
 				frame.manabar.textLockable = self.db.profile.statusText
 				
-				if self.db.profile.statusText then
-					frame.healthtext:Show()
-					frame.manatext:Show()
-				else
-					frame.healthtext:Hide()
-					frame.manatext:Hide()
+				for k, v in pairs(textTable) do
+					frame[v]:SetFont(font, self.db.profile.statusTextFontSize, flags)
+					
+					if self.db.profile.statusText then
+						frame[v]:Show()
+					else
+						frame[v]:Hide()
+					end
 				end
 			end
 		end
