@@ -290,7 +290,7 @@ function sArena:OnEnable()
 	ArenaPrepBackground:SetParent(sArena.ArenaEnemyFrames)
 	
 	-- Loop through all of the arena frames
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		-- Make a 'for loop' to modify both ArenaEnemyFramex and ArenaPrepFramex
 		for k, v in pairs({"ArenaEnemyFrame"..i, "ArenaPrepFrame"..i}) do
 			local frame = _G[v]
@@ -383,7 +383,7 @@ function sArena:RefreshConfig()
 	local font, _, flags = ArenaEnemyFrame1.healthtext:GetFont()
 	
 	-- Loop through all of the arena frames
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		-- Make a 'for loop' to modify both ArenaEnemyFramex and ArenaPrepFramex
 		for k, v in pairs({"ArenaEnemyFrame"..i, "ArenaPrepFrame"..i}) do
 			local frame = _G[v]
@@ -487,10 +487,12 @@ function sArena:TestMode(setting)
 	end
 	
 	if sArena.testMode == false then
-		-- If test mode is disabled & we are outside of a pvp environment, hide the frames and return out of this function
+		-- If test mode is disabled & we are outside of a pvp environment, hide the frames
 		local _, instanceType = IsInInstance()
 		if instanceType ~= "pvp" and instanceType ~= "arena" then self.ArenaEnemyFrames:Hide() end
-		for i = 1, 3 do
+		
+		-- Hide castbar dragframes
+		for i = 1, 5 do
 			local arenaFrame = _G["ArenaEnemyFrame"..i]
 			arenaFrame.castFrame:Hide()
 		end
@@ -558,7 +560,8 @@ end
 function sArena:PLAYER_ENTERING_WORLD()
 	local _, instanceType = IsInInstance()
 	if instanceType == "pvp" or instanceType == "arena" then
-		sArena.testMode = false
+		self.testMode = false
+		self:TestMode()
 		self.ArenaEnemyFrames:Show()
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -627,7 +630,7 @@ end
 
 function sArena:ArenaPrepFrames_UpdateFrames()
 	local numOpps = GetNumArenaOpponentSpecs()
-	for i=1, MAX_ARENA_ENEMIES do
+	for i=1, 5 do
 		local prepFrame = _G["ArenaPrepFrame"..i];
 		if i <= numOpps then 
 			local specID = GetArenaOpponentSpec(i)

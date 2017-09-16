@@ -1,7 +1,7 @@
 local sArena = LibStub("AceAddon-3.0"):GetAddon("sArena")
 
 sArena.drtracker = {}
-local MAX_ARENA_ENEMIES, UnitGUID, UnitDebuff, GetSpellInfo = MAX_ARENA_ENEMIES, UnitGUID, UnitDebuff, GetSpellInfo
+local UnitGUID, UnitDebuff, GetSpellInfo = UnitGUID, UnitDebuff, GetSpellInfo
 local drTime = 18.5
 local categories = {
 	"incapacitate",
@@ -78,7 +78,7 @@ sArena.defaults.profile.drtracker = {
 }
 
 function sArena.drtracker:OnEnable()
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		local arenaFrame = _G["ArenaEnemyFrame"..i]
 		
 		self["arena"..i] = {}
@@ -114,7 +114,7 @@ end
 sArena.RegisterCallback(sArena.drtracker, "sArena_OnEnable", "OnEnable")
 
 function sArena.drtracker:RefreshConfig()
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		self:UpdatePosition("arena"..i)
 		for c = 1, #categories do
 			local frame = self["arena"..i][categories[c]]
@@ -312,7 +312,7 @@ function sArena.drtracker:ApplyDR(GUID, spellID, spellName, applied)
 	if not category then return end
 	
 	local unitID
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		if UnitGUID("arena"..i) == GUID then
 			unitID = "arena"..i
 			break

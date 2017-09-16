@@ -294,7 +294,7 @@ function sArena.aurawatch:OnEnable()
 		auraList[v] = k
 	end
 	
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		local arenaFrame = _G["ArenaEnemyFrame"..i]
 		
 		local frame = CreateFrame("Cooldown", nil, arenaFrame, "CooldownFrameTemplate")
@@ -325,7 +325,7 @@ end
 sArena.RegisterCallback(sArena.aurawatch, "sArena_OnEnable", "OnEnable")
 
 function sArena.aurawatch:RefreshConfig()
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, 5 do
 		local frame = self["arena"..i]
 		
 		local fontFace, _, fontFlags = frame.Text:GetFont()
