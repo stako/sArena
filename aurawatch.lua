@@ -337,10 +337,10 @@ sArena.RegisterCallback(sArena.aurawatch, "sArena_RefreshConfig", "RefreshConfig
 function sArena.aurawatch:TestMode()
 	for i = 1, 3 do
 		local frame = self["arena"..i]
-		if sArena.testMode == true and sArena.db.profile.aurawatch.enabled == true then
+		if sArena.testMode and sArena.db.profile.aurawatch.enabled then
 			CooldownFrame_Set(frame, GetTime(), 30, 1, true)
 			frame.classPortrait:SetTexCoord(0, 1, 0, 1)
-			if sArena.db.profile.simpleFrames == true then
+			if sArena.db.profile.simpleFrames then
 				frame.classPortrait:SetTexture(136184)
 			else
 				SetPortraitToTexture(frame.classPortrait, 136184)
@@ -353,7 +353,7 @@ end
 sArena.RegisterCallback(sArena.aurawatch, "sArena_TestMode", "TestMode")
 
 function sArena.aurawatch:UNIT_AURA(_, unitID)
-	if sArena.db.profile.aurawatch.enabled == false then return end
+	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
 	
 	local spellId, filter, buff, debuff
@@ -393,7 +393,7 @@ function sArena.aurawatch:UNIT_AURA(_, unitID)
 		if self[unitID].currentSpellId == spellId then return end
 		self[unitID].classPortrait:SetTexCoord(0,1,0,1)
 		self[unitID].currentSpellId = spellId
-		if sArena.db.profile.simpleFrames == true then
+		if sArena.db.profile.simpleFrames then
 			self[unitID].classPortrait:SetTexture(icon)
 		else
 			SetPortraitToTexture(self[unitID].classPortrait, icon)
@@ -403,7 +403,7 @@ function sArena.aurawatch:UNIT_AURA(_, unitID)
 		if class then
 			CooldownFrame_Set(self[unitID], 0, 0, 0, true)
 			self[unitID].currentSpellId = 0
-			if sArena.db.profile.simpleFrames == true then
+			if sArena.db.profile.simpleFrames then
 				self[unitID].classPortrait:SetTexture(classIcons[class])
 				self[unitID].classPortrait:SetTexCoord(0,1,0,1)
 			else
