@@ -59,18 +59,18 @@ sArena.options = {
 					get = function() return sArena.db.profile.specScale end,
 					set = function(info, val) if sArena:Combat() then return end sArena.db.profile.specScale = val sArena:RefreshConfig() end,
 				},
-				trinketScale = {
-					name = "Trinket Icon Scale",
+				trinketSize = {
+					name = "Trinket Icon Size",
 					type = "range",
 					order = 3,
-					min = 0.1,
-					max = 5.0,
-					softMin = 0.5,
-					softMax = 3.0,
-					step = 0.01,
-					bigStep = 0.1,
-					get = function() return sArena.db.profile.trinketScale end,
-					set = function(info, val) if sArena:Combat() then return end sArena.db.profile.trinketScale = val sArena:RefreshConfig() end,
+					min = 4,
+					max = 100,
+					softMin = 6,
+					softMax = 60,
+					step = 1,
+					bigStep = 1,
+					get = function() return sArena.db.profile.trinketSize end,
+					set = function(info, val) if sArena:Combat() then return end sArena.db.profile.trinketSize = val sArena:RefreshConfig() end,
 				},
 				castBarScale = {
 					name = "Cast Bar Scale",
@@ -230,7 +230,7 @@ sArena.defaults = {
 		castBarPosition = { "RIGHT", nil, "LEFT", -32, -3 },
 		statusTextFontSize = 10,
 		trinketFontSize = 16,
-		trinketScale = 1.0,
+		trinketSize = 18,
 		scale = 1.0,
 		specScale = 1.0,
 		castBarScale = 1.0,
@@ -240,14 +240,6 @@ sArena.defaults = {
 		simpleFrames = false,
 		statusText = true,
 	},
-}
-
-local trinketFrames = {
-	["arena1"] = ArenaEnemyFrame1.CC.Cooldown,
-	["arena2"] = ArenaEnemyFrame2.CC.Cooldown,
-	["arena3"] = ArenaEnemyFrame3.CC.Cooldown,
-	["arena4"] = ArenaEnemyFrame4.CC.Cooldown,
-	["arena5"] = ArenaEnemyFrame5.CC.Cooldown,
 }
 
 local arenaFrames = {
@@ -427,24 +419,71 @@ function sArena:RefreshConfig()
 			frame.specFrame:SetPoint(self.db.profile.specPosition[1], frame, self.db.profile.specPosition[3], self.db.profile.specPosition[4], self.db.profile.specPosition[5])
 			self:SetupDrag(frame.specFrame, nil, self.db.profile.specPosition, true, true)
 			
-			if self.db.profile.simpleFrames then frame.texture:Hide() else frame.texture:Show() end
+			frame.healthbar:ClearAllPoints()
+			frame.manabar:ClearAllPoints()
+			
+			for k, v in pairs(textTable) do
+				frame[v]:ClearAllPoints()
+			end
 			
 			if self.db.profile.mirroredFrames then
-				_G[v.."Texture"]:SetTexCoord(0.796, 0, 0, 0.5)
 				frame.name:SetPoint("BOTTOMLEFT", 32, 24)
-				frame.healthbar:SetPoint("TOPLEFT", 29, -12)
-				frame.healthtext:SetPoint("CENTER", 7, 3)
-				frame.manabar:SetPoint("TOPLEFT", 29, -20)
-				frame.manatext:SetPoint("CENTER", 7, -6)
-				frame.classPortrait:SetPoint("TOPRIGHT", -81, -4)
+				frame.classPortrait:SetPoint("TOPRIGHT", -83, -6)
+				
+				if self.db.profile.simpleFrames then
+					frame.healthbar:SetHeight(19)
+					frame.healthbar:SetPoint("TOPLEFT", frame.classPortrait, "TOPRIGHT", 2, -2)
+					
+					frame.manabar:SetPoint("TOP", frame.healthbar, "BOTTOM", 0, 0)
+					frame.manabar:SetPoint("BOTTOMLEFT", frame.classPortrait, "BOTTOMRIGHT", 2, 2)
+				else
+					frame.texture:SetTexCoord(0.796, 0, 0, 0.5)
+					frame.healthbar:SetHeight(8)
+					frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 29, -12)
+					
+					frame.manabar:SetPoint("TOPLEFT", frame, "TOPLEFT", 29, -20)
+				end
 			else
-				_G[v.."Texture"]:SetTexCoord(0, 0.796, 0, 0.5)
 				frame.name:SetPoint("BOTTOMLEFT", 3, 24)
-				frame.healthbar:SetPoint("TOPLEFT", 2, -12)
-				frame.healthtext:SetPoint("CENTER", -20, 3)
-				frame.manabar:SetPoint("TOPLEFT", 2, -20)
-				frame.manatext:SetPoint("CENTER", -20, -6)
-				frame.classPortrait:SetPoint("TOPRIGHT", -11, -4)
+				frame.classPortrait:SetPoint("TOPRIGHT", -13, -6)
+				
+				if self.db.profile.simpleFrames then
+					frame.healthbar:SetHeight(19)
+					frame.healthbar:SetPoint("TOPRIGHT", frame.classPortrait, "TOPLEFT", -2, -2)
+					
+					frame.manabar:SetPoint("TOP", frame.healthbar, "BOTTOM", 0, 0)
+					frame.manabar:SetPoint("BOTTOMRIGHT", frame.classPortrait, "BOTTOMLEFT", -2, 2)
+				else
+					frame.texture:SetTexCoord(0, 0.796, 0, 0.5)
+					frame.healthbar:SetHeight(8)
+					frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -12)
+					
+					frame.manabar:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -20)
+				end
+			end
+			
+			if self.db.profile.simpleFrames then
+				frame.texture:Hide()
+				frame.classPortrait:SetSize(30, 30)
+				
+				frame.healthtext:SetPoint("CENTER", frame.healthbar)
+				frame.healthtextleft:SetPoint("LEFT", frame.healthbar)
+				frame.healthtextright:SetPoint("RIGHT", frame.healthbar)
+				
+				frame.manatext:SetPoint("CENTER", frame.manabar)
+				frame.manatextleft:SetPoint("LEFT", frame.manabar)
+				frame.manatextright:SetPoint("RIGHT", frame.manabar)
+			else
+				frame.texture:Show()
+				frame.classPortrait:SetSize(26, 26)
+				
+				frame.healthtext:SetPoint("CENTER", frame.healthbar, 0, 2)
+				frame.healthtextleft:SetPoint("LEFT", frame.healthbar, 0, 2)
+				frame.healthtextright:SetPoint("RIGHT", frame.healthbar, 0, 2)
+				
+				frame.manatext:SetPoint("CENTER", frame.manabar, 0, 2)
+				frame.manatextleft:SetPoint("LEFT", frame.manabar, 0, 2)
+				frame.manatextright:SetPoint("RIGHT", frame.manabar, 0, 2)
 			end
 			
 			-- Make frame movable
@@ -476,7 +515,7 @@ function sArena:RefreshConfig()
 			
 			if k == 1 then
 				-- Trinkets: position & font size
-				frame["CC"]:SetScale(sArena.db.profile.trinketScale)
+				frame["CC"]:SetSize(self.db.profile.trinketSize, self.db.profile.trinketSize)
 				frame["CC"]:ClearAllPoints()
 				frame["CC"]:SetPoint(self.db.profile.trinketPosition[1], frame, self.db.profile.trinketPosition[3], self.db.profile.trinketPosition[4], self.db.profile.trinketPosition[5])
 				local fontFace, _, fontFlags = frame["CC"].Cooldown.Text:GetFont()
