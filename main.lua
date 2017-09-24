@@ -327,8 +327,8 @@ function sArena:OnEnable()
 			
 			frame:SetParent(sArena.ArenaEnemyFrames)
 			
-			-- Stuff that only needs to be done to arena frames (but not prep frames)
 			if k == 1 then
+				-- Stuff that only needs to be done to arena frames (but not prep frames)
 				
 				local cc = frame["CC"]
 				
@@ -352,9 +352,8 @@ function sArena:OnEnable()
 				
 				frame.castBar:SetMovable(true)
 				frame.castBar:SetClampedToScreen(true)
-				
-				
 			else
+				-- Stuff that only needs to be done to prep frames (but not arena frames)
 				frame.name = _G[v.."Name"]
 				frame.healthbar = _G[v.."HealthBar"]
 				frame.manabar = _G[v.."ManaBar"]
@@ -363,6 +362,7 @@ function sArena:OnEnable()
 			end
 			
 			frame.texture = _G[v.."Texture"]
+			frame.background = _G[v.."Background"]
 			frame.healthtext = _G[v.."HealthBarText"]
 			frame.healthtextleft = _G[v.."HealthBarTextLeft"]
 			frame.healthtextright = _G[v.."HealthBarTextRight"]
@@ -370,8 +370,8 @@ function sArena:OnEnable()
 			frame.manatextleft = _G[v.."ManaBarTextLeft"]
 			frame.manatextright = _G[v.."ManaBarTextRight"]
 			
-			_G[v.."Background"]:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", 0, 0)
-			_G[v.."Background"]:SetPoint("BOTTOMRIGHT", frame.manabar, "BOTTOMRIGHT", 0, 0)
+			frame.background:SetPoint("TOPLEFT", frame.healthbar, "TOPLEFT", 0, 0)
+			frame.background:SetPoint("BOTTOMRIGHT", frame.manabar, "BOTTOMRIGHT", 0, 0)
 			
 			frame.specFrame = CreateFrame("Frame", nil, frame, "sArenaSpecIconTemplate")
 			frame.specFrame:SetMovable(true)
@@ -422,18 +422,14 @@ function sArena:RefreshConfig()
 		for k, v in pairs({"ArenaEnemyFrame"..i, "ArenaPrepFrame"..i}) do
 			local frame = _G[v]
 			
-			if self.db.profile.simpleFrames == true then
-				frame.texture:Hide()
-			else
-				frame.texture:Show()
-			end
-			
 			frame.specFrame:SetScale(self.db.profile.specScale)
 			frame.specFrame:ClearAllPoints()
 			frame.specFrame:SetPoint(self.db.profile.specPosition[1], frame, self.db.profile.specPosition[3], self.db.profile.specPosition[4], self.db.profile.specPosition[5])
 			self:SetupDrag(frame.specFrame, nil, self.db.profile.specPosition, true, true)
 			
-			if self.db.profile.mirroredFrames == true then
+			if self.db.profile.simpleFrames then frame.texture:Hide() else frame.texture:Show() end
+			
+			if self.db.profile.mirroredFrames then
 				_G[v.."Texture"]:SetTexCoord(0.796, 0, 0, 0.5)
 				frame.name:SetPoint("BOTTOMLEFT", 32, 24)
 				frame.healthbar:SetPoint("TOPLEFT", 29, -12)
@@ -519,7 +515,7 @@ function sArena:TestMode(setting)
 		sArena.testMode = setting
 	end
 	
-	if sArena.testMode == false then
+	if not sArena.testMode then
 		-- If test mode is disabled & we are outside of a pvp environment, hide the frames
 		local _, instanceType = IsInInstance()
 		if instanceType ~= "pvp" and instanceType ~= "arena" then self.ArenaEnemyFrames:Hide() end
@@ -564,7 +560,7 @@ function sArena:TestMode(setting)
 				SetPortraitToTexture(arenaFrame.specPortrait, specIcons[i])
 			end
 			
-			if self.db.profile.hideNames == true then
+			if self.db.profile.hideNames then
 				arenaFrame.name:SetText("")
 			else
 				arenaFrame.name:SetText("arena"..i)
@@ -572,7 +568,7 @@ function sArena:TestMode(setting)
 			
 			local c = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[testModeClasses[i]] or RAID_CLASS_COLORS[testModeClasses[i]]
 			
-			if self.db.profile.classColours == true then arenaFrame.healthbar:SetStatusBarColor(c.r, c.g, c.b)
+			if self.db.profile.classColours then arenaFrame.healthbar:SetStatusBarColor(c.r, c.g, c.b)
 			else arenaFrame.healthbar:SetStatusBarColor(0, 1, 0)
 			end
 			
@@ -635,13 +631,13 @@ function sArena:PartyMemberBackground_SetOpacity()
 end
 
 function sArena:ArenaEnemyFrame_SetMysteryPlayer(frame)
-	if self.db.profile.simpleFrames == true then
+	if self.db.profile.simpleFrames then
 		frame.classPortrait:SetTexture(134400)
 	end
 end
 
 function sArena:ArenaEnemyFrame_UpdatePlayer(frame)
-	if self.db.profile.simpleFrames == true then
+	if self.db.profile.simpleFrames then
 			local id = frame:GetID()
 				
 			local _, class = UnitClass(frame.unit)
@@ -668,7 +664,7 @@ function sArena:ArenaPrepFrames_UpdateFrames()
 		if i <= numOpps then 
 			local specID = GetArenaOpponentSpec(i)
 			if specID > 0 then 
-				if self.db.profile.simpleFrames == true then
+				if self.db.profile.simpleFrames then
 					local _, _, _, specIcon, _, class = GetSpecializationInfoByID(specID)
 					if class then
 						prepFrame.classPortrait:SetTexture(classIcons[class]);
@@ -685,7 +681,7 @@ function sArena:ArenaPrepFrames_UpdateFrames()
 end
 
 function sArena:ClassColours(statusbar)
-	if self.db.profile.classColours == false then return end
+	if not self.db.profile.classColours then return end
 	if healthBars[statusbar:GetName()] then
 		local _, class = UnitClass(statusbar.unit)
 		if not class then return end
