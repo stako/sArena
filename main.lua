@@ -4,11 +4,9 @@ ToDo List:
 Fix interface taint that is caused by manipulating UVars
 Add functionality to allow arena frames to grow in different directions
 Add LibSharedMedia to customize fonts & statusbars
-Pet Frames - add mirrored frame functionality & make them movable
+Pet Frames - movable, mirrored, simple
 Add interrupts to aurawatch
 Fix status text display in test mode
-Allow DR to activate after CC dissipates
-Help menu
 MoveAnything compatability?
 ]]
 
@@ -431,14 +429,12 @@ function sArena:RefreshConfig()
 				frame.classPortrait:SetPoint("TOPRIGHT", -83, -6)
 				
 				if self.db.profile.simpleFrames then
-					frame.healthbar:SetHeight(19)
 					frame.healthbar:SetPoint("TOPLEFT", frame.classPortrait, "TOPRIGHT", 2, -2)
 					
 					frame.manabar:SetPoint("TOP", frame.healthbar, "BOTTOM", 0, 0)
 					frame.manabar:SetPoint("BOTTOMLEFT", frame.classPortrait, "BOTTOMRIGHT", 2, 2)
 				else
 					frame.texture:SetTexCoord(0.796, 0, 0, 0.5)
-					frame.healthbar:SetHeight(8)
 					frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 29, -12)
 					
 					frame.manabar:SetPoint("TOPLEFT", frame, "TOPLEFT", 29, -20)
@@ -448,14 +444,12 @@ function sArena:RefreshConfig()
 				frame.classPortrait:SetPoint("TOPRIGHT", -13, -6)
 				
 				if self.db.profile.simpleFrames then
-					frame.healthbar:SetHeight(19)
 					frame.healthbar:SetPoint("TOPRIGHT", frame.classPortrait, "TOPLEFT", -2, -2)
 					
 					frame.manabar:SetPoint("TOP", frame.healthbar, "BOTTOM", 0, 0)
 					frame.manabar:SetPoint("BOTTOMRIGHT", frame.classPortrait, "BOTTOMLEFT", -2, 2)
 				else
 					frame.texture:SetTexCoord(0, 0.796, 0, 0.5)
-					frame.healthbar:SetHeight(8)
 					frame.healthbar:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -12)
 					
 					frame.manabar:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -20)
@@ -465,6 +459,8 @@ function sArena:RefreshConfig()
 			if self.db.profile.simpleFrames then
 				frame.texture:Hide()
 				frame.classPortrait:SetSize(30, 30)
+				
+				frame.healthbar:SetHeight(19)
 				
 				frame.healthtext:SetPoint("CENTER", frame.healthbar)
 				frame.healthtextleft:SetPoint("LEFT", frame.healthbar)
@@ -476,6 +472,8 @@ function sArena:RefreshConfig()
 			else
 				frame.texture:Show()
 				frame.classPortrait:SetSize(26, 26)
+				
+				frame.healthbar:SetHeight(8)
 				
 				frame.healthtext:SetPoint("CENTER", frame.healthbar, 0, 2)
 				frame.healthtextleft:SetPoint("LEFT", frame.healthbar, 0, 2)
@@ -691,7 +689,7 @@ function sArena:ArenaEnemyFrame_UpdatePlayer(frame)
 				frame.specPortrait:SetTexture(specIcon)
 			end
 	end
-	if self.db.profile.hideNames == true and frame.name then
+	if self.db.profile.hideNames and frame.name then
 		frame.name:SetText("")
 	end
 end
@@ -775,6 +773,8 @@ end
 function sArena:CalcPoint(frame)
 	local parentX, parentY = frame:GetParent():GetCenter()
 	local frameX, frameY = frame:GetCenter()
+	
+	parentX, parentY, frameX, frameY = parentX + 0.5, parentY + 0.5, frameX + 0.5, frameY + 0.5
 	
 	if ( not frameX ) then return end
 	
