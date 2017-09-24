@@ -433,6 +433,7 @@ function sArena.aurawatch:ApplyAura(unitID)
 		CooldownFrame_Set(frame, start, expire - start, 1, true)
 		if spellId ~= frame.activeId then
 			frame.activeId = spellId
+			frame.classPortrait:SetTexCoord(0,1,0,1)
 			if sArena.db.profile.simpleFrames then
 				frame.classPortrait:SetTexture(icon)
 			else
@@ -529,7 +530,7 @@ function sArena.aurawatch:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, ...)
 			-- Only track interrupts that are used on arena opponents
 			if unitID then
 				local _, _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unitID)
-				if event == "SPELL_INTERRUPT" or not notInterruptable then
+				if event == "SPELL_INTERRUPT" or notInterruptable == false then
 					local frame = self[unitID]
 					local duration = interrupts[spellId]
 					local _, class = UnitClass(unitID)
