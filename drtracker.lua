@@ -135,7 +135,7 @@ function sArena.drtracker:RefreshConfig()
 				sArena:SetupDrag(frame, nil, sArena.db.profile.drtracker.position, true, true)
 			end
 			
-			if sArena.db.profile.drtracker.enabled == false then
+			if not sArena.db.profile.drtracker.enabled then
 				CooldownFrame_Set(frame.Cooldown, 0, 0, 0, true)
 			end
 			frame:SetSize(sArena.db.profile.drtracker.iconSize, sArena.db.profile.drtracker.iconSize)
@@ -152,7 +152,7 @@ function sArena.drtracker:TestMode()
 		local unitID = "arena"..i
 		for c = 1, #categories do
 			local v = categories[c]
-			if sArena.testMode == true and sArena.db.profile.drtracker.enabled == true then
+			if sArena.testMode and sArena.db.profile.drtracker.enabled then
 				CooldownFrame_Set(self[unitID][v].Cooldown, GetTime(), drTime, 1, true)
 				self[unitID][v].Icon:SetTexture(136071)
 				if c == 1 then
@@ -186,7 +186,7 @@ function sArena.drtracker:UpdatePosition(id)
 end
 
 function sArena.drtracker:COMBAT_LOG_EVENT_UNFILTERED(_, _, eventType, _, _, _, _, _, destGUID, _, _, _, spellID, spellName, _, auraType)
-	if sArena.db.profile.drtracker.enabled == false then return end
+	if not sArena.db.profile.drtracker.enabled then return end
 	if auraType == "DEBUFF" then
 		if eventType == "SPELL_AURA_REMOVED" or eventType == "SPELL_AURA_BROKEN" then
 			self:ApplyDR(destGUID, spellID, spellName, false)
@@ -197,7 +197,7 @@ function sArena.drtracker:COMBAT_LOG_EVENT_UNFILTERED(_, _, eventType, _, _, _, 
 end
 sArena.RegisterCallback(sArena.drtracker, "sArena_COMBAT_LOG_EVENT_UNFILTERED", "COMBAT_LOG_EVENT_UNFILTERED")
 
-local spells = {
+local drList = {
 	[  5211] = "stun",	-- Mighty Bash
 	[108194] = "stun",	-- Asphyxiate
 	[199804] = "stun",	-- Between the Eyes
@@ -230,6 +230,7 @@ local spells = {
 	[132168] = "stun",	-- Shockwave UNCONFIRMED SPELLID
 	[ 20549] = "stun",	-- War Stomp UNCONFIRMED SPELLID
 	[199085] = "stun",	-- Warpath UNCONFIRMED CATEGORY (May not be on DR Table)
+	[204437] = "stun",	-- Lightning Lasso
 	
 	[ 33786] = "disorient",	-- Cyclone
 	[209753] = "disorient",	-- Cyclone, Honor Talent
@@ -249,14 +250,14 @@ local spells = {
 	[118699] = "disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
 	[130616] = "disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
 	[115268] = "disorient", -- Mesmerize UNCONFIRMED SPELLID & CATEGORY
-	[  6358] = "disorient", -- Seduction UNCONFIRMED SPELLID & CATEGORY
+	[  6358] = "disorient", -- Seduction UNCONFIRMED CATEGORY
 	
 	[ 51514] = "incapacitate",	-- Hex
 	[211004] = "incapacitate",	-- Hex: Spider UNCONFIRMED SPELLID
 	[210873] = "incapacitate",	-- Hex: Raptor UNCONFIRMED SPELLID
 	[211015] = "incapacitate",	-- Hex: Cockroach UNCONFIRMED SPELLID
 	[211010] = "incapacitate",	-- Hex: Snake UNCONFIRMED SPELLID
-	[196942] = "incapacitate",	-- Hex
+	[196942] = "incapacitate",	-- Hex (Voodoo Totem)
 	[   118] = "incapacitate",	-- Polymorph
 	[ 61305] = "incapacitate",	-- Polymorph: Black Cat UNCONFIRMED SPELLID
 	[ 28272] = "incapacitate",	-- Polymorph: Pig UNCONFIRMED SPELLID
@@ -313,14 +314,14 @@ local spells = {
 	[202719] = "silence",	-- Arcane Torrent
 	[202933] = "silence",	-- Spider Sting
 	[  1330] = "silence",	-- Garrote
-	[ 15487] = "silence",	-- Silence UNCONFIRMED SPELLID
+	[ 15487] = "silence",	-- Silence
 	[199683] = "silence",	-- Last Word UNCONFIRMED IF THIS IS ON DR TABLE
 	[ 47476] = "silence",	-- Strangulate UNCONFIRMED SPELLID
 	[204490] = "silence",	-- Sigil of Silence UNCONFIRMED SPELLID
 }
 
 function sArena.drtracker:ApplyDR(GUID, spellID, spellName, applied)
-	local category = spells[spellID]
+	local category = drList[spellID]
 	if not category then return end
 	
 	local unitID
