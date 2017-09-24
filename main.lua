@@ -5,7 +5,6 @@ Fix interface taint that is caused by manipulating UVars
 Add functionality to allow arena frames to grow in different directions
 Add LibSharedMedia to customize fonts & statusbars
 Pet Frames - movable, mirrored, simple
-Add interrupts to aurawatch
 Fix status text display in test mode
 MoveAnything compatability?
 ]]
