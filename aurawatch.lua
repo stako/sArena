@@ -40,7 +40,34 @@ sArena.defaults.profile.aurawatch = {
 	fontSize = 12,
 }
 
-local spells = {
+-- Get localized spell names
+local burningDetermination = GetSpellInfo(221404)
+local calmingWaters = GetSpellInfo(221677)
+local castingCircle = GetSpellInfo(221705)
+local holyConcentration = GetSpellInfo(221660)
+
+local interrupts = {
+	[1766] = 5,	-- Kick (Rogue)
+	[2139] = 6,	-- Counterspell (Mage)
+	[6552] = 4,	-- Pummel (Warrior)
+	[19647] = 6,	-- Spell Lock (Warlock)
+	[47528] = 3,	-- Mind Freeze (Death Knight)
+	[57994] = 3,	-- Wind Shear (Shaman)
+	[91802] = 2,	-- Shambling Rush (Death Knight)
+	[96231] = 4,	-- Rebuke (Paladin)
+	[106839] = 4,	-- Skull Bash (Feral)
+	[115781] = 6,	-- Optical Blast (Warlock)
+	[116705] = 4,	-- Spear Hand Strike (Monk)
+	[132409] = 6,	-- Spell Lock (Warlock)
+	[147362] = 3,	-- Countershot (Hunter)
+	[171138] = 6,	-- Shadow Lock (Warlock)
+	[183752] = 3,	-- Consume Magic (Demon Hunter)
+	[187707] = 3,	-- Muzzle (Hunter)
+	[212619] = 6,	-- Call Felhunter (Warlock)
+	[231665] = 3,	-- Avengers Shield (Paladin)
+}
+
+local spellList = {
 	-- Higher up = higher display priority
 	
 	-- CCs
@@ -76,6 +103,7 @@ local spells = {
 	132168,	-- Shockwave (Stun)
 	20549,	-- War Stomp (Stun)
 	199085,	-- Warpath (Stun)
+	204437,	-- Lightning Lasso (Stun)
 
 	33786,	-- Cyclone (Disorient)
 	209753,	-- Cyclone, Honor Talent (Disorient)
@@ -89,14 +117,15 @@ local spells = {
 	105421,	-- Blinding Light (Disorient)
 	207167,	-- Blinding Sleet (Disorient)
 	31661,	-- Dragon's Breath (Disorient)
-	207685,	-- Sigil of Misery
-	198909,	-- Song of Chi-ji
-	202274,	-- Incendiary Brew
-	5782,	-- Fear
-	118699,	-- Fear
-	130616,	-- Fear
-	115268,	-- Mesmerize
-	6358,	-- Seduction
+	207685,	-- Sigil of Misery (Disorient)
+	198909,	-- Song of Chi-ji (Disorient)
+	202274,	-- Incendiary Brew (Disorient)
+	5782,	-- Fear (Disorient)
+	118699,	-- Fear (Disorient)
+	130616,	-- Fear (Disorient)
+	115268,	-- Mesmerize (Disorient)
+	6358,	-- Seduction (Disorient)
+	87204,	-- Sin and Punishment (Disorient)
 
 	51514,	-- Hex (Incapacitate)
 	211004,	-- Hex: Spider (Incapacitate)
@@ -135,6 +164,26 @@ local spells = {
 	710,	-- Banish (Incapacitate)
 	107079,	-- Quaking Palm (Incapacitate)
 	236025,	-- Enraged Maim (Incapacitate)
+	
+	-- Interrupts
+	1766,	-- Kick (Rogue)
+	2139,	-- Counterspell (Mage)
+	6552,	-- Pummel (Warrior)
+	19647,	-- Spell Lock (Warlock)
+	47528,	-- Mind Freeze (Death Knight)
+	57994,	-- Wind Shear (Shaman)
+	91802,	-- Shambling Rush (Death Knight)
+	96231,	-- Rebuke (Paladin)
+	106839,	-- Skull Bash (Feral)
+	115781,	-- Optical Blast (Warlock)
+	116705,	-- Spear Hand Strike (Monk)
+	132409,	-- Spell Lock (Warlock)
+	147362,	-- Countershot (Hunter)
+	171138,	-- Shadow Lock (Warlock)
+	183752,	-- Consume Magic (Demon Hunter)
+	187707,	-- Muzzle (Hunter)
+	212619,	-- Call Felhunter (Warlock)
+	231665,	-- Avengers Shield (Paladin)
 
 	-- Immunities
 	642,	-- Divine Shield
@@ -269,9 +318,10 @@ local spells = {
 	199450,	-- Ultimate Sacrifice
 	188501,	-- Spectral Sight
 	1044,	-- Blessing of Freedom
+	41425,	-- Hypothermia
 }
 
-local auraList = {}
+local priorityList = {}
 local testModeClasses = { "ROGUE", "MAGE", "PRIEST" }
 local classIcons = {
 	["DRUID"] = 625999,
@@ -289,9 +339,9 @@ local classIcons = {
 }
 
 function sArena.aurawatch:OnEnable()
-	-- Create prioritized aura list. We're simply swapping the keys and values from sArena.AuraWatch.Spells
-	for k, v in ipairs(spells) do
-		auraList[v] = k
+	-- Create prioritized aura list. We're simply swapping the keys and values from spellList
+	for k, v in ipairs(spellList) do
+		priorityList[v] = k
 	end
 	
 	for i = 1, 5 do
@@ -301,6 +351,7 @@ function sArena.aurawatch:OnEnable()
 		frame:SetSwipeColor(0, 0, 0, 0.6)
 		frame:SetDrawBling(false)
 		frame:SetReverse(true)
+		frame:SetHideCountdownNumbers(false)
 		frame:ClearAllPoints()
 		frame:SetPoint("TOPLEFT", arenaFrame.classPortrait, "TOPLEFT", 2, -2)
 		frame:SetPoint("BOTTOMRIGHT", arenaFrame.classPortrait, "BOTTOMRIGHT", -2, 2)
@@ -315,9 +366,14 @@ function sArena.aurawatch:OnEnable()
 		frame.Text:SetPoint("CENTER", frame, "CENTER", 0, 1)
 		
 		frame.classPortrait = arenaFrame.classPortrait
-		frame.currentSpellId = 0
+		frame.activeId = nil
+		frame.aura = { spellId = nil, icon = nil, start = nil, expire = nil }
+		frame.interrupt = { spellId = nil, icon = nil, start = nil, expire = nil }
 		
-		frame:SetHideCountdownNumbers(false)
+		-- Check for auras when an interrupt lockout expires
+		frame:HookScript("OnHide", function(self)
+			sArena.aurawatch:UNIT_AURA(nil, "arena"..i)
+		end)
 		
 		self["arena"..i] = frame
 	end
@@ -352,65 +408,153 @@ function sArena.aurawatch:TestMode()
 end
 sArena.RegisterCallback(sArena.aurawatch, "sArena_TestMode", "TestMode")
 
+function sArena.aurawatch:ApplyAura(unitID)
+	local frame = self[unitID]
+	
+	local spellId, icon, start, expire
+	
+	-- Check if an aura was found
+	if frame.aura.spellId then
+		spellId, icon, start, expire = frame.aura.spellId, frame.aura.icon, frame.aura.start, frame.aura.expire
+	end
+	
+	-- Check if there's an active interrupt lockout
+	if frame.interrupt.spellId then
+		if frame.interrupt.expire < GetTime() then
+			frame.interrupt.spellId = nil
+		-- Select the greatest priority (aura or interrupt)
+		elseif spellId and priorityList[frame.interrupt.spellId] < priorityList[spellId] or not spellId then
+			spellId, icon, start, expire = frame.interrupt.spellId, frame.interrupt.icon, frame.interrupt.start, frame.interrupt.expire
+		end
+	end
+	
+	-- Set up the icon & cooldown
+	if spellId then
+		CooldownFrame_Set(frame, start, expire - start, 1, true)
+		if spellId ~= frame.activeId then
+			frame.activeId = spellId
+			if sArena.db.profile.simpleFrames then
+				frame.classPortrait:SetTexture(icon)
+			else
+				SetPortraitToTexture(frame.classPortrait, icon)
+			end
+		end
+	-- Remove cooldown & reset icon back to class icon
+	elseif frame.activeId then
+		frame.activeId = nil
+		local _, class = UnitClass(unitID)
+		if class then
+			CooldownFrame_Set(frame, 0, 0, 0, true)
+			if sArena.db.profile.simpleFrames then
+				frame.classPortrait:SetTexture(classIcons[class])
+				frame.classPortrait:SetTexCoord(0,1,0,1)
+			else
+				frame.classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+				frame.classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+			end
+		end
+	end
+end
+
 function sArena.aurawatch:UNIT_AURA(_, unitID)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
 	
 	local spellId, filter, buff, debuff
 	
-	-- Loop through unit's auras
+	-- Loop through the unit's buffs
 	for i = 1, 32 do -- BUFF_MAX_DISPLAY = 32
 		_, _, _, _, _, _, _, _, _, _, buff = UnitAura(unitID, i, "HELPFUL")
-		-- See if buff exists in our table
-		if buff and auraList[buff] then
-			-- Compare with the previous buff found in the for loop (if it exists) and select the greatest priority buff
-			if not spellId or auraList[buff] < auraList[spellId] then
+		-- Check if this aura is being tracked
+		if buff and priorityList[buff] then
+			-- Select the greatest priority aura
+			if not spellId or priorityList[buff] < priorityList[spellId] then
 				spellId = buff
 				filter = "HELPFUL"
 			end
 		end
 		
+		-- Loop through the unit's debuffs too!
 		if i <= 16 then -- DEBUFF_MAX_DISPLAY = 16
 			_, _, _, _, _, _, _, _, _, _, debuff = UnitAura(unitID, i, "HARMFUL")
 		end
 		
-		-- Same as above, but with debuffs
-		if debuff and auraList[debuff] then
-			if not spellId or auraList[debuff] < auraList[spellId] then
+		-- Check if this aura is being tracked
+		if debuff and priorityList[debuff] then
+			-- Select the greatest priority aura
+			if not spellId or priorityList[debuff] < priorityList[spellId] then
 				spellId = debuff
 				filter = "HARMFUL"
 			end
 		end
 		
+		-- Found neither a buff nor debuff at position i, break out of the loop
 		if not buff and not debuff then break end
 	end
 	
-	-- If an aura is found, set spell texture and cooldown, else set class portrait
+	local frame = self[unitID]
+	
 	if spellId then
-		local name, rank = GetSpellInfo(spellId)
-		local _, _, icon, _, _, duration, expires = UnitAura(unitID, name, rank, filter)
-		CooldownFrame_Set(self[unitID], expires - duration, duration, 1, true)
-		if self[unitID].currentSpellId == spellId then return end
-		self[unitID].classPortrait:SetTexCoord(0,1,0,1)
-		self[unitID].currentSpellId = spellId
-		if sArena.db.profile.simpleFrames then
-			self[unitID].classPortrait:SetTexture(icon)
-		else
-			SetPortraitToTexture(self[unitID].classPortrait, icon)
-		end
+		local name, rank, icon = GetSpellInfo(spellId)
+		local _, _, _, _, _, duration, expires = UnitAura(unitID, name, rank, filter)
+		
+		frame.aura.spellId = spellId
+		frame.aura.icon = icon
+		frame.aura.start = expires - duration
+		frame.aura.expire = expires
 	else
-		local _, class = UnitClass(unitID)
-		if class then
-			CooldownFrame_Set(self[unitID], 0, 0, 0, true)
-			self[unitID].currentSpellId = 0
-			if sArena.db.profile.simpleFrames then
-				self[unitID].classPortrait:SetTexture(classIcons[class])
-				self[unitID].classPortrait:SetTexCoord(0,1,0,1)
-			else
-				self[unitID].classPortrait:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
-				self[unitID].classPortrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+		frame.aura.spellId = nil
+	end
+	
+	self:ApplyAura(unitID)
+end
+sArena.RegisterCallback(sArena.aurawatch, "sArena_UNIT_AURA", "UNIT_AURA")
+
+function sArena.aurawatch:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, ...)
+	if not sArena.db.profile.aurawatch.enabled then return end
+	
+	-- Apparently SPELL_INTERRUPT doesn't capture interrupts that are used on channelled abilities
+	if event == "SPELL_INTERRUPT" or event == "SPELL_CAST_SUCCESS" then
+		local _,_,_,_,_, destGUID, _,_,_, spellId = ...
+		-- Check if the spell is being tracked
+		if interrupts[spellId] then
+			local unitID
+			for i = 1, 5 do
+				if UnitGUID("arena"..i) == destGUID then
+					unitID = "arena"..i
+					break
+				end
+			end
+			
+			-- Only track interrupts that are used on arena opponents
+			if unitID then
+				local _, _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unitID)
+				if event == "SPELL_INTERRUPT" or not notInterruptable then
+					local frame = self[unitID]
+					local duration = interrupts[spellId]
+					local _, class = UnitClass(unitID)
+					local _, _, icon = GetSpellInfo(spellId)
+					local start = GetTime()
+					
+					-- Adjust the lockout duration for some classes
+					if class == "PRIEST" or class == "SHAMAN" or class == "WARLOCK" then
+						duration = duration * 0.7
+					end
+					
+					-- Adjust the lockout duration for some talents
+					if UnitBuff(unitID, burningDetermination) or UnitBuff(unitID, calmingWaters) or UnitBuff(unitID, castingCircle) or UnitBuff(unitID, holyConcentration) then
+						duration = duration * 0.3
+					end
+					
+					frame.interrupt.spellId = spellId
+					frame.interrupt.icon = icon
+					frame.interrupt.start = start
+					frame.interrupt.expire = start + duration
+					
+					self:ApplyAura(unitID)
+				end
 			end
 		end
 	end
 end
-sArena.RegisterCallback(sArena.aurawatch, "sArena_UNIT_AURA", "UNIT_AURA")
+sArena.RegisterCallback(sArena.aurawatch, "sArena_COMBAT_LOG_EVENT_UNFILTERED", "COMBAT_LOG_EVENT_UNFILTERED")
