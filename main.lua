@@ -294,7 +294,8 @@ function sArena:OnInitialize()
 end
 
 function sArena:OnEnable()
-	SetCVar("showArenaEnemyFrames", true)
+	-- This CVar won't affect whether the arena frames will show, but it will affect where the objective tracker is anchored
+	SetCVar("showArenaEnemyFrames", false)
 	SetCVar("showArenaEnemyCastbar", true)
 	
 	-- ArenaEnemyFrames gets repositioned all time, so we'll just make our own & anchor everything to it
