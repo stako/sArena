@@ -418,8 +418,9 @@ function sArena.aurawatch:ApplyAura(unitID)
 		spellId, icon, start, expire = frame.aura.spellId, frame.aura.icon, frame.aura.start, frame.aura.expire
 	end
 	
-	-- Check if there's an active interrupt lockout
+	-- Check if there's an interrupt lockout
 	if frame.interrupt.spellId then
+		-- Make sure the lockout is still active
 		if frame.interrupt.expire < GetTime() then
 			frame.interrupt.spellId = nil
 		-- Select the greatest priority (aura or interrupt)

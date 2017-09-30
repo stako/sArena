@@ -294,8 +294,6 @@ function sArena:OnInitialize()
 end
 
 function sArena:OnEnable()
-	-- This CVar won't affect whether the arena frames will show, but it will affect where the objective tracker is anchored
-	SetCVar("showArenaEnemyFrames", false)
 	SetCVar("showArenaEnemyCastbar", true)
 	
 	-- ArenaEnemyFrames gets repositioned all time, so we'll just make our own & anchor everything to it
@@ -513,13 +511,14 @@ function sArena:RefreshConfig()
 			
 			if k == 1 then
 				-- Trinkets: position & font size
-				frame["CC"]:SetSize(self.db.profile.trinketSize, self.db.profile.trinketSize)
-				frame["CC"]:ClearAllPoints()
-				frame["CC"]:SetPoint(self.db.profile.trinketPosition[1], frame, self.db.profile.trinketPosition[3], self.db.profile.trinketPosition[4], self.db.profile.trinketPosition[5])
-				local fontFace, _, fontFlags = frame["CC"].Cooldown.Text:GetFont()
-				frame["CC"].Cooldown.Text:SetFont(fontFace, sArena.db.profile.trinketFontSize, fontFlags)
-				frame["CC"].Cooldown:SetHideCountdownNumbers(false)
-				self:SetupDrag(frame["CC"], nil, self.db.profile.trinketPosition, true, true)
+				local cc = frame["CC"]
+				cc:SetSize(self.db.profile.trinketSize, self.db.profile.trinketSize)
+				cc:ClearAllPoints()
+				cc:SetPoint(self.db.profile.trinketPosition[1], frame, self.db.profile.trinketPosition[3], self.db.profile.trinketPosition[4], self.db.profile.trinketPosition[5])
+				local fontFace, _, fontFlags = cc.Cooldown.Text:GetFont()
+				cc.Cooldown.Text:SetFont(fontFace, sArena.db.profile.trinketFontSize, fontFlags)
+				cc.Cooldown:SetHideCountdownNumbers(false)
+				self:SetupDrag(cc, nil, self.db.profile.trinketPosition, true, true)
 				
 				frame.castBar:SetScale(self.db.profile.castBarScale)
 				frame.castBar:ClearAllPoints()
@@ -632,11 +631,15 @@ function sArena:PLAYER_ENTERING_WORLD()
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		self:RegisterEvent("UNIT_AURA")
+		
+		-- Prevent objective tracker from anchoring itself to arena frames while in arena/bg
+		SetCVar("showArenaEnemyFrames", false)
 	else
 		self.ArenaEnemyFrames:Hide()
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 		self:UnregisterEvent("UNIT_AURA")
+		SetCVar("showArenaEnemyFrames", true)
 	end
 end
 
