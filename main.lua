@@ -302,8 +302,6 @@ function sArena:OnEnable()
 	self.ArenaEnemyFrames:SetClampedToScreen(true)
 	self.ArenaEnemyFrames:SetSize(130, 50)
 	
-	self.events:Fire("sArena_OnEnable")
-	
 	ArenaEnemyBackground:SetParent(sArena.ArenaEnemyFrames)
 	ArenaPrepBackground:SetParent(sArena.ArenaEnemyFrames)
 	
@@ -387,14 +385,14 @@ function sArena:OnEnable()
 	self:SecureHook("ArenaPrepFrames_UpdateFrames")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	
+	self.events:Fire("sArena_OnEnable")
+	
 	self:RefreshConfig()
 end
 
 -- We want to call this function when most settings are changed
 function sArena:RefreshConfig()
 	if self:Combat() then return end
-	
-	self.events:Fire("sArena_RefreshConfig")
 	
 	self.ArenaEnemyFrames:ClearAllPoints()
 	self.ArenaEnemyFrames:SetPoint(unpack(self.db.profile.position))
@@ -540,6 +538,8 @@ function sArena:RefreshConfig()
 			end
 		end
 	end
+	
+	self.events:Fire("sArena_RefreshConfig")
 	
 	if sArena.testMode then self:TestMode() end
 end

@@ -1,7 +1,7 @@
 local sArena = LibStub("AceAddon-3.0"):GetAddon("sArena")
 
-sArena.aurawatch = {}
-local UnitAura, GetSpellInfo, SetPortraitToTexture = UnitAura, GetSpellInfo, SetPortraitToTexture
+local AuraWatch = {}
+LibStub("AceEvent-3.0"):Embed(AuraWatch)
 
 sArena.options.plugins = sArena.options.plugins or {}
 sArena.options.plugins["AuraWatch"] = {
@@ -39,6 +39,8 @@ sArena.defaults.profile.aurawatch = {
 	enabled = true,
 	fontSize = 12,
 }
+
+local UnitAura, GetSpellInfo, SetPortraitToTexture = UnitAura, GetSpellInfo, SetPortraitToTexture
 
 -- Get localized spell names
 local burningDetermination = GetSpellInfo(221404)
@@ -338,7 +340,7 @@ local classIcons = {
 	["DEMONHUNTER"] = 1260827,
 }
 
-function sArena.aurawatch:OnEnable()
+function AuraWatch:OnEnable()
 	-- Create prioritized aura list. We're simply swapping the keys and values from spellList
 	for k, v in ipairs(spellList) do
 		priorityList[v] = k
@@ -372,15 +374,17 @@ function sArena.aurawatch:OnEnable()
 		
 		-- Check for auras when an interrupt lockout expires
 		frame:HookScript("OnHide", function(self)
-			sArena.aurawatch:UNIT_AURA(nil, "arena"..i)
+			AuraWatch:UNIT_AURA(nil, "arena"..i)
 		end)
 		
 		self["arena"..i] = frame
 	end
+	
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
-sArena.RegisterCallback(sArena.aurawatch, "sArena_OnEnable", "OnEnable")
+sArena.RegisterCallback(AuraWatch, "sArena_OnEnable", "OnEnable")
 
-function sArena.aurawatch:RefreshConfig()
+function AuraWatch:RefreshConfig()
 	for i = 1, 5 do
 		local frame = self["arena"..i]
 		
@@ -388,9 +392,9 @@ function sArena.aurawatch:RefreshConfig()
 		frame.Text:SetFont(fontFace, sArena.db.profile.aurawatch.fontSize, fontFlags)
 	end
 end
-sArena.RegisterCallback(sArena.aurawatch, "sArena_RefreshConfig", "RefreshConfig")
+sArena.RegisterCallback(AuraWatch, "sArena_RefreshConfig", "RefreshConfig")
 
-function sArena.aurawatch:TestMode()
+function AuraWatch:TestMode()
 	for i = 1, 3 do
 		local frame = self["arena"..i]
 		if sArena.testMode and sArena.db.profile.aurawatch.enabled then
@@ -406,9 +410,9 @@ function sArena.aurawatch:TestMode()
 		end
 	end
 end
-sArena.RegisterCallback(sArena.aurawatch, "sArena_TestMode", "TestMode")
+sArena.RegisterCallback(AuraWatch, "sArena_TestMode", "TestMode")
 
-function sArena.aurawatch:ApplyAura(unitID)
+function AuraWatch:ApplyAura(unitID)
 	local frame = self[unitID]
 	
 	local spellId, icon, start, expire
@@ -458,7 +462,18 @@ function sArena.aurawatch:ApplyAura(unitID)
 	end
 end
 
-function sArena.aurawatch:UNIT_AURA(_, unitID)
+function AuraWatch:PLAYER_ENTERING_WORLD()
+	local _, instanceType = IsInInstance()
+	if instanceType == "pvp" or instanceType == "arena" then
+		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		self:RegisterEvent("UNIT_AURA")
+	else
+		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		self:UnregisterEvent("UNIT_AURA")
+	end
+end
+
+function AuraWatch:UNIT_AURA(_, unitID)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
 	
@@ -510,9 +525,8 @@ function sArena.aurawatch:UNIT_AURA(_, unitID)
 	
 	self:ApplyAura(unitID)
 end
-sArena.RegisterCallback(sArena.aurawatch, "sArena_UNIT_AURA", "UNIT_AURA")
 
-function sArena.aurawatch:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, ...)
+function AuraWatch:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, ...)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	
 	-- Apparently SPELL_INTERRUPT doesn't capture interrupts that are used on channelled abilities
@@ -559,4 +573,3 @@ function sArena.aurawatch:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, ...)
 		end
 	end
 end
-sArena.RegisterCallback(sArena.aurawatch, "sArena_COMBAT_LOG_EVENT_UNFILTERED", "COMBAT_LOG_EVENT_UNFILTERED")
