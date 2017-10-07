@@ -628,31 +628,14 @@ function sArena:PLAYER_ENTERING_WORLD()
 		self.testMode = false
 		self:TestMode()
 		self.ArenaEnemyFrames:Show()
-		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-		self:RegisterEvent("UNIT_AURA")
 		
 		-- Prevent objective tracker from anchoring itself to arena frames while in arena/bg
 		SetCVar("showArenaEnemyFrames", false)
+		ArenaEnemyFrames_CheckEffectiveEnableState(ArenaEnemyFrames)
 	else
 		self.ArenaEnemyFrames:Hide()
-		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-		self:UnregisterEvent("UNIT_AURA")
 		SetCVar("showArenaEnemyFrames", true)
 	end
-end
-
-function sArena:COMBAT_LOG_EVENT_UNFILTERED(_, ...)
-	self.events:Fire("sArena_COMBAT_LOG_EVENT_UNFILTERED", ...)
-end
-
-function sArena:UNIT_SPELLCAST_SUCCEEDED(_, ...)
-	self.events:Fire("sArena_UNIT_SPELLCAST_SUCCEEDED", ...)
-end
-
-function sArena:UNIT_AURA(_, ...)
-	self.events:Fire("sArena_UNIT_AURA", ...)
 end
 
 function sArena:Combat()
