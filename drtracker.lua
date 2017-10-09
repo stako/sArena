@@ -67,6 +67,14 @@ sArena.options.plugins["DR Tracker"] = {
 	},
 }
 
+sArena.defaults.profile.drtracker = {
+	enabled = true,
+	position = { "CENTER", nil, "CENTER", -70, 20 },
+	growRight = false,
+	iconSize = 24,
+	fontSize = 10,
+	displayMode = 1,
+}
 
 local UnitGUID, UnitDebuff, GetSpellInfo = UnitGUID, UnitDebuff, GetSpellInfo
 
@@ -207,15 +215,6 @@ local drList = {
 	[199683] = "silence",	-- Last Word UNCONFIRMED IF THIS IS ON DR TABLE
 	[ 47476] = "silence",	-- Strangulate UNCONFIRMED SPELLID
 	[204490] = "silence",	-- Sigil of Silence UNCONFIRMED SPELLID
-}
-
-sArena.defaults.profile.drtracker = {
-	enabled = true,
-	position = { "CENTER", nil, "CENTER", -70, 20 },
-	growRight = false,
-	iconSize = 24,
-	fontSize = 16,
-	displayMode = 1,
 }
 
 function DRTracker:OnEnable()

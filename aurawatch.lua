@@ -37,7 +37,7 @@ sArena.options.plugins["AuraWatch"] = {
 
 sArena.defaults.profile.aurawatch = {
 	enabled = true,
-	fontSize = 12,
+	fontSize = 10,
 }
 
 local UnitAura, GetSpellInfo, SetPortraitToTexture = UnitAura, GetSpellInfo, SetPortraitToTexture
@@ -350,7 +350,7 @@ function AuraWatch:OnEnable()
 		local arenaFrame = _G["ArenaEnemyFrame"..i]
 		
 		local frame = CreateFrame("Cooldown", nil, arenaFrame, "CooldownFrameTemplate")
-		frame:SetSwipeColor(0, 0, 0, 0.6)
+		--frame:SetSwipeColor(0, 0, 0, 0.6)
 		frame:SetDrawBling(false)
 		frame:SetReverse(true)
 		frame:SetHideCountdownNumbers(false)

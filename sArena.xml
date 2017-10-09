@@ -41,8 +41,8 @@
 						self:SetPoint("TOPLEFT", self:GetParent(), 1, -1)
 						self:SetPoint("BOTTOMRIGHT", self:GetParent(), -1, 1)
 						self:SetDrawBling(false)
-						self:SetSwipeColor(0,0,0,0.5)
-						self:SetReverse(true)
+						--self:SetSwipeColor(0,0,0,0.5)
+						--self:SetReverse(true)
 					</OnLoad>
 				</Scripts>
 			</Cooldown>
