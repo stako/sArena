@@ -48,6 +48,7 @@ sArena.options.plugins["Racials"] = {
 	},
 }
 
+
 local UnitRace = UnitRace
 
 sArena.defaults.profile.racials = {
@@ -70,7 +71,6 @@ local racialSpells = {
 		[20594] = {cd=120,icon=136225},	-- Stoneform
 }
 
--- List of race name mapped to their racial icon
 local racialIcons = {
 		["Human"] = 136129,
 		["Scourge"] = 136187,
@@ -93,16 +93,11 @@ function Racials:OnEnable()
 			end
 		end
 		
-		frame.Cooldown:SetScript("OnShow", function(self)
-			Racials:UpdatePosition("arena"..i)
-		end)
-		
 		frame.Cooldown:SetScript("OnHide", function(self)
 			-- don't want to hide when it's enabled and cooldown is off
 			if not sArena.db.profile.racials.enabled then
 				frame:SetAlpha(0)
 			end
-			Racials:UpdatePosition("arena"..i)
 		end)
 		
 		frame.Cooldown:SetHideCountdownNumbers(false)
@@ -139,7 +134,6 @@ function Racials:TestMode()
 			CooldownFrame_Set(self[unitID].Cooldown, GetTime(), 30, 1, true)
 			self[unitID].Icon:SetTexture(136129)
 			self[unitID]:SetAlpha(1)
-			Racials:UpdatePosition(unitID)
 		else
 			CooldownFrame_Set(self[unitID].Cooldown, 0, 0, 0, true)
 		end
@@ -150,10 +144,8 @@ sArena.RegisterCallback(Racials, "sArena_TestMode", "TestMode")
 --
 function Racials:UpdatePosition(id)
 	local frame = self[id]
-	if frame:GetAlpha() == 1 then
-		frame:ClearAllPoints()
-		frame:SetPoint("CENTER", frame:GetParent(), "CENTER", sArena.db.profile.racials.position[4], sArena.db.profile.racials.position[5])
-	end
+	frame:ClearAllPoints()
+	frame:SetPoint("CENTER", frame:GetParent(), "CENTER", sArena.db.profile.racials.position[4], sArena.db.profile.racials.position[5])
 end
 
 --
@@ -191,7 +183,6 @@ function Racials:UNIT_SPELLCAST_SUCCEEDED(_, unitID, _, _, _, spellID)
 		CooldownFrame_Set(frame.Cooldown, GetTime(), racialSpells[spellID].cd, 1, true)
 		frame.Icon:SetTexture(racialSpells[spellID].icon)
 		self[unitID]:SetAlpha(1)
-		self:UpdatePosition(unitID)
 	elseif trinketSpells[spellID] then -- If Medallion was used
 		local _, raceEN = UnitRace(unitID)
 		if racialIcons[raceEN] then
@@ -200,7 +191,6 @@ function Racials:UNIT_SPELLCAST_SUCCEEDED(_, unitID, _, _, _, spellID)
 				CooldownFrame_Set(frame.Cooldown, GetTime(), 30, 1, true)
 				frame.Icon:SetTexture(racialIcons[raceEN])
 				self[unitID]:SetAlpha(1)
-				self:UpdatePosition(unitID)
 			end
 		end
 	end
