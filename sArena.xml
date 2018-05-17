@@ -66,7 +66,28 @@
 		</Frames>
 	</Frame>
 	
+	<!-- Racial Template -->
+	<Frame name="sArenaRacialTemplate" movable="true" clampedToScreen="true" virtual="true">
+		<Layers>
+			<Layer level="BORDER">
+				<Texture parentKey="Icon" file="Interface\Icons\Spell_Shadow_Charm"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown parentKey="Cooldown" inherits="CooldownFrameTemplate">
+				<Scripts>
+					<OnLoad>
+						self:ClearAllPoints()
+						self:SetPoint("TOPLEFT", self:GetParent(), 1, -1)
+						self:SetPoint("BOTTOMRIGHT", self:GetParent(), -1, 1)
+					</OnLoad>
+				</Scripts>
+			</Cooldown>
+		</Frames>
+	</Frame>
+
 	<Script file="main.lua"/>
 	<Script file="drtracker.lua"/>
+	<Script file="racials.lua"/>
 	<Script file="aurawatch.lua"/>
 </Ui>
