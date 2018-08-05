@@ -172,7 +172,7 @@ function Racials:GetRemainingTime(unitID)
 	end
 end
 
-function Racials:UNIT_SPELLCAST_SUCCEEDED(_, unitID, _, _, _, spellID)
+function Racials:UNIT_SPELLCAST_SUCCEEDED(_, unitID, _, spellID)
 	if not sArena.db.profile.racials.enabled then return end
 	--
 	if not self[unitID] then return end -- if not casted by arenaenemy
