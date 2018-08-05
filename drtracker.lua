@@ -76,7 +76,10 @@ sArena.defaults.profile.drtracker = {
 	displayMode = 1,
 }
 
-local UnitGUID, UnitDebuff, GetSpellInfo = UnitGUID, UnitDebuff, GetSpellInfo
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local GetSpellInfo = GetSpellInfo
+local UnitDebuff = UnitDebuff
+local UnitGUID = UnitGUID
 
 local drTime = 18.5
 
@@ -324,21 +327,23 @@ function DRTracker:PLAYER_ENTERING_WORLD()
 	end
 end
 
-function DRTracker:COMBAT_LOG_EVENT_UNFILTERED(_, _, eventType, _, _, _, _, _, destGUID, _, _, _, spellID, spellName, _, auraType)
+function DRTracker:COMBAT_LOG_EVENT_UNFILTERED()
 	if not sArena.db.profile.drtracker.enabled then return end
+
+	local _, eventType, _, _, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo()
 	if auraType == "DEBUFF" then
 		if eventType == "SPELL_AURA_REMOVED" or eventType == "SPELL_AURA_BROKEN" then
-			self:ApplyDR(destGUID, spellID, spellName, false)
+			self:ApplyDR(destGUID, spellID, false)
 		elseif eventType == "SPELL_AURA_APPLIED" then
-			self:ApplyDR(destGUID, spellID, spellName, true)
+			self:ApplyDR(destGUID, spellID, true)
 		end
 	end
 end
 
-function DRTracker:ApplyDR(GUID, spellID, spellName, applied)
+function DRTracker:ApplyDR(GUID, spellID, applied)
 	local category = drList[spellID]
 	if not category then return end
-	
+
 	local unitID
 	for i = 1, 5 do
 		if UnitGUID("arena"..i) == GUID then
@@ -357,8 +362,13 @@ function DRTracker:ApplyDR(GUID, spellID, spellName, applied)
 	
 	if sArena.db.profile.drtracker.displayMode == 1 then
 		if applied then -- CC has been applied
-			local _, _, _, _, _, auraDuration = UnitDebuff(unitID, spellName)
-			CooldownFrame_Set(frame.Cooldown, GetTime(), drTime + auraDuration, 1, true)
+			for i = 1, 16 do -- DEBUFF_MAX_DISPLAY
+				local _, _, _, _, _, expirationTime, _, _, _, _spellID = UnitDebuff("target", i)
+				if expirationTime and spellID == _spellID then
+					CooldownFrame_Set(frame.Cooldown, GetTime(), drTime + expirationTime, 1, true)
+					break
+				end
+			end
 		else -- CC has been removed (completed, dispelled, broken, etc.)
 			-- Adjust timer for early CC breaks
 			local startTime, startDuration = frame.Cooldown:GetCooldownTimes()

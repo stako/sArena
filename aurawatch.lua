@@ -40,13 +40,16 @@ sArena.defaults.profile.aurawatch = {
 	fontSize = 10,
 }
 
-local UnitAura, GetSpellInfo, SetPortraitToTexture = UnitAura, GetSpellInfo, SetPortraitToTexture
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local GetSpellInfo = GetSpellInfo
+local SetPortraitToTexture = SetPortraitToTexture
+local UnitAura = UnitAura
 
--- Get localized spell names
-local burningDetermination = GetSpellInfo(221404)
-local calmingWaters = GetSpellInfo(221677)
-local castingCircle = GetSpellInfo(221705)
-local holyConcentration = GetSpellInfo(221660)
+local interruptReducers = {
+	[221404] = 0.3, -- Burning Determination
+	[221677] = 0.5, -- Calming Waters
+	[221660] = 0.3, -- Holy Concentration
+}
 
 local interrupts = {
 	[1766] = 5,	-- Kick (Rogue)
@@ -414,7 +417,7 @@ sArena.RegisterCallback(AuraWatch, "sArena_TestMode", "TestMode")
 
 function AuraWatch:ApplyAura(unitID)
 	local frame = self[unitID]
-	
+
 	local spellId, icon, start, expire
 	
 	-- Check if an aura was found
@@ -477,99 +480,88 @@ function AuraWatch:UNIT_AURA(_, unitID)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
 	
-	local spellId, filter, buff, debuff
-	
-	-- Loop through the unit's buffs
-	for i = 1, 32 do -- BUFF_MAX_DISPLAY = 32
-		_, _, _, _, _, _, _, _, _, _, buff = UnitAura(unitID, i, "HELPFUL")
-		-- Check if this aura is being tracked
-		if buff and priorityList[buff] then
+	local priorityAura = {
+		icon = nil,
+		spellId = nil,
+		duration = nil,
+		expires = nil,
+	}
+	local duration, icon, expires, spellId
+
+	for _, filter in pairs({"HELPFUL", "HARMFUL"}) do
+		for i = 1, 40 do
+			_, icon, _, _, duration, expires, _, _, _, spellId = UnitAura(unitID, i, filter)
+			if not spellId or not priorityList[spellId] then break end
+
 			-- Select the greatest priority aura
-			if not spellId or priorityList[buff] < priorityList[spellId] then
-				spellId = buff
-				filter = "HELPFUL"
+			if not priorityAura.spellId or priorityList[spellId] < priorityList[priorityAura.spellId] then
+				priorityAura.icon = icon
+				priorityAura.spellId = spellId
+				priorityAura.duration = duration
+				priorityAura.expires = expires
 			end
 		end
-		
-		-- Loop through the unit's debuffs too!
-		if i <= 16 then -- DEBUFF_MAX_DISPLAY = 16
-			_, _, _, _, _, _, _, _, _, _, debuff = UnitAura(unitID, i, "HARMFUL")
-		end
-		
-		-- Check if this aura is being tracked
-		if debuff and priorityList[debuff] then
-			-- Select the greatest priority aura
-			if not spellId or priorityList[debuff] < priorityList[spellId] then
-				spellId = debuff
-				filter = "HARMFUL"
-			end
-		end
-		
-		-- Found neither a buff nor debuff at position i, break out of the loop
-		if not buff and not debuff then break end
 	end
-	
+
 	local frame = self[unitID]
-	
-	if spellId then
-		local name, rank, icon = GetSpellInfo(spellId)
-		local _, _, _, _, _, duration, expires = UnitAura(unitID, name, rank, filter)
-		
-		frame.aura.spellId = spellId
-		frame.aura.icon = icon
-		frame.aura.start = expires - duration
-		frame.aura.expire = expires
+
+	if priorityAura.spellId then
+		frame.aura.spellId = priorityAura.spellId
+		frame.aura.icon = priorityAura.icon
+		frame.aura.start = priorityAura.expires - priorityAura.duration
+		frame.aura.expire = priorityAura.expires
 	else
 		frame.aura.spellId = nil
 	end
-	
+
 	self:ApplyAura(unitID)
 end
 
-function AuraWatch:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, ...)
+function AuraWatch:COMBAT_LOG_EVENT_UNFILTERED()
 	if not sArena.db.profile.aurawatch.enabled then return end
-	
+
+	local _, event, _, _, _, _, _, destGUID, _, _, _, spellId = CombatLogGetCurrentEventInfo()
+
+	-- Check if the spell is being tracked
+	if not interrupts[spellId] then return end
+
 	-- Apparently SPELL_INTERRUPT doesn't capture interrupts that are used on channelled abilities
-	if event == "SPELL_INTERRUPT" or event == "SPELL_CAST_SUCCESS" then
-		local _,_,_,_,_, destGUID, _,_,_, spellId = ...
-		-- Check if the spell is being tracked
-		if interrupts[spellId] then
-			local unitID
-			for i = 1, 5 do
-				if UnitGUID("arena"..i) == destGUID then
-					unitID = "arena"..i
-					break
-				end
-			end
-			
-			-- Only track interrupts that are used on arena opponents
-			if unitID then
-				local _, _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unitID)
-				if event == "SPELL_INTERRUPT" or notInterruptable == false then
-					local frame = self[unitID]
-					local duration = interrupts[spellId]
-					local _, class = UnitClass(unitID)
-					local _, _, icon = GetSpellInfo(spellId)
-					local start = GetTime()
-					
-					-- Adjust the lockout duration for some classes
-					if class == "PRIEST" or class == "SHAMAN" or class == "WARLOCK" then
-						duration = duration * 0.7
-					end
-					
-					-- Adjust the lockout duration for some talents
-					if UnitBuff(unitID, burningDetermination) or UnitBuff(unitID, calmingWaters) or UnitBuff(unitID, castingCircle) or UnitBuff(unitID, holyConcentration) then
-						duration = duration * 0.3
-					end
-					
-					frame.interrupt.spellId = spellId
-					frame.interrupt.icon = icon
-					frame.interrupt.start = start
-					frame.interrupt.expire = start + duration
-					
-					self:ApplyAura(unitID)
-				end
-			end
+	if event ~= "SPELL_INTERRUPT" or event ~= "SPELL_CAST_SUCCESS" then return end
+
+	local unitID
+	for i = 1, 5 do
+		if UnitGUID("arena"..i) == destGUID then
+			unitID = "arena"..i
+			break
 		end
+	end
+
+	-- Only track interrupts that are used on arena opponents
+	if not unitID then return end
+
+	local _, _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unitID)
+	if event == "SPELL_INTERRUPT" or notInterruptable == false then
+		local frame = self[unitID]
+		local duration = interrupts[spellId]
+		local _, class = UnitClass(unitID)
+		local _, _, icon = GetSpellInfo(spellId)
+		local start = GetTime()
+
+		-- Adjust the lockout duration for some classes
+		if class == "PRIEST" or class == "SHAMAN" or class == "WARLOCK" then
+			duration = duration * 0.7
+		end
+
+		-- Adjust the lockout duration for some talents
+		if interruptReducers[spellId] then
+			duration = duration * interruptReducers[spellId]
+		end
+
+		frame.interrupt.spellId = spellId
+		frame.interrupt.icon = icon
+		frame.interrupt.start = start
+		frame.interrupt.expire = start + duration
+
+		self:ApplyAura(unitID)
 	end
 end
