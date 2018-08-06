@@ -491,14 +491,16 @@ function AuraWatch:UNIT_AURA(_, unitID)
 	for _, filter in pairs({"HELPFUL", "HARMFUL"}) do
 		for i = 1, 40 do
 			_, icon, _, _, duration, expires, _, _, _, spellId = UnitAura(unitID, i, filter)
-			if not spellId or not priorityList[spellId] then break end
+			if not spellId then break end
 
-			-- Select the greatest priority aura
-			if not priorityAura.spellId or priorityList[spellId] < priorityList[priorityAura.spellId] then
-				priorityAura.icon = icon
-				priorityAura.spellId = spellId
-				priorityAura.duration = duration
-				priorityAura.expires = expires
+			if priorityList[spellId] then
+				-- Select the greatest priority aura
+				if not priorityAura.spellId or priorityList[spellId] < priorityList[priorityAura.spellId] then
+					priorityAura.icon = icon
+					priorityAura.spellId = spellId
+					priorityAura.duration = duration
+					priorityAura.expires = expires
+				end
 			end
 		end
 	end
