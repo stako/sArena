@@ -74,7 +74,7 @@ local interrupts = {
 
 local spellList = {
 	-- Higher up = higher display priority
-	
+
 	-- CCs
 	5211,	-- Mighty Bash (Stun)
 	108194,	-- Asphyxiate (Stun)
@@ -169,7 +169,7 @@ local spellList = {
 	710,	-- Banish (Incapacitate)
 	107079,	-- Quaking Palm (Incapacitate)
 	236025,	-- Enraged Maim (Incapacitate)
-	
+
 	-- Interrupts
 	1766,	-- Kick (Rogue)
 	2139,	-- Counterspell (Mage)
@@ -211,7 +211,7 @@ local spellList = {
 	48707,	-- Anti-Magic Shell
 	5384,	-- Feign Death
 	213602,	-- Greater Fade
-	
+
 	-- Silences
 	81261,	-- Solar Beam
 	25046,	-- Arcane Torrent
@@ -327,7 +327,7 @@ local spellList = {
 }
 
 local priorityList = {}
-local testModeClasses = { "ROGUE", "MAGE", "PRIEST" }
+
 local classIcons = {
 	["DRUID"] = 625999,
 	["HUNTER"] = 626000,
@@ -348,10 +348,10 @@ function AuraWatch:OnEnable()
 	for k, v in ipairs(spellList) do
 		priorityList[v] = k
 	end
-	
+
 	for i = 1, 5 do
 		local arenaFrame = _G["ArenaEnemyFrame"..i]
-		
+
 		local frame = CreateFrame("Cooldown", nil, arenaFrame, "CooldownFrameTemplate")
 		--frame:SetSwipeColor(0, 0, 0, 0.6)
 		frame:SetDrawBling(false)
@@ -360,29 +360,29 @@ function AuraWatch:OnEnable()
 		frame:ClearAllPoints()
 		frame:SetPoint("TOPLEFT", arenaFrame.classPortrait, "TOPLEFT", 2, -2)
 		frame:SetPoint("BOTTOMRIGHT", arenaFrame.classPortrait, "BOTTOMRIGHT", -2, 2)
-		
+
 		for _, region in next, {frame:GetRegions()} do
 			if ( region:GetObjectType() == "FontString" ) then
 				frame.Text = region
 			end
 		end
-		
+
 		frame.Text:ClearAllPoints()
 		frame.Text:SetPoint("CENTER", frame, "CENTER", 0, 1)
-		
+
 		frame.classPortrait = arenaFrame.classPortrait
 		frame.activeId = nil
 		frame.aura = { spellId = nil, icon = nil, start = nil, expire = nil }
 		frame.interrupt = { spellId = nil, icon = nil, start = nil, expire = nil }
-		
+
 		-- Check for auras when an interrupt lockout expires
 		frame:HookScript("OnHide", function(self)
 			AuraWatch:UNIT_AURA(nil, "arena"..i)
 		end)
-		
+
 		self["arena"..i] = frame
 	end
-	
+
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 sArena.RegisterCallback(AuraWatch, "sArena_OnEnable", "OnEnable")
@@ -390,7 +390,7 @@ sArena.RegisterCallback(AuraWatch, "sArena_OnEnable", "OnEnable")
 function AuraWatch:RefreshConfig()
 	for i = 1, 5 do
 		local frame = self["arena"..i]
-		
+
 		local fontFace, _, fontFlags = frame.Text:GetFont()
 		frame.Text:SetFont(fontFace, sArena.db.profile.aurawatch.fontSize, fontFlags)
 	end
@@ -419,12 +419,12 @@ function AuraWatch:ApplyAura(unitID)
 	local frame = self[unitID]
 
 	local spellId, icon, start, expire
-	
+
 	-- Check if an aura was found
 	if frame.aura.spellId then
 		spellId, icon, start, expire = frame.aura.spellId, frame.aura.icon, frame.aura.start, frame.aura.expire
 	end
-	
+
 	-- Check if there's an interrupt lockout
 	if frame.interrupt.spellId then
 		-- Make sure the lockout is still active
@@ -435,7 +435,7 @@ function AuraWatch:ApplyAura(unitID)
 			spellId, icon, start, expire = frame.interrupt.spellId, frame.interrupt.icon, frame.interrupt.start, frame.interrupt.expire
 		end
 	end
-	
+
 	-- Set up the icon & cooldown
 	if spellId then
 		CooldownFrame_Set(frame, start, expire - start, 1, true)
@@ -479,7 +479,7 @@ end
 function AuraWatch:UNIT_AURA(_, unitID)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
-	
+
 	local priorityAura = {
 		icon = nil,
 		spellId = nil,
