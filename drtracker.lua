@@ -131,7 +131,7 @@ local drList = {
 	[ 20549] = "stun",	-- War Stomp UNCONFIRMED SPELLID
 	[199085] = "stun",	-- Warpath UNCONFIRMED CATEGORY (May not be on DR Table)
 	[204437] = "stun",	-- Lightning Lasso
-	
+
 	[ 33786] = "disorient",	-- Cyclone
 	[209753] = "disorient",	-- Cyclone, Honor Talent
 	[  5246] = "disorient",	-- Intimidating Shout
@@ -151,7 +151,7 @@ local drList = {
 	[130616] = "disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
 	[115268] = "disorient", -- Mesmerize UNCONFIRMED SPELLID & CATEGORY
 	[  6358] = "disorient", -- Seduction UNCONFIRMED CATEGORY
-	
+
 	[ 51514] = "incapacitate",	-- Hex
 	[211004] = "incapacitate",	-- Hex: Spider UNCONFIRMED SPELLID
 	[210873] = "incapacitate",	-- Hex: Raptor UNCONFIRMED SPELLID
@@ -188,7 +188,7 @@ local drList = {
 	[   710] = "incapacitate",	-- Banish UNCONFIRMED SPELLID & CATEGORY
 	[107079] = "incapacitate",	-- Quaking Palm UNCONFIRMED SPELLID & CATEGORY
 	[236025] = "incapacitate",	-- Enraged Maim UNCONFIRMED CATEGORY
-	
+
 	[   339] = "root",	-- Entangling Roots
 	[   122] = "root",	-- Frost Nova
 	[102359] = "root",	-- Mass Entanglement
@@ -202,7 +202,7 @@ local drList = {
 	[ 33395] = "root",	-- Freeze UNCONFIRMED SPELLID
 	[116706] = "root",	-- Disable UNCONFIRMED SPELLID
 	[198121] = "root",	-- Frostbite UNCONFIRMED IF THIS IS ON DR TABLE
-	
+
 	[ 81261] = "silence",	-- Solar Beam
 	[ 25046] = "silence",	-- Arcane Torrent
 	[ 28730] = "silence",	-- Arcane Torrent
@@ -223,37 +223,37 @@ local drList = {
 function DRTracker:OnEnable()
 	for i = 1, 5 do
 		local arenaFrame = _G["ArenaEnemyFrame"..i]
-		
+
 		self["arena"..i] = {}
-		
+
 		for c = 1, #categories do
 			local frame = CreateFrame("Frame", nil, arenaFrame, "sArenaDRTrackerTemplate")
 			frame:SetAlpha(0)
 			if c == 1 then frame:EnableMouse(true) end
-			
+
 			for _, region in next, { frame.Cooldown:GetRegions() } do
 				if region:GetObjectType() == "FontString" then
 					frame.Cooldown.Text = region
 				end
 			end
-			
+
 			frame.Cooldown:SetScript("OnShow", function(self)
 				frame:SetAlpha(1)
 				DRTracker:UpdatePosition("arena"..i)
 			end)
-			
+
 			frame.Cooldown:SetScript("OnHide", function(self)
 				frame:SetAlpha(0)
 				DRTracker:UpdatePosition("arena"..i)
 				frame.severity = 1
 			end)
-			
+
 			frame.Cooldown:SetHideCountdownNumbers(false)
-			
+
 			self["arena"..i][categories[c]] = frame
 		end
 	end
-	
+
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 sArena.RegisterCallback(DRTracker, "sArena_OnEnable", "OnEnable")
@@ -263,11 +263,11 @@ function DRTracker:RefreshConfig()
 		self:UpdatePosition("arena"..i)
 		for c = 1, #categories do
 			local frame = self["arena"..i][categories[c]]
-			
+
 			if c == 1 then
 				sArena:SetupDrag(frame, nil, sArena.db.profile.drtracker.position, true, true)
 			end
-			
+
 			if not sArena.db.profile.drtracker.enabled then
 				CooldownFrame_Set(frame.Cooldown, 0, 0, 0, true)
 			end
@@ -303,7 +303,7 @@ sArena.RegisterCallback(DRTracker, "sArena_TestMode", "TestMode")
 
 function DRTracker:UpdatePosition(id)
 	local active = 0
-	
+
 	for i = 1, #categories do
 		local frame = self[id][categories[i]]
 		if frame:GetAlpha() == 1 then
@@ -351,15 +351,15 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 			break
 		end
 	end
-	
+
 	if not unitID then return end
-	
+
 	local frame = self[unitID][category]
 	if not frame then
 		sArena:Print("Unknown DR Category \""..category.."\" for Spell ID " .. spellID)
 		return
 	end
-	
+
 	if sArena.db.profile.drtracker.displayMode == 1 then
 		if applied then -- CC has been applied
 			for i = 1, 16 do -- DEBUFF_MAX_DISPLAY
@@ -373,7 +373,7 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 			-- Adjust timer for early CC breaks
 			local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
 			startTime, startDuration = startTime/1000, startDuration/1000
-			
+
 			local newDuration = drTime / (1 - ((GetTime() - startTime) / startDuration))
 			local newStartTime = drTime + GetTime() - newDuration
 			CooldownFrame_Set(frame.Cooldown, newStartTime, newDuration, 1, true)
@@ -384,12 +384,12 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 			CooldownFrame_Set(frame.Cooldown, GetTime(), drTime, 1, true)
 		end
 	end
-	
+
 	local _, _, icon = GetSpellInfo(spellID)
 	frame.Icon:SetTexture(icon)
-	
+
 	frame.Border:SetVertexColor(unpack(severityColor[frame.severity]))
-	
+
 	frame.severity = frame.severity + 1
 	if frame.severity > 3 then
 		frame.severity = 3

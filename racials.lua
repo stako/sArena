@@ -80,28 +80,28 @@ local racialIcons = {
 function Racials:OnEnable()
 	for i = 1, 5 do
 		local arenaFrame = _G["ArenaEnemyFrame"..i]
-		
+
 		self["arena"..i] = {}
-		
+
 		local frame = CreateFrame("Frame", nil, arenaFrame, "sArenaRacialTemplate")
 		frame:SetAlpha(0)
 		frame:EnableMouse(true)
-		
+
 		for _, region in next, { frame.Cooldown:GetRegions() } do
 			if region:GetObjectType() == "FontString" then
 				frame.Cooldown.Text = region
 			end
 		end
-		
+
 		frame.Cooldown:SetScript("OnHide", function(self)
 			-- don't want to hide when it's enabled and cooldown is off
 			if not sArena.db.profile.racials.enabled then
 				frame:SetAlpha(0)
 			end
 		end)
-		
+
 		frame.Cooldown:SetHideCountdownNumbers(false)
-		
+
 		self["arena"..i] = frame
 	end
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -113,9 +113,9 @@ function Racials:RefreshConfig()
 	for i = 1, 5 do
 		self:UpdatePosition("arena"..i)
 		local frame = self["arena"..i]
-		
+
 		sArena:SetupDrag(frame, nil, sArena.db.profile.racials.position, true, true)
-		
+
 		if not sArena.db.profile.racials.enabled then
 			CooldownFrame_Set(frame.Cooldown, 0, 0, 0, true)
 		end
