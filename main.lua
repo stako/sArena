@@ -725,7 +725,7 @@ function sArena:OnMouseUp(frame)
 		end
 
 		if frame.keepRelative then
-			frame.setting[1], frame.setting[2], frame.setting[3] = "CENTER", frame.targetFrame:GetName(), "CENTER"
+			frame.setting[1], frame.setting[2], frame.setting[3] = "CENTER", frame.targetFrame:GetParent():GetName(), "CENTER"
 			frame.setting[4], frame.setting[5] = self:CalcPoint(frame.targetFrame)
 		end
 
