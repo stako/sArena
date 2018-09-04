@@ -560,7 +560,7 @@ function AuraWatch:COMBAT_LOG_EVENT_UNFILTERED()
 	if not interrupts[spellId] then return end
 
 	-- Apparently SPELL_INTERRUPT doesn't capture interrupts that are used on channelled abilities
-	if event ~= "SPELL_INTERRUPT" or event ~= "SPELL_CAST_SUCCESS" then return end
+	if event ~= "SPELL_INTERRUPT" and event ~= "SPELL_CAST_SUCCESS" then return end
 
 	local unitID
 	for i = 1, 5 do
