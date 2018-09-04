@@ -77,8 +77,10 @@ sArena.defaults.profile.drtracker = {
 }
 
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local CooldownFrame_Set = CooldownFrame_Set
+local GetTime = GetTime
 local GetSpellInfo = GetSpellInfo
-local UnitDebuff = UnitDebuff
+local UnitAura = UnitAura
 local UnitGUID = UnitGUID
 
 local drTime = 18.5
@@ -393,12 +395,16 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 		return
 	end
 
+	local currTime = GetTime()
+
 	if sArena.db.profile.drtracker.displayMode == 1 then
 		if applied then -- CC has been applied
-			for i = 1, 16 do -- DEBUFF_MAX_DISPLAY
-				local _, _, _, _, _, expirationTime, _, _, _, _spellID = UnitDebuff("target", i)
-				if expirationTime and spellID == _spellID then
-					CooldownFrame_Set(frame.Cooldown, GetTime(), drTime + expirationTime, 1, true)
+			for i = 1, 40 do
+				local _, _, _, _, _, expirationTime, _, _, _, _spellID = UnitAura(unitID, i, "HARMFUL")
+				if not _spellID then break end -- no more debuffs
+
+				if expirationTime and expirationTime > 0 and spellID == _spellID then
+					CooldownFrame_Set(frame.Cooldown, currTime, (expirationTime + drTime) - currTime, 1, true)
 					break
 				end
 			end
@@ -407,8 +413,8 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 			local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
 			startTime, startDuration = startTime/1000, startDuration/1000
 
-			local newDuration = drTime / (1 - ((GetTime() - startTime) / startDuration))
-			local newStartTime = drTime + GetTime() - newDuration
+			local newDuration = drTime / (1 - ((currTime - startTime) / startDuration))
+			local newStartTime = drTime + currTime - newDuration
 			CooldownFrame_Set(frame.Cooldown, newStartTime, newDuration, 1, true)
 			return
 		end
