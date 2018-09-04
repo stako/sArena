@@ -507,6 +507,7 @@ function AuraWatch:PLAYER_ENTERING_WORLD()
 	end
 end
 
+local filters = {"HELPFUL", "HARMFUL"}
 function AuraWatch:UNIT_AURA(_, unitID)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
@@ -517,9 +518,9 @@ function AuraWatch:UNIT_AURA(_, unitID)
 		duration = nil,
 		expires = nil,
 	}
-	local duration, icon, expires, spellId
+	local duration, icon, expires, spellId, _
 
-	for _, filter in pairs({"HELPFUL", "HARMFUL"}) do
+	for _, filter in pairs(filters) do
 		for i = 1, 40 do
 			_, icon, _, _, duration, expires, _, _, _, spellId = UnitAura(unitID, i, filter)
 			if not spellId then break end
