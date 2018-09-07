@@ -400,11 +400,11 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 	if sArena.db.profile.drtracker.displayMode == 1 then
 		if applied then -- CC has been applied
 			for i = 1, 40 do
-				local _, _, _, _, _, expirationTime, _, _, _, _spellID = UnitAura(unitID, i, "HARMFUL")
+				local _, _, _, _, duration, _, _, _, _, _spellID = UnitAura(unitID, i, "HARMFUL")
 				if not _spellID then break end -- no more debuffs
 
-				if expirationTime and expirationTime > 0 and spellID == _spellID then
-					CooldownFrame_Set(frame.Cooldown, currTime, (expirationTime + drTime) - currTime, 1, true)
+				if duration and spellID == _spellID then
+					CooldownFrame_Set(frame.Cooldown, currTime, drTime + duration, 1, true)
 					break
 				end
 			end
