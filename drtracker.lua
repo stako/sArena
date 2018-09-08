@@ -420,7 +420,7 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 		end
 	else
 		if applied then return else
-			CooldownFrame_Set(frame.Cooldown, GetTime(), drTime, 1, true)
+			CooldownFrame_Set(frame.Cooldown, currTime, drTime, 1, true)
 		end
 	end
 
