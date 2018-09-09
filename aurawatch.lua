@@ -78,13 +78,12 @@ local spellList = {
 	-- CCs
 	5211,	-- Mighty Bash (Stun)
 	108194,	-- Asphyxiate (Stun)
+	221562,	-- Asphyxiate Blood (Stun)
 	199804, -- Between the Eyes (Stun)
 	118905,	-- Static Charge (Stun)
 	1833,	-- Cheap Shot (Stun)
 	853,	-- Hammer of Justice (Stun)
-	117526,	-- Binding Shot (Stun)
 	179057,	-- Chaos Nova (Stun)
-	207171,	-- Winter is Coming (Stun)
 	132169,	-- Storm Bolt (Stun)
 	408,	-- Kidney Shot (Stun)
 	163505,	-- Rake (Stun)
@@ -93,7 +92,6 @@ local spellList = {
 	89766,	-- Axe Toss (Stun)
 	30283,	-- Shadowfury (Stun)
 	200166,	-- Metamorphosis (Stun)
-	226943,	-- Mind Bomb (Stun)
 	24394,	-- Intimidation (Stun)
 	211881,	-- Fel Eruption (Stun)
 	221562,	-- Asphyxiate, Blood Spec (Stun)
@@ -106,9 +104,19 @@ local spellList = {
 	118345,	-- Pulverize (Stun)
 	22703,	-- Infernal Awakening (Stun)
 	132168,	-- Shockwave (Stun)
+	46968,	-- Shockwave 2 (Stun)
 	20549,	-- War Stomp (Stun)
 	199085,	-- Warpath (Stun)
 	204437,	-- Lightning Lasso (Stun)
+	210141,	-- Zombie Explosion (Stun)
+	212332, -- Gnaw (Stun)
+	171017,	-- Meteor Strike Infernal (Stun)
+	171018,	-- Meteor Strike Abyssal (Stun)
+	64044,	-- Psychic Horror (Stun)
+	255723, -- Bull Rush (Stun)
+	202244,	-- Overrun (Stun)
+	202346,	-- Double Barrel (Stun)
+
 
 	33786,	-- Cyclone (Disorient)
 	209753,	-- Cyclone, Honor Talent (Disorient)
@@ -131,6 +139,9 @@ local spellList = {
 	115268,	-- Mesmerize (Disorient)
 	6358,	-- Seduction (Disorient)
 	87204,	-- Sin and Punishment (Disorient)
+	2637,	-- Hibernate (Disorient)
+	226943,	-- Mind Bomb (Disorient)
+	236748,	-- Intimidating Roar (Disorient)
 
 	51514,	-- Hex (Incapacitate)
 	211004,	-- Hex: Spider (Incapacitate)
@@ -138,6 +149,8 @@ local spellList = {
 	211015,	-- Hex: Cockroach (Incapacitate)
 	211010,	-- Hex: Snake (Incapacitate)
 	196942,	-- Hex (Voodoo Totem)
+	277784, -- Hex (Wicker Mongrel)
+	277778, -- Hex (Zandalari Tendonripper)
 	118,	-- Polymorph (Incapacitate)
 	61305,	-- Polymorph: Black Cat (Incapacitate)
 	28272,	-- Polymorph: Pig (Incapacitate)
@@ -149,8 +162,11 @@ local spellList = {
 	161354,	-- Polymorph: Monkey (Incapacitate)
 	161355,	-- Polymorph: Penguin (Incapacitate)
 	161372,	-- Polymorph: Peacock (Incapacitate)
+	277792, -- Polymorph (Bumblebee)
+	277787, -- Polymorph (Baby Direhorn)
 	3355,	-- Freezing Trap (Incapacitate)
 	203337,	-- Freezing Trap, Diamond Ice Honor Talent (Incapacitate)
+	212365, -- Freezing Trap 2 (Incapacitate)
 	115078,	-- Paralysis (Incapacitate)
 	213691,	-- Scatter Shot (Incapacitate)
 	6770,	-- Sap (Incapacitate)
@@ -164,11 +180,11 @@ local spellList = {
 	99,		-- Incapacitating Roar (Incapacitate)
 	82691,	-- Ring of Frost (Incapacitate)
 	9484,	-- Shackle Undead (Incapacitate)
-	64044,	-- Psychic Horror (Incapacitate)
 	1776,	-- Gouge (Incapacitate)
 	710,	-- Banish (Incapacitate)
 	107079,	-- Quaking Palm (Incapacitate)
 	236025,	-- Enraged Maim (Incapacitate)
+	197214,	-- Sundering (Incapacitate)
 
 	-- Interrupts
 	1766,	-- Kick (Rogue)
@@ -214,24 +230,23 @@ local spellList = {
 
 	-- Silences
 	81261,	-- Solar Beam
-	25046,	-- Arcane Torrent
-	28730,	-- Arcane Torrent
-	50613,	-- Arcane Torrent
-	69179,	-- Arcane Torrent
-	80483,	-- Arcane Torrent
-	129597,	-- Arcane Torrent
-	155145,	-- Arcane Torrent
-	202719,	-- Arcane Torrent
 	202933,	-- Spider Sting
+	233022,	-- Spider Sting 2
 	1330,	-- Garrote
 	15487,	-- Silence
 	199683,	-- Last Word
 	47476,	-- Strangulate
 	31935,	-- Avenger's Shield
 	204490,	-- Sigil of Silence
+	217824,	-- Shield of Virtue
+	43523,	-- Unstable Affliction Silence 1
+	196364,	-- Unstable Affliction Silence 2
 
 	-- Roots
 	339,	-- Entangling Roots
+	170855, -- Entangling Roots (Nature's Grasp)
+	201589, -- Entangling Roots (Tree of Life)
+	235963, -- Entangling Roots (Feral honor talent)
 	122,	-- Frost Nova
 	102359,	-- Mass Entanglement
 	64695,	-- Earthgrab
@@ -239,14 +254,26 @@ local spellList = {
 	212638,	-- Tracker's Net
 	162480,	-- Steel Trap
 	204085,	-- Deathchill
+	233395, -- Frozen Center
 	233582,	-- Entrenched in Flame
 	201158,	-- Super Sticky Tar
 	33395,	-- Freeze
 	228600,	-- Glacial Spike
 	116706,	-- Disable
+	45334,	-- Immobilized
+	53148,	-- Charge (Hunter Pet)
+	190927, -- Harpoon
+	136634,	-- Narrow Escape (unused?)
+	198121,	-- Frostbite
+	117526,	-- Binding Shot
+	207171,	-- Winter is Coming
 
+	-- Disarms
 	236077,	-- Disarm
+	236236,	-- Disarm (Protection)
 	209749,	-- Faerie Swarm (Disarm)
+	233759,	-- Grapple Weapon
+	207777, -- Dismantle
 
 	-- Offensive Buffs
 	186289,	-- Aspect of the Eagle
@@ -324,6 +351,10 @@ local spellList = {
 	188501,	-- Spectral Sight
 	1044,	-- Blessing of Freedom
 	41425,	-- Hypothermia
+	66,		-- Invisibility fade effect
+	96243,	-- Invisibility invis effect?
+	110960,	-- Greater Invisibility
+	198158,	-- Mass Invisibility
 }
 
 local priorityList = {}
@@ -476,6 +507,7 @@ function AuraWatch:PLAYER_ENTERING_WORLD()
 	end
 end
 
+local filters = {"HELPFUL", "HARMFUL"}
 function AuraWatch:UNIT_AURA(_, unitID)
 	if not sArena.db.profile.aurawatch.enabled then return end
 	if not self[unitID] then return end
@@ -486,9 +518,9 @@ function AuraWatch:UNIT_AURA(_, unitID)
 		duration = nil,
 		expires = nil,
 	}
-	local duration, icon, expires, spellId
+	local duration, icon, expires, spellId, _
 
-	for _, filter in pairs({"HELPFUL", "HARMFUL"}) do
+	for _, filter in pairs(filters) do
 		for i = 1, 40 do
 			_, icon, _, _, duration, expires, _, _, _, spellId = UnitAura(unitID, i, filter)
 			if not spellId then break end
@@ -528,7 +560,7 @@ function AuraWatch:COMBAT_LOG_EVENT_UNFILTERED()
 	if not interrupts[spellId] then return end
 
 	-- Apparently SPELL_INTERRUPT doesn't capture interrupts that are used on channelled abilities
-	if event ~= "SPELL_INTERRUPT" or event ~= "SPELL_CAST_SUCCESS" then return end
+	if event ~= "SPELL_INTERRUPT" and event ~= "SPELL_CAST_SUCCESS" then return end
 
 	local unitID
 	for i = 1, 5 do

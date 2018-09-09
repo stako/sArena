@@ -77,8 +77,10 @@ sArena.defaults.profile.drtracker = {
 }
 
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local CooldownFrame_Set = CooldownFrame_Set
+local GetTime = GetTime
 local GetSpellInfo = GetSpellInfo
-local UnitDebuff = UnitDebuff
+local UnitAura = UnitAura
 local UnitGUID = UnitGUID
 
 local drTime = 18.5
@@ -98,126 +100,159 @@ local severityColor = {
 }
 
 local drList = {
-	[  5211] = "stun",	-- Mighty Bash
-	[108194] = "stun",	-- Asphyxiate
-	[199804] = "stun",	-- Between the Eyes
-	[118905] = "stun",	-- Static Charge
-	[  1833] = "stun",	-- Cheap Shot
-	[   853] = "stun",	-- Hammer of Justice
-	[117526] = "stun",	-- Binding Shot
-	[179057] = "stun",	-- Chaos Nova
-	[207171] = "stun",	-- Winter is Coming
-	[132169] = "stun",	-- Storm Bolt
-	[   408] = "stun",	-- Kidney Shot
-	[163505] = "stun",	-- Rake
-	[119381] = "stun",	-- Leg Sweep UNCONFIRMED SPELLID & CATEGORY
-	[232055] = "stun",	-- Fists of Fury
-	[ 89766] = "stun",	-- Axe Toss
-	[ 30283] = "stun",	-- Shadowfury UNCONFIRMED SPELLID & CATEGORY
-	[200166] = "stun",	-- Metamorphosis Stun
-	[226943] = "stun",	-- Mind Bomb
-	[ 24394] = "stun",	-- Intimidation
-	[211881] = "stun",	-- Fel Eruption UNCONFIRMED SPELLID
-	[221562] = "stun",	-- Asphyxiate, Blood Spec UNCONFIRMED SPELLID
-	[ 91800] = "stun",	-- Gnaw UNCONFIRMED SPELLID
-	[ 91797] = "stun",	-- Monstrous Blow UNCONFIRMED SPELLID
-	[205630] = "stun",	-- Illidan's Grasp
-	[208618] = "stun",	-- Illidan's Grasp
-	[203123] = "stun",	-- Maim UNCONFIRMED SPELLID
-	[200200] = "stun",	-- Holy Word: Chastise, Censure Talent
-	[118345] = "stun",	-- Pulverize
-	[ 22703] = "stun",	-- Infernal Awakening UNCONFIRMED SPELLID
-	[132168] = "stun",	-- Shockwave UNCONFIRMED SPELLID
-	[ 20549] = "stun",	-- War Stomp UNCONFIRMED SPELLID
-	[199085] = "stun",	-- Warpath UNCONFIRMED CATEGORY (May not be on DR Table)
-	[204437] = "stun",	-- Lightning Lasso
+	[207167]  = "disorient",       -- Blinding Sleet
+	[198909]  = "disorient",       -- Song of Chi-ji
+	[202274]  = "disorient",       -- Incendiary Brew
+	[33786]   = "disorient",       -- Cyclone
+	[209753]  = "disorient",       -- Cyclone Honor Talent
+	[31661]   = "disorient",       -- Dragon's Breath
+	[105421]  = "disorient",       -- Blinding Light
+	[8122]    = "disorient",       -- Psychic Scream
+	[605]     = "disorient",       -- Mind Control
+	[2094]    = "disorient",       -- Blind
+	[5782]    = "disorient",       -- Fear
+	[118699]  = "disorient",       -- Fear (Incorrect?)
+	[130616]  = "disorient",       -- Fear (Incorrect?)
+	[5484]    = "disorient",       -- Howl of Terror
+	[115268]  = "disorient",       -- Mesmerize
+	[6358]    = "disorient",       -- Seduction
+	[5246]    = "disorient",       -- Intimidating Shout
+	[207685]  = "disorient",       -- Sigil of Misery
+	[236748]  = "disorient",       -- Intimidating Roar
+	[226943]  = "disorient",       -- Mind Bomb
+	[2637]    = "disorient",       -- Hibernate
 
-	[ 33786] = "disorient",	-- Cyclone
-	[209753] = "disorient",	-- Cyclone, Honor Talent
-	[  5246] = "disorient",	-- Intimidating Shout
-	[238559] = "disorient",	-- Bursting Shot
-	[  8122] = "disorient",	-- Psychic Scream
-	[  2094] = "disorient",	-- Blind
-	[  5484] = "disorient",	-- Howl of Terror UNCONFIRMED SPELLID
-	[   605] = "disorient",	-- Mind Control
-	[105421] = "disorient",	-- Blinding Light
-	[207167] = "disorient",	-- Blinding Sleet UNCONFIRMED SPELLID & CATEGORY
-	[ 31661] = "disorient",	-- Dragon's Breath UNCONFIRMED SPELLID & CATEGORY
-	[207685] = "disorient", -- Sigil of Misery UNCONFIRMED CATEGORY
-	[198909] = "disorient", -- Song of Chi-ji UNCONFIRMED SPELLID & CATEGORY
-	[202274] = "disorient", -- Incendiary Brew UNCONFIRMED SPELLID & CATEGORY
-	[  5782] = "disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
-	[118699] = "disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
-	[130616] = "disorient", -- Fear UNCONFIRMED SPELLID & CATEGORY
-	[115268] = "disorient", -- Mesmerize UNCONFIRMED SPELLID & CATEGORY
-	[  6358] = "disorient", -- Seduction UNCONFIRMED CATEGORY
+	[99]      = "incapacitate",    -- Incapacitating Roar
+	[203126]  = "incapacitate",    -- Maim (Blood trauma)
+	[236025]  = "incapacitate",    -- Enraged Maim
+	[3355]    = "incapacitate",    -- Freezing Trap
+	[203337]  = "incapacitate",    -- Freezing Trap (Honor Talent)
+	[212365]  = "incapacitate",    -- Freezing Trap (Incorrect?)
+	[19386]   = "incapacitate",    -- Wyvern Sting
+	[209790]  = "incapacitate",    -- Freezing Arrow
+	[213691]  = "incapacitate",    -- Scatter Shot
+	[118]     = "incapacitate",    -- Polymorph
+	[126819]  = "incapacitate",    -- Polymorph (Porcupine)
+	[61721]   = "incapacitate",    -- Polymorph (Rabbit)
+	[28271]   = "incapacitate",    -- Polymorph (Turtle)
+	[28272]   = "incapacitate",    -- Polymorph (Pig)
+	[161353]  = "incapacitate",    -- Polymorph (Bear cub)
+	[161372]  = "incapacitate",    -- Polymorph (Peacock)
+	[61305]   = "incapacitate",    -- Polymorph (Black Cat)
+	[61780]   = "incapacitate",    -- Polymorph (Turkey)
+	[161355]  = "incapacitate",    -- Polymorph (Penguin)
+	[161354]  = "incapacitate",    -- Polymorph (Monkey)
+	[277792]  = "incapacitate",    -- Polymorph (Bumblebee)
+	[277787]  = "incapacitate",    -- Polymorph (Baby Direhorn)
+	[82691]   = "incapacitate",    -- Ring of Frost
+	[115078]  = "incapacitate",    -- Paralysis
+	[20066]   = "incapacitate",    -- Repentance
+	[9484]    = "incapacitate",    -- Shackle Undead
+	[200196]  = "incapacitate",    -- Holy Word: Chastise
+	[1776]    = "incapacitate",    -- Gouge
+	[6770]    = "incapacitate",    -- Sap
+	[199743]  = "incapacitate",    -- Parley
+	[51514]   = "incapacitate",    -- Hex
+	[211004]  = "incapacitate",    -- Hex (Spider)
+	[210873]  = "incapacitate",    -- Hex (Raptor)
+	[211015]  = "incapacitate",    -- Hex (Cockroach)
+	[211010]  = "incapacitate",    -- Hex (Snake)
+	[196942]  = "incapacitate",    -- Hex (Voodoo Totem)
+	[277784]  = "incapacitate",    -- Hex (Wicker Mongrel)
+	[277778]  = "incapacitate",    -- Hex (Zandalari Tendonripper)
+	[710]     = "incapacitate",    -- Banish
+	[6789]    = "incapacitate",    -- Mortal Coil
+	[107079]  = "incapacitate",    -- Quaking Palm
+	[217832]  = "incapacitate",    -- Imprison
+	[221527]  = "incapacitate",    -- Imprison (Honor Talent)
+	[197214]  = "incapacitate",    -- Sundering
 
-	[ 51514] = "incapacitate",	-- Hex
-	[211004] = "incapacitate",	-- Hex: Spider UNCONFIRMED SPELLID
-	[210873] = "incapacitate",	-- Hex: Raptor UNCONFIRMED SPELLID
-	[211015] = "incapacitate",	-- Hex: Cockroach UNCONFIRMED SPELLID
-	[211010] = "incapacitate",	-- Hex: Snake UNCONFIRMED SPELLID
-	[196942] = "incapacitate",	-- Hex (Voodoo Totem)
-	[   118] = "incapacitate",	-- Polymorph
-	[ 61305] = "incapacitate",	-- Polymorph: Black Cat UNCONFIRMED SPELLID
-	[ 28272] = "incapacitate",	-- Polymorph: Pig UNCONFIRMED SPELLID
-	[ 61721] = "incapacitate",	-- Polymorph: Rabbit UNCONFIRMED SPELLID
-	[ 61780] = "incapacitate",	-- Polymorph: Turkey UNCONFIRMED SPELLID
-	[ 28271] = "incapacitate",	-- Polymorph: Turtle UNCONFIRMED SPELLID
-	[161353] = "incapacitate",	-- Polymorph: Polar Bear Cub UNCONFIRMED SPELLID
-	[126819] = "incapacitate",	-- Polymorph: Porcupine UNCONFIRMED SPELLID
-	[161354] = "incapacitate",	-- Polymorph: Monkey UNCONFIRMED SPELLID
-	[161355] = "incapacitate",	-- Polymorph: Penguin UNCONFIRMED SPELLID
-	[161372] = "incapacitate",	-- Polymorph: Peacock UNCONFIRMED SPELLID
-	[  3355] = "incapacitate",	-- Freezing Trap
-	[203337] = "incapacitate",	-- Freezing Trap, Diamond Ice Honor Talent UNCONFIRMED CATEGORY
-	[115078] = "incapacitate",	-- Paralysis
-	[213691] = "incapacitate",	-- Scatter Shot
-	[  6770] = "incapacitate",	-- Sap
-	[199743] = "incapacitate",	-- Parley UNCONFIRMED SPELLID
-	[ 20066] = "incapacitate",	-- Repentance
-	[ 19386] = "incapacitate",	-- Wyvern Sting
-	[  6789] = "incapacitate",	-- Mortal Coil UNCONFIRMED SPELLID & CATEGORY
-	[200196] = "incapacitate",	-- Holy Word: Chastise
-	[221527] = "incapacitate",	-- Imprison, Detainment Honor Talent UNCONFIRMED CATEGORY
-	[217832] = "incapacitate",	-- Imprison UNCONFIRMED CATEGORY
-	[    99] = "incapacitate",	-- Incapacitating Roar UNCONFIRMED SPELLID
-	[ 82691] = "incapacitate",	-- Ring of Frost UNCONFIRMED SPELLID
-	[  9484] = "incapacitate",	-- Shackle Undead UNCONFIRMED SPELLID
-	[  1776] = "incapacitate",	-- Gouge UNCONFIRMED SPELLID
-	[   710] = "incapacitate",	-- Banish UNCONFIRMED SPELLID & CATEGORY
-	[107079] = "incapacitate",	-- Quaking Palm UNCONFIRMED SPELLID & CATEGORY
-	[236025] = "incapacitate",	-- Enraged Maim UNCONFIRMED CATEGORY
+	[47476]   = "silence",         -- Strangulate
+	[204490]  = "silence",         -- Sigil of Silence
+	[78675]   = "silence",         -- Solar Beam
+	[202933]  = "silence",         -- Spider Sting
+	[233022]  = "silence",         -- Spider Sting 2
+	[217824]  = "silence",         -- Shield of Virtue
+	[199683]  = "silence",         -- Last Word
+	[15487]   = "silence",         -- Silence
+	[1330]    = "silence",         -- Garrote
+	[43523]   = "silence",         -- Unstable Affliction Silence Effect
+	[196364]  = "silence",         -- Unstable Affliction Silence Effect 2
 
-	[   339] = "root",	-- Entangling Roots
-	[   122] = "root",	-- Frost Nova
-	[102359] = "root",	-- Mass Entanglement
-	[ 64695] = "root",	-- Earthgrab
-	[200108] = "root",	-- Ranger's Net
-	[212638] = "root",	-- Tracker's Net
-	[162480] = "root",	-- Steel Trap
-	[204085] = "root",	-- Deathchill UNCONFIRMED IF THIS IS ON DR TABLE
-	[233582] = "root",	-- Entrenched in Flame UNCONFIRMED IF THIS IS ON DR TABLE
-	[201158] = "root",	-- Super Sticky Tar UNCONFIRMED SPELLID
-	[ 33395] = "root",	-- Freeze UNCONFIRMED SPELLID
-	[116706] = "root",	-- Disable UNCONFIRMED SPELLID
-	[198121] = "root",	-- Frostbite UNCONFIRMED IF THIS IS ON DR TABLE
+	[210141]  = "stun",            -- Zombie Explosion
+	[108194]  = "stun",            -- Asphyxiate (unholy)
+	[221562]  = "stun",            -- Asphyxiate (blood)
+	[91800]   = "stun",            -- Gnaw
+	[212332]  = "stun",            -- Smash
+	[91797]   = "stun",            -- Monstrous Blow
+	[22570]   = "stun",            -- Maim (invalid?)
+	[203123]  = "stun",            -- Maim
+	[163505]  = "stun",            -- Rake (Prowl)
+	[5211]    = "stun",            -- Mighty Bash
+	[19577]   = "stun",            -- Intimidation (no longer used?)
+	[24394]   = "stun",            -- Intimidation
+	[119381]  = "stun",            -- Leg Sweep
+	[853]     = "stun",            -- Hammer of Justice
+	[1833]    = "stun",            -- Cheap Shot
+	[408]     = "stun",            -- Kidney Shot
+	[199804]  = "stun",            -- Between the Eyes
+	[118905]  = "stun",            -- Static Charge (Capacitor Totem)
+	[118345]  = "stun",            -- Pulverize
+	[89766]   = "stun",            -- Axe Toss
+	[171017]  = "stun",            -- Meteor Strike (Infernal)
+	[171018]  = "stun",            -- Meteor Strike (Abyssal)
+--	[22703]   = "stun",            -- Infernal Awakening (doesn't seem to DR)
+	[30283]   = "stun",            -- Shadowfury
+	[46968]   = "stun",            -- Shockwave
+	[132168]  = "stun",            -- Shockwave (Protection)
+	[145047]  = "stun",            -- Shockwave (Proving Grounds PvE)
+	[132169]  = "stun",            -- Storm Bolt
+	[64044]   = "stun",            -- Psychic Horror
+	[200200]  = "stun",            -- Holy Word: Chastise Censure
+--	[204399]  = "stun",            -- Earthfury (doesn't seem to DR)
+	[179057]  = "stun",            -- Chaos Nova
+	[205630]  = "stun",            -- Illidan's Grasp, primary effect
+	[208618]  = "stun",            -- Illidan's Grasp, secondary effect
+	[211881]  = "stun",            -- Fel Eruption
+	[20549]   = "stun",            -- War Stomp
+	[199085]  = "stun",            -- Warpath
+	[204437]  = "stun",            -- Lightning Lasso
+	[255723]  = "stun",            -- Bull Rush
+	[202244]  = "stun",            -- Overrun
+--	[213688]  = "stun",            -- Fel Cleave (doesn't seem to DR)
+	[202346]  = "stun",            -- Double Barrel
 
-	[ 81261] = "silence",	-- Solar Beam
-	[ 25046] = "silence",	-- Arcane Torrent
-	[ 28730] = "silence",	-- Arcane Torrent
-	[ 50613] = "silence",	-- Arcane Torrent
-	[ 69179] = "silence",	-- Arcane Torrent
-	[ 80483] = "silence",	-- Arcane Torrent
-	[129597] = "silence",	-- Arcane Torrent
-	[155145] = "silence",	-- Arcane Torrent
-	[202719] = "silence",	-- Arcane Torrent
-	[202933] = "silence",	-- Spider Sting
-	[  1330] = "silence",	-- Garrote
-	[ 15487] = "silence",	-- Silence
-	[199683] = "silence",	-- Last Word UNCONFIRMED IF THIS IS ON DR TABLE
-	[ 47476] = "silence",	-- Strangulate UNCONFIRMED SPELLID
-	[204490] = "silence",	-- Sigil of Silence UNCONFIRMED SPELLID
+	[204085]  = "root",            -- Deathchill
+	[233395]  = "root",            -- Frozen Center
+	[339]     = "root",            -- Entangling Roots
+	[170855]  = "root",            -- Entangling Roots (Nature's Grasp)
+	[201589]  = "root",            -- Entangling Roots (Tree of Life)
+	[235963]  = "root",            -- Entangling Roots (Feral honor talent)
+--	[45334]   = "root",            -- Immobilized (Wild Charge) FIXME: only DRs with itself
+	[102359]  = "root",            -- Mass Entanglement
+	[162480]  = "root",            -- Steel Trap
+--	[190927]  = "root",            -- Harpoon FIXME: only DRs with itself
+	[200108]  = "root",            -- Ranger's Net
+	[212638]  = "root",            -- Tracker's net
+	[201158]  = "root",            -- Super Sticky Tar
+	[136634]  = "root",            -- Narrow Escape
+	[122]     = "root",            -- Frost Nova
+	[33395]   = "root",            -- Freeze
+	[198121]  = "root",            -- Frostbite
+	[220107]  = "root",            -- Frostbite (Water Elemental? needs testing)
+	[116706]  = "root",            -- Disable
+	[64695]   = "root",            -- Earthgrab (Totem effect)
+	[233582]  = "root",            -- Entrenched in Flame
+	[117526]  = "root",            -- Binding Shot
+	[207171]  = "root",            -- Winter is Coming
+
+	--[[
+	[207777]  = "disarm",          -- Dismantle
+	[233759]  = "disarm",          -- Grapple Weapon
+	[236077]  = "disarm",          -- Disarm
+	[236236]  = "disarm",          -- Disarm (Prot)
+	[209749]  = "disarm",          -- Faerie Swarm (Balance)
+	]]
 }
 
 function DRTracker:OnEnable()
@@ -360,12 +395,16 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 		return
 	end
 
+	local currTime = GetTime()
+
 	if sArena.db.profile.drtracker.displayMode == 1 then
 		if applied then -- CC has been applied
-			for i = 1, 16 do -- DEBUFF_MAX_DISPLAY
-				local _, _, _, _, _, expirationTime, _, _, _, _spellID = UnitDebuff("target", i)
-				if expirationTime and spellID == _spellID then
-					CooldownFrame_Set(frame.Cooldown, GetTime(), drTime + expirationTime, 1, true)
+			for i = 1, 40 do
+				local _, _, _, _, duration, _, _, _, _, _spellID = UnitAura(unitID, i, "HARMFUL")
+				if not _spellID then break end -- no more debuffs
+
+				if duration and spellID == _spellID then
+					CooldownFrame_Set(frame.Cooldown, currTime, drTime + duration, 1, true)
 					break
 				end
 			end
@@ -374,14 +413,14 @@ function DRTracker:ApplyDR(GUID, spellID, applied)
 			local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
 			startTime, startDuration = startTime/1000, startDuration/1000
 
-			local newDuration = drTime / (1 - ((GetTime() - startTime) / startDuration))
-			local newStartTime = drTime + GetTime() - newDuration
+			local newDuration = drTime / (1 - ((currTime - startTime) / startDuration))
+			local newStartTime = drTime + currTime - newDuration
 			CooldownFrame_Set(frame.Cooldown, newStartTime, newDuration, 1, true)
 			return
 		end
 	else
 		if applied then return else
-			CooldownFrame_Set(frame.Cooldown, GetTime(), drTime, 1, true)
+			CooldownFrame_Set(frame.Cooldown, currTime, drTime, 1, true)
 		end
 	end
 
