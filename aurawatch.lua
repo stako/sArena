@@ -276,11 +276,13 @@ local spellList = {
 	207777, -- Dismantle
 
 	-- Offensive Buffs
-	186289,	-- Aspect of the Eagle
+	--186289,	-- Aspect of the Eagle
+	266779,	-- Coordinated Assault
 	193526, -- Trueshot
 	19574,	-- Bestial Wrath
 	121471, -- Shadow Blades
 	102560,	-- Incarnation: Chosen of Elune
+	279648,	-- Lively Spirit
 	194223,	-- Celestial Alignment
 	1719,	-- Battle Cry
 	162264,	-- Metamorphosis
@@ -313,6 +315,7 @@ local spellList = {
 	210256,	-- Blessing of Sanctuary
 	6940,	-- Blessing of Sacrifice
 	125174,	-- Touch of Karma
+	236696, -- Thorns
 	47788,	-- Guardian Spirit
 	197268,	-- Ray of Hope
 	5277,	-- Evasion
@@ -573,7 +576,7 @@ function AuraWatch:COMBAT_LOG_EVENT_UNFILTERED()
 	-- Only track interrupts that are used on arena opponents
 	if not unitID then return end
 
-	local _, _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unitID)
+	local _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unitID)
 	if event == "SPELL_INTERRUPT" or notInterruptable == false then
 		local frame = self[unitID]
 		local duration = interrupts[spellId]
