@@ -1,7 +1,9 @@
 local layout = {};
 layout.name = "BlizzArena";
 
-function layout:Initialize(frame)        
+function layout:Initialize(frame)
+    sArena.portraitSpecIcon = true;
+
     frame:SetSize(102, 32);
     
     local healthBar = frame.HealthBar;

@@ -2,6 +2,7 @@ sArenaMixin = {};
 sArenaFrameMixin = {};
 
 sArenaMixin.layouts = {};
+sArenaMixin.portraitSpecIcon = true;
 
 -- Parent Frame
 
@@ -162,8 +163,15 @@ function sArenaFrameMixin:UpdateSpecIcon()
         end
     end
 
-    local texture = self.activeBuffTexture and self.activeBuffTexture or self.specTexture and self.specTexture or "Interface\\CharacterFrame\\TempPortrait";
-    SetPortraitToTexture(self.SpecIcon, texture);
+    local texture = self.activeBuffTexture and self.activeBuffTexture or self.specTexture and self.specTexture or 134400;
+    if ( sArena.portraitSpecIcon ) then
+        if ( texture == 134400 ) then
+            texture = "Interface\\CharacterFrame\\TempPortrait";
+        end
+        SetPortraitToTexture(self.SpecIcon, texture)
+    else
+        self.SpecIcon:SetTexture(texture);
+    end
 end
 
 function sArenaFrameMixin:UpdateTrinket()
@@ -230,6 +238,7 @@ function sArenaFrameMixin:ClearLayout()
 
     self.TrinketIcon:ClearAllPoints();
     self.TrinketIcon:SetSize(0, 0);
+    self.TrinketIcon:SetTexCoord(0, 1, 0, 1);
 
     local n = self.Name;
     n:SetJustifyH("CENTER");

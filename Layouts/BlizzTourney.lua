@@ -2,6 +2,8 @@ local layout = {};
 layout.name = "BlizzTourney";
 
 function layout:Initialize(frame)
+    sArena.portraitSpecIcon = true;
+
     frame:SetSize(126, 66);
     
     local hp = frame.HealthBar;
