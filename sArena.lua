@@ -90,8 +90,8 @@ function sArenaFrameMixin:OnUpdate(elapsed)
 	self:SetBarMaxValue(self.HealthBar, UnitHealthMax(unit));
     self:SetBarValue(self.HealthBar, UnitHealth(unit));
     
-    self:SetBarMaxValue(self.PowerBar, UnitHealthMax(unit));
-    self:SetBarValue(self.PowerBar, UnitHealth(unit));
+    self:SetBarMaxValue(self.PowerBar, UnitPowerMax(unit));
+    self:SetBarValue(self.PowerBar, UnitPower(unit));
 
     self:SetPowerType(select(2, UnitPowerType(unit)));
     
