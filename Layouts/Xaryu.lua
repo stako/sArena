@@ -4,22 +4,25 @@ layout.name = "Xaryu";
 function layout:Initialize(frame)
     sArena.portraitSpecIcon = false;
 
-    frame:SetSize(180, 40);
+    local height = 36;
+
+    frame:SetSize(170, height);
 
     local t = frame.SpecIcon;
-    t:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2);
-    t:SetSize(36, 36);
+    t:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
+    t:SetSize(height, height);
     t:Show();
 
     t = frame.TrinketIcon;
-    t:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2);
-    t:SetSize(36, 36);
+    t:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
+    t:SetSize(height, height);
 
     t = frame.Name;
     t:SetJustifyH("LEFT");
     t:SetFontObject("GameFontNormalSmall");
     t:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 2);
-    t:SetSize(166, 12);
+    t:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 2);
+    t:SetHeight(12);
 
     t = frame.HealthBar;
     t:SetPoint("TOPLEFT", frame.SpecIcon, "TOPRIGHT", 2, 0);
@@ -30,7 +33,7 @@ function layout:Initialize(frame)
     t = frame.PowerBar;
     t:SetPoint("TOPLEFT", frame.HealthBar, "BOTTOMLEFT", 0, 0);
     t:SetPoint("TOPRIGHT", frame.HealthBar, "BOTTOMRIGHT", 0, 0);
-    t:SetPoint("BOTTOM", frame, "BOTTOM", 0, 2);
+    t:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0);
     t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
     t = frame.FrameUnderlay;
