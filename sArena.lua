@@ -59,7 +59,7 @@ function sArenaFrameMixin:OnLoad()
     CastingBarFrame_SetUnit(self.CastBar, unit, false, true);
 
     self.interruptSpellID = nil;
-    self.interruptEnd = nil;
+    self.interruptExpire = nil;
 
     self.TrinketCooldown:SetAllPoints(self.TrinketIcon);
 
@@ -117,7 +117,7 @@ function sArenaFrameMixin:OnUpdate(elapsed)
 
     if ( self.interruptSpellID ) then
         local now = GetTime();
-        local timeLeft = self.interruptEnd - now;
+        local timeLeft = self.interruptExpire - now;
 
         if ( timeLeft > 0 ) then
             self.CCText:SetFormattedText("%.1f", timeLeft);
