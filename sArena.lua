@@ -320,13 +320,8 @@ function sArenaFrameMixin:FindInterrupt(event, spellID)
     local _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unit);
 
     if ( event == "SPELL_INTERRUPT" or notInterruptable == false ) then
-        local _, class = UnitClass(unit);
         local _, _, texture = GetSpellInfo(spellID);
         local start = GetTime();
-
-        if ( class == "PRIEST" or class == "SHAMAN" or class == "WARLOCK" ) then
-            duration = duration * 0.7;
-        end
 
         self.interruptSpellID = spellID;
         self.interruptTexture = texture;
