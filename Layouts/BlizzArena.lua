@@ -47,6 +47,17 @@ function layout:Initialize(frame)
     t = frame.TrinketIcon;
     t:SetSize(20, 20);
     t:SetPoint("LEFT", frame, "RIGHT", 4, -1);
+
+    t = frame.CCIcon;
+    t:SetSize(26, 26);
+    t:SetPoint("CENTER", frame, "CENTER", -13, 0);
+
+    t = frame.CCIconGlow;
+    t:SetSize(54, 54);
+    t:SetPoint("TOPLEFT", frame.CCIcon, "TOPLEFT", -5, 5);
+
+    t = frame.CCText;
+    t:SetPoint("CENTER", frame.CCIcon, "CENTER");
 end
 
 tinsert(sArenaMixin.layouts, layout);

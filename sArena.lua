@@ -6,10 +6,24 @@ sArenaMixin.portraitSpecIcon = true;
 
 -- Parent Frame
 
+function sArenaMixin:OnLoad()
+    self:RegisterEvent("PLAYER_LOGIN");
+    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+end
+
 function sArenaMixin:OnEvent(event, ...)
     if ( event == "PLAYER_LOGIN" ) then
         self:Initialize();
         self:UnregisterEvent("PLAYER_LOGIN");
+    elseif ( event == "COMBAT_LOG_EVENT_UNFILTERED" ) then
+        local _, combatEvent, _, _, _, _, _, destGUID, _, _, _, spellID = CombatLogGetCurrentEventInfo();
+
+        for i = 1, 3 do
+            if destGUID == UnitGUID("arena"..i) then
+                self["arena"..i]:FindInterrupt(combatEvent, spellID);
+                return;
+            end
+        end
     end
 end
 
@@ -43,6 +57,9 @@ function sArenaFrameMixin:OnLoad()
     self.unitChanging = true;
 
     CastingBarFrame_SetUnit(self.CastBar, unit, false, true);
+
+    self.interruptSpellID = nil;
+    self.interruptEnd = nil;
 
     self.TrinketCooldown:SetAllPoints(self.TrinketIcon);
 
@@ -95,8 +112,22 @@ function sArenaFrameMixin:OnUpdate(elapsed)
     self:SetBarValue(self.PowerBar, UnitPower(unit));
 
     self:SetPowerType(select(2, UnitPowerType(unit)));
-    
+
     self.unitChanging = false;
+
+    if ( self.interruptSpellID ) then
+        local now = GetTime();
+        local timeLeft = self.interruptEnd - now;
+
+        if ( timeLeft > 0 ) then
+            self.CCText:SetFormattedText("%.1f", timeLeft);
+        else
+            self.CCText:SetText("");
+            self.CCIcon:Hide();
+            self.CCIconGlow:Hide();
+            self.interruptSpellID = nil;
+        end
+    end
 end
 
 function sArenaFrameMixin:UpdateVisible()
@@ -231,6 +262,7 @@ function sArenaFrameMixin:ClearLayout()
     ClearTexture(self.FrameUnderlay);
     ClearTexture(self.FrameTexture);
     ClearTexture(self.SpecIcon);
+    ClearTexture(self.CCIcon);
 
     ClearStatusBar(self.HealthBar);
     ClearStatusBar(self.PowerBar);
@@ -239,6 +271,10 @@ function sArenaFrameMixin:ClearLayout()
     self.TrinketIcon:ClearAllPoints();
     self.TrinketIcon:SetSize(0, 0);
     self.TrinketIcon:SetTexCoord(0, 1, 0, 1);
+
+    self.CCIconGlow:ClearAllPoints();
+    self.CCIconGlow:SetSize(0, 0);
+    self.CCIconGlow:SetTexCoord(0, 1, 0, 1);
 
     local n = self.Name;
     n:SetJustifyH("CENTER");
@@ -267,4 +303,43 @@ function sArenaFrameMixin:SetPowerType(powerType)
     if color then
         self.PowerBar:SetStatusBarColor(color.r, color.g, color.b);
     end
+end
+
+function sArenaFrameMixin:FindCC()
+    -- TODO: Add code for finding a CC
+    self:SetCC();
+end
+
+function sArenaFrameMixin:FindInterrupt(event, spellID)
+    local duration = sArena.interruptList[spellID];
+
+    if ( not duration ) then return end
+    if ( event ~= "SPELL_INTERRUPT" and event ~= "SPELL_CAST_SUCCESS" ) then return end
+
+    local unit = self.unit;
+    local _, _, _, _, _, _, notInterruptable = UnitChannelInfo(unit);
+
+    if ( event == "SPELL_INTERRUPT" or notInterruptable == false ) then
+        local _, class = UnitClass(unit);
+        local _, _, texture = GetSpellInfo(spellID);
+        local start = GetTime();
+
+        if ( class == "PRIEST" or class == "SHAMAN" or class == "WARLOCK" ) then
+            duration = duration * 0.7;
+        end
+
+        self.interruptSpellID = spellID;
+        self.interruptTexture = texture;
+        self.interruptExpire = start + duration;
+
+        self:FindCC();
+    end
+end
+
+function sArenaFrameMixin:SetCC()
+    -- TODO: Add logic to determine whether to show interrupt or CC
+    self.CCIcon:SetTexture(self.interruptTexture);
+    self.CCIconGlow:Show();
+    self.CCIcon:Show();
+    self.CCText:Show();
 end

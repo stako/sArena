@@ -1,5 +1,6 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Script file="sArena.lua"/>
+    <Script file="CrowdControls.lua"/>
     <Script file="Layouts/BlizzArena.lua"/>
     <Script file="Layouts/BlizzTourney.lua"/>
     <Script file="Layouts/Xaryu.lua"/>
@@ -69,10 +70,15 @@
 
             <Layer level="ARTWORK" textureSubLevel="2">
                 <FontString parentKey="Name"/>
+                <Texture parentKey="CCIconGlow" atlas="RedCCIconGlow" hidden="true"/>
             </Layer>
 
             <Layer level="OVERLAY" textureSubLevel="1">
                 <Texture parentKey="TrinketIcon"/>
+                <Texture parentKey="CCIcon" hidden="true"/>
+                <FontString parentKey="CCText" inherits="Game12Font_o1" justifyH="CENTER" justifyV="MIDDLE" hidden="true">
+                    <Color r="0" g="1" b="0"/>
+                </FontString>
             </Layer>
         </Layers>
         <Frames>
@@ -114,9 +120,7 @@
         </Frames>
         <Scripts>
             <OnEvent method="OnEvent"/>
-            <OnLoad>
-                self:RegisterEvent("PLAYER_LOGIN");
-            </OnLoad>
+            <OnLoad method="OnLoad"/>
         </Scripts>
     </Frame>
 </Ui>
