@@ -1,122 +1,122 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-<Script file="sArena.lua"/>
-<Script file="Layouts/BlizzArena.lua"/>
-<Script file="Layouts/BlizzTourney.lua"/>
-<Script file="Layouts/Xaryu.lua"/>
+    <Script file="sArena.lua"/>
+    <Script file="Layouts/BlizzArena.lua"/>
+    <Script file="Layouts/BlizzTourney.lua"/>
+    <Script file="Layouts/Xaryu.lua"/>
 
-<StatusBar name="sArenaCastBarTemplate" virtual="true" hidden="true">
-	<Layers>
-		<Layer level="BACKGROUND">
-			<Texture setAllPoints="true">
-				<Color r="0" g="0" b="0" a="0.5"/>
-			</Texture>		
-		</Layer>
-		<Layer level="ARTWORK">
-			<Texture parentKey="BorderShield" file="Interface\CastingBar\UI-CastingBar-Arena-Shield" hidden="true">
-				<Size x="42" y="42"/>
-				<Anchors>
-					<Anchor point="LEFT" x="-25" y="0"/>
-				</Anchors>
-			</Texture>
-			<FontString parentKey="Text" inherits="GameFontHighlightSmall" setAllPoints="true"/>
-			<Texture parentKey="Icon">
-				<Size x="16" y="16"/>
-				<Anchors>
-					<Anchor point="RIGHT" relativePoint="LEFT" x="-5" y="0"/>
-				</Anchors>
-			</Texture>
-		</Layer>
-		<Layer level="OVERLAY">
-			<Texture parentKey="Spark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
-				<Size x="32" y="32"/>
-				<Anchors>
-					<Anchor point="CENTER"/>
-				</Anchors>
-			</Texture>
-			<Texture parentKey="Flash" alphaMode="ADD"> 
-			<!-- this needs to be here so the generic unit frame code will work right --> 
-				<Size x="256" y="64"/>
-				<Anchors>
-					<Anchor point="TOP" x="0" y="28"/>
-				</Anchors>
-			</Texture>
-		</Layer>
-	</Layers>
-	<Scripts>
-		<OnLoad function="CastingBarFrame_OnLoad" />
-		<OnEvent function="CastingBarFrame_OnEvent" />
-		<OnUpdate function="CastingBarFrame_OnUpdate" />
-		<OnShow function="CastingBarFrame_OnShow" />
-	</Scripts>
-	<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
-	<BarColor r="1.0" g="0.7" b="0.0"/>
-</StatusBar>
+    <StatusBar name="sArenaCastBarTemplate" virtual="true" hidden="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture setAllPoints="true">
+                    <Color r="0" g="0" b="0" a="0.5"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="BorderShield" file="Interface\CastingBar\UI-CastingBar-Arena-Shield" hidden="true">
+                    <Size x="42" y="42"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="-25" y="0"/>
+                    </Anchors>
+                </Texture>
+                <FontString parentKey="Text" inherits="GameFontHighlightSmall" setAllPoints="true"/>
+                <Texture parentKey="Icon">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativePoint="LEFT" x="-5" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="Spark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+                    <Size x="32" y="32"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="Flash" alphaMode="ADD"> 
+                    <!-- this needs to be here so the generic unit frame code will work right --> 
+                    <Size x="256" y="64"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="28"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad function="CastingBarFrame_OnLoad"/>
+            <OnEvent function="CastingBarFrame_OnEvent"/>
+            <OnUpdate function="CastingBarFrame_OnUpdate"/>
+            <OnShow function="CastingBarFrame_OnShow"/>
+        </Scripts>
+        <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+        <BarColor r="1.0" g="0.7" b="0.0"/>
+    </StatusBar>
 
-<Button name="sArenaEnemyFrameTemplate" frameStrata="LOW" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
-	<Layers>
-		<Layer level="BACKGROUND">
-			<Texture parentKey="FrameUnderlay"/>
-		</Layer>
+    <Button name="sArenaEnemyFrameTemplate" frameStrata="LOW" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="FrameUnderlay"/>
+            </Layer>
 
-		<Layer level="BORDER">
-			<!-- Health/power bar is in this layer -->
-			<Texture parentKey="SpecIcon"/>
-		</Layer>
+            <Layer level="BORDER">
+                <!-- Health/power bar is in this layer -->
+                <Texture parentKey="SpecIcon"/>
+            </Layer>
 
-		<Layer level="ARTWORK" textureSubLevel="1">
-			<Texture parentKey="FrameTexture"/>
-		</Layer>
+            <Layer level="ARTWORK" textureSubLevel="1">
+                <Texture parentKey="FrameTexture"/>
+            </Layer>
 
-		<Layer level="ARTWORK" textureSubLevel="2">
-			<FontString parentKey="Name"/>
-		</Layer>
+            <Layer level="ARTWORK" textureSubLevel="2">
+                <FontString parentKey="Name"/>
+            </Layer>
 
-		<Layer level="OVERLAY" textureSubLevel="1">
-			<Texture parentKey="TrinketIcon"/>
-		</Layer>
-	</Layers>
-	<Frames>
-		<StatusBar parentKey="HealthBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
-		<StatusBar parentKey="PowerBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
-		<StatusBar parentKey="CastBar" inherits="sArenaCastBarTemplate"/>
-		<Cooldown parentKey="TrinketCooldown" inherits="CooldownFrameTemplate"/>
-	</Frames>
-	<Scripts>
-		<OnUpdate method="OnUpdate"/>
-		<OnEvent method="OnEvent"/>
-		<OnLoad method="OnLoad"/>
-		<OnEnter function="UnitFrame_OnEnter"/>
-		<OnLeave function="UnitFrame_OnLeave"/>
-	</Scripts>
-</Button>
+            <Layer level="OVERLAY" textureSubLevel="1">
+                <Texture parentKey="TrinketIcon"/>
+            </Layer>
+        </Layers>
+        <Frames>
+            <StatusBar parentKey="HealthBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
+            <StatusBar parentKey="PowerBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
+            <StatusBar parentKey="CastBar" inherits="sArenaCastBarTemplate"/>
+            <Cooldown parentKey="TrinketCooldown" inherits="CooldownFrameTemplate"/>
+        </Frames>
+        <Scripts>
+            <OnUpdate method="OnUpdate"/>
+            <OnEvent method="OnEvent"/>
+            <OnLoad method="OnLoad"/>
+            <OnEnter function="UnitFrame_OnEnter"/>
+            <OnLeave function="UnitFrame_OnLeave"/>
+        </Scripts>
+    </Button>
 
-<Frame name="sArena" mixin="sArenaMixin">
-	<Size x="1" y="1"/>
-	<Anchors>
-		<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="250" y="100"/>
-	</Anchors>
-	<Frames>
-		<Button name="sArenaEnemyFrame1" parentKey="arena1" inherits="sArenaEnemyFrameTemplate" id="1">
-			<Anchors>
-				<Anchor point="TOP"/>
-			</Anchors>
-		</Button>
-		<Button name="sArenaEnemyFrame2" parentKey="arena2" inherits="sArenaEnemyFrameTemplate" id="2">
-			<Anchors>
-				<Anchor point="TOP" relativeTo="sArenaEnemyFrame1" relativePoint="BOTTOM" y="-20" />
-			</Anchors>
-		</Button>
-		<Button name="sArenaEnemyFrame3" parentKey="arena3" inherits="sArenaEnemyFrameTemplate" id="3">
-			<Anchors>
-				<Anchor point="TOP" relativeTo="sArenaEnemyFrame2" relativePoint="BOTTOM" y="-20" />
-			</Anchors>
-		</Button>
-	</Frames>
-	<Scripts>
-		<OnEvent method="OnEvent"/>
-		<OnLoad>
-			self:RegisterEvent("PLAYER_LOGIN");
-		</OnLoad>
-	</Scripts>
-</Frame>
+    <Frame name="sArena" mixin="sArenaMixin">
+        <Size x="1" y="1"/>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="250" y="100"/>
+        </Anchors>
+        <Frames>
+            <Button name="sArenaEnemyFrame1" parentKey="arena1" inherits="sArenaEnemyFrameTemplate" id="1">
+                <Anchors>
+                    <Anchor point="TOP"/>
+                </Anchors>
+            </Button>
+            <Button name="sArenaEnemyFrame2" parentKey="arena2" inherits="sArenaEnemyFrameTemplate" id="2">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="sArenaEnemyFrame1" relativePoint="BOTTOM" y="-20"/>
+                </Anchors>
+            </Button>
+            <Button name="sArenaEnemyFrame3" parentKey="arena3" inherits="sArenaEnemyFrameTemplate" id="3">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="sArenaEnemyFrame2" relativePoint="BOTTOM" y="-20"/>
+                </Anchors>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnEvent method="OnEvent"/>
+            <OnLoad>
+                self:RegisterEvent("PLAYER_LOGIN");
+            </OnLoad>
+        </Scripts>
+    </Frame>
 </Ui>

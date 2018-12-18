@@ -67,9 +67,9 @@ function sArenaFrameMixin:OnEvent(event, ...)
         elseif ( event == "ARENA_CROWD_CONTROL_SPELL_UPDATE" ) then
             local _, spellID = ...;
             if (spellID ~= self.TrinketIcon.spellID) then
-                local spellTexture, spellTextureNoOverride = GetSpellTexture(spellID);
+                local _, spellTextureNoOverride = GetSpellTexture(spellID);
                 self.TrinketIcon.spellID = spellID;
-				self.TrinketIcon:SetTexture(spellTextureNoOverride);
+                self.TrinketIcon:SetTexture(spellTextureNoOverride);
             end
         end
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
@@ -88,7 +88,7 @@ function sArenaFrameMixin:OnUpdate(elapsed)
 
     local unit = self.unit;
 
-	self:SetBarMaxValue(self.HealthBar, UnitHealthMax(unit));
+    self:SetBarMaxValue(self.HealthBar, UnitHealthMax(unit));
     self:SetBarValue(self.HealthBar, UnitHealth(unit));
     
     self:SetBarMaxValue(self.PowerBar, UnitPowerMax(unit));
@@ -175,19 +175,19 @@ function sArenaFrameMixin:UpdateSpecIcon()
 end
 
 function sArenaFrameMixin:UpdateTrinket()
-	local spellID, startTime, duration = C_PvP.GetArenaCrowdControlInfo(self.unit);
-	if ( spellID ) then
-		if ( spellID ~= self.TrinketIcon.spellID ) then
-			local _, spellTextureNoOverride = GetSpellTexture(spellID);
-			self.TrinketIcon.spellID = spellID;
-			self.TrinketIcon:SetTexture(spellTextureNoOverride);
-		end
-		if ( startTime ~= 0 and duration ~= 0 ) then
-			self.TrinketCooldown:SetCooldown(startTime/1000.0, duration/1000.0);
-		else
-			self.TrinketCooldown:Clear();
-		end
-	end
+    local spellID, startTime, duration = C_PvP.GetArenaCrowdControlInfo(self.unit);
+    if ( spellID ) then
+        if ( spellID ~= self.TrinketIcon.spellID ) then
+            local _, spellTextureNoOverride = GetSpellTexture(spellID);
+            self.TrinketIcon.spellID = spellID;
+            self.TrinketIcon:SetTexture(spellTextureNoOverride);
+        end
+        if ( startTime ~= 0 and duration ~= 0 ) then
+            self.TrinketCooldown:SetCooldown(startTime/1000.0, duration/1000.0);
+        else
+            self.TrinketCooldown:Clear();
+        end
+    end
 end
 
 function sArenaFrameMixin:ResetTrinket()
@@ -249,22 +249,22 @@ end
 
 function sArenaFrameMixin:SetBarValue(bar, value)
     if ( self.unitChanging ) then
-		bar:ResetSmoothedValue(value);
-	else
-		bar:SetSmoothedValue(value);
-	end
+        bar:ResetSmoothedValue(value);
+    else
+        bar:SetSmoothedValue(value);
+    end
 end
 
 function sArenaFrameMixin:SetBarMaxValue(bar, value)
-	bar:SetMinMaxSmoothedValue(0, value);
-	if ( self.unitChanging ) then
-		bar:ResetSmoothedValue();
-	end
+    bar:SetMinMaxSmoothedValue(0, value);
+    if ( self.unitChanging ) then
+        bar:ResetSmoothedValue();
+    end
 end
 
 function sArenaFrameMixin:SetPowerType(powerType)
-	local color = PowerBarColor[powerType];
-	if color then
-		self.PowerBar:SetStatusBarColor(color.r, color.g, color.b);
-	end
+    local color = PowerBarColor[powerType];
+    if color then
+        self.PowerBar:SetStatusBarColor(color.r, color.g, color.b);
+    end
 end
