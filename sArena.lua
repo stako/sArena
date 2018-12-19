@@ -234,7 +234,7 @@ end
 
 function sArenaFrameMixin:ResetTrinket()
     self.TrinketIcon.spellID = nil;
-    self.TrinketIcon:SetTexture(nil);
+    self.TrinketIcon:SetTexture(134400);
     self.TrinketCooldown:Clear();
     self:UpdateTrinket();
 end
