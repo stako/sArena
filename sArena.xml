@@ -76,7 +76,7 @@
             <Layer level="OVERLAY" textureSubLevel="1">
                 <Texture parentKey="TrinketIcon"/>
                 <Texture parentKey="CCIcon" hidden="true"/>
-                <FontString parentKey="CCText" inherits="Game12Font_o1" justifyH="CENTER" justifyV="MIDDLE" hidden="true">
+                <FontString parentKey="CCText" inherits="Game12Font_o1" justifyH="CENTER" justifyV="MIDDLE">
                     <Color r="0" g="1" b="0"/>
                 </FontString>
             </Layer>
