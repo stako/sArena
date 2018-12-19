@@ -152,6 +152,20 @@ sArenaMixin.ccList = tInvert({
     212619, -- Call Felhunter (Warlock)
     231665, -- Avengers Shield (Paladin)
 
+    -- Silences
+    81261,  -- Solar Beam
+    202933, -- Spider Sting
+    233022, -- Spider Sting 2
+    1330,   -- Garrote
+    15487,  -- Silence
+    199683, -- Last Word
+    47476,  -- Strangulate
+    31935,  -- Avenger's Shield
+    204490, -- Sigil of Silence
+    217824, -- Shield of Virtue
+    43523,  -- Unstable Affliction Silence 1
+    196364, -- Unstable Affliction Silence 2
+
     -- Disarms
     236077, -- Disarm
     236236, -- Disarm (Protection)
