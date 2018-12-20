@@ -41,7 +41,7 @@ function layout:Initialize(frame)
     
     t = frame.CastBar;
     t:SetSize(80, 14);
-    t:SetPoint("RIGHT", frame, "LEFT", -15, -1);
+    t:SetPoint("RIGHT", frame, "LEFT", -10, -1);
     t:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
     
     t = frame.TrinketIcon;

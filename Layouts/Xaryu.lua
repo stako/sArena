@@ -4,9 +4,9 @@ layout.name = "Xaryu";
 function layout:Initialize(frame)
     sArena.portraitSpecIcon = false;
 
-    local height = 36;
+    local height = 32;
 
-    frame:SetSize(170, height);
+    frame:SetSize(160, height);
 
     local t = frame.SpecIcon;
     t:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
@@ -43,7 +43,7 @@ function layout:Initialize(frame)
     t:Show();
 
     t = frame.CastBar;
-    t:SetSize(80, 14);
+    t:SetSize(90, 16);
     t:SetPoint("RIGHT", frame, "LEFT", -4, 0);
     t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 end

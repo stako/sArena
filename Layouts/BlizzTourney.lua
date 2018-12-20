@@ -41,8 +41,8 @@ function layout:Initialize(frame)
     t:SetSize(77, 12);
     
     t = frame.CastBar;
-    t:SetSize(80, 14);
-    t:SetPoint("RIGHT", frame, "LEFT", -15, -5);
+    t:SetSize(100, 16);
+    t:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", -4, -3);
     t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
     
     t = frame.TrinketIcon;
