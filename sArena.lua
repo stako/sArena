@@ -4,19 +4,28 @@ sArenaFrameMixin = {};
 sArenaMixin.layouts = {};
 sArenaMixin.portraitSpecIcon = true;
 
-local ccList;
+local auraList;
+
+local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
+    UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
+    GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs = 
+    CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
+    UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
+    GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs;
 
 -- Parent Frame
 
 function sArenaMixin:OnLoad()
-    ccList = self.ccList;
+    auraList = self.auraList;
 
     self:RegisterEvent("PLAYER_LOGIN");
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     self:RegisterEvent("UNIT_AURA");
 end
 
-function sArenaMixin:OnEvent(event, ...)
+function sArenaMixin:OnEvent(event, unit)
     if ( event == "PLAYER_LOGIN" ) then
         self:Initialize();
         self:UnregisterEvent("PLAYER_LOGIN");
@@ -30,11 +39,9 @@ function sArenaMixin:OnEvent(event, ...)
             end
         end
     elseif ( event == "UNIT_AURA" ) then
-        local unit = ...;
-
         for i = 1, 3 do
             if ( unit == "arena"..i ) then
-                self[unit]:FindCC();
+                self[unit]:FindAura();
                 return;
             end
         end
@@ -72,36 +79,36 @@ function sArenaFrameMixin:OnLoad()
 
     CastingBarFrame_SetUnit(self.CastBar, unit, false, true);
 
-    self.ccSpellID = nil;
-    self.ccExpire = 0;
+    self.auraSpellID = nil;
+    self.auraExpire = 0;
     self.interruptSpellID = nil;
     self.interruptExpire = 0;
 
     self.TrinketCooldown:SetAllPoints(self.TrinketIcon);
+    self.AuraText:SetPoint("CENTER", self.SpecIcon, "CENTER");
 
     self:SetLayout();
 
     self:SetMysteryPlayer();
 end
 
-function sArenaFrameMixin:OnEvent(event, ...)
-    local eventUnit = ...;
+function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
     local unit = self.unit;
 
     if ( eventUnit and eventUnit == unit ) then
         if ( event == "UNIT_NAME_UPDATE" ) then
             self.Name:SetText(GetUnitName(unit));
         elseif ( event == "ARENA_OPPONENT_UPDATE" ) then
-            local _, unitEvent = ...;
+            -- arg1 == unitEvent ("seen", "unseen", etc)
             self:UpdateVisible();
-            self:UpdatePlayer(unitEvent);
+            self:UpdatePlayer(arg1);
         elseif ( event == "ARENA_COOLDOWNS_UPDATE" ) then
             self:UpdateTrinket();
         elseif ( event == "ARENA_CROWD_CONTROL_SPELL_UPDATE" ) then
-            local _, spellID = ...;
-            if (spellID ~= self.TrinketIcon.spellID) then
-                local _, spellTextureNoOverride = GetSpellTexture(spellID);
-                self.TrinketIcon.spellID = spellID;
+            -- arg1 == spellID
+            if (arg1 ~= self.TrinketIcon.spellID) then
+                local _, spellTextureNoOverride = GetSpellTexture(arg1);
+                self.TrinketIcon.spellID = arg1;
                 self.TrinketIcon:SetTexture(spellTextureNoOverride);
             end
         end
@@ -131,12 +138,12 @@ function sArenaFrameMixin:OnUpdate()
 
     self.unitChanging = false;
 
-    if ( self.activeCCTexture ) then
+    if ( self.activeAuraTexture ) then
         local now = GetTime();
-        local timeLeft = self.activeCCExpire - now;
+        local timeLeft = self.activeAuraExpire - now;
 
         if ( timeLeft > 0 ) then
-            self.CCText:SetFormattedText("%.1f", timeLeft);
+            self.AuraText:SetFormattedText("%.1f", timeLeft);
         end
     end
 end
@@ -205,7 +212,7 @@ function sArenaFrameMixin:UpdateSpecIcon()
         end
     end
 
-    local texture = self.activeBuffTexture and self.activeBuffTexture or self.specTexture and self.specTexture or 134400;
+    local texture = self.activeAuraTexture and self.activeAuraTexture or self.specTexture and self.specTexture or 134400;
     if ( sArena.portraitSpecIcon ) then
         if ( texture == 134400 ) then
             texture = "Interface\\CharacterFrame\\TempPortrait";
@@ -273,7 +280,6 @@ function sArenaFrameMixin:ClearLayout()
     ClearTexture(self.FrameUnderlay);
     ClearTexture(self.FrameTexture);
     ClearTexture(self.SpecIcon);
-    ClearTexture(self.CCIcon);
 
     ClearStatusBar(self.HealthBar);
     ClearStatusBar(self.PowerBar);
@@ -282,10 +288,6 @@ function sArenaFrameMixin:ClearLayout()
     self.TrinketIcon:ClearAllPoints();
     self.TrinketIcon:SetSize(0, 0);
     self.TrinketIcon:SetTexCoord(0, 1, 0, 1);
-
-    self.CCIconGlow:ClearAllPoints();
-    self.CCIconGlow:SetSize(0, 0);
-    self.CCIconGlow:SetTexCoord(0, 1, 0, 1);
 
     local n = self.Name;
     n:SetJustifyH("CENTER");
@@ -317,40 +319,43 @@ function sArenaFrameMixin:SetPowerType(powerType)
 end
 
 do
-    local prioritizedCC = {
+    local prioritizedAura = {
         spellID,
         texture,
         expire,
     };
+    local filters = {"HELPFUL", "HARMFUL"};
 
-    function sArenaFrameMixin:FindCC()
+    function sArenaFrameMixin:FindAura()
         local unit = self.unit;
         local _, texture, expire, spellID;
-        prioritizedCC.spellID, prioritizedCC.texture, prioritizedCC.expire = nil, nil, nil;
+        prioritizedAura.spellID, prioritizedAura.texture, prioritizedAura.expire = nil, nil, nil;
 
-        for i = 1, 30 do
-            _, texture, _, _, _, expire, _, _, _, spellID = UnitAura(unit, i, "HARMFUL");
+        for _, filter in pairs(filters) do
+            for i = 1, 30 do
+                _, texture, _, _, _, expire, _, _, _, spellID = UnitAura(unit, i, "HARMFUL");
 
-            if ( not spellID ) then break end
+                if ( not spellID ) then break end
 
-            if ( ccList[spellID] ) then
-                if ( not prioritizedCC.spellID or ccList[spellID] < ccList[prioritizedCC.spellID] ) then
-                    prioritizedCC.spellID = spellID;
-                    prioritizedCC.texture = texture;
-                    prioritizedCC.expire = expire;
+                if ( auraList[spellID] ) then
+                    if ( not prioritizedAura.spellID or auraList[spellID] < auraList[prioritizedAura.spellID] ) then
+                        prioritizedAura.spellID = spellID;
+                        prioritizedAura.texture = texture;
+                        prioritizedAura.expire = expire;
+                    end
                 end
             end
         end
 
-        if ( prioritizedCC.spellID ) then
-            self.ccSpellID = prioritizedCC.spellID;
-            self.ccTexture = prioritizedCC.texture;
-            self.ccExpire = prioritizedCC.expire;
+        if ( prioritizedAura.spellID ) then
+            self.auraSpellID = prioritizedAura.spellID;
+            self.auraTexture = prioritizedAura.texture;
+            self.auraExpire = prioritizedAura.expire;
         else
-            self.ccSpellID = nil
+            self.auraSpellID = nil
         end
 
-        self:SetCC();
+        self:SetAura();
     end
 end
 
@@ -373,57 +378,31 @@ function sArenaFrameMixin:FindInterrupt(event, spellID)
 
         C_Timer.After(duration, function() self:ClearInterrupt() end);
 
-        self:SetCC();
+        self:SetAura();
     end
 end
 
 function sArenaFrameMixin:ClearInterrupt()
     self.interruptSpellID = nil;
-    self:FindCC();
+    self:FindAura();
 end
 
-function sArenaFrameMixin:SetCC()
-    if ( self.ccSpellID ) then
-        if ( self.interruptSpellID and ccList[self.interruptSpellID] < ccList[self.ccSpellID] ) then
-            self.activeCCTexture = self.interruptTexture;
-            self.activeCCExpire = self.interruptExpire;
+function sArenaFrameMixin:SetAura()
+    if ( self.auraSpellID ) then
+        if ( self.interruptSpellID and auraList[self.interruptSpellID] < auraList[self.auraSpellID] ) then
+            self.activeAuraTexture = self.interruptTexture;
+            self.activeAuraExpire = self.interruptExpire;
         else
-            self.activeCCTexture = self.ccTexture;
-            self.activeCCExpire = self.ccExpire;
+            self.activeAuraTexture = self.auraTexture;
+            self.activeAuraExpire = self.auraExpire;
         end
     elseif ( self.interruptSpellID ) then
-        self.activeCCTexture = self.interruptTexture;
-        self.activeCCExpire = self.interruptExpire;
+        self.activeAuraTexture = self.interruptTexture;
+        self.activeAuraExpire = self.interruptExpire;
     else
-        self:ClearCC();
-        return;
+        self.AuraText:SetText("");
+        self.activeAuraTexture = nil;
     end
 
-    self.CCIcon:SetTexture(self.activeCCTexture);
-    self.CCIconGlow:Show();
-    self.CCIcon:Show();
-end
-
-function sArenaFrameMixin:ClearCC()
-    self.CCText:SetText("");
-    self.CCIcon:Hide();
-    self.CCIconGlow:Hide();
-    self.activeCCTexture = nil;
-end
-
-function sArenaMixin:Test()
-    sArena:SetLayout(3);
-
-    for i = 1, 2 do
-        local f = sArena["arena"..i];
-        f:Show()
-
-        if i == 1 then f:SetScale(2); end
-
-        f.CCIcon:SetTexture(134400);
-        f.CCIcon:Show();
-        f.CCIconGlow:Show();
-        f.CCText:SetText("8.3");
-        f.CCText:Show();
-    end
+    self:UpdateSpecIcon();
 end
