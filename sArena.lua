@@ -395,6 +395,7 @@ function sArenaFrameMixin:SetAura()
         else
             self.activeAuraTexture = self.auraTexture;
             self.activeAuraExpire = self.auraExpire;
+            if ( self.activeAuraExpire == 0 ) then self.AuraText:SetText("") end
         end
     elseif ( self.interruptSpellID ) then
         self.activeAuraTexture = self.interruptTexture;
@@ -405,4 +406,14 @@ function sArenaFrameMixin:SetAura()
     end
 
     self:UpdateSpecIcon();
+end
+
+function sArenaMixin:Test()
+    for i = 1,3 do
+        local f = self["arena"..i];
+        f:Show();
+        f:SetLayout(3);
+        CastingBarFrame_SetUnit(f.CastBar, 'player', false, true);
+        f.SpecIcon:SetTexture(135810);
+    end
 end
