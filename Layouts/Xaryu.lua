@@ -2,50 +2,55 @@ local layout = {};
 layout.name = "Xaryu";
 
 function layout:Initialize(frame)
-    sArena.portraitSpecIcon = false;
+    frame.parent.portraitSpecIcon = false;
 
     local height = 32;
 
     frame:SetSize(160, height);
 
-    local t = frame.SpecIcon;
-    t:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
-    t:SetSize(height, height);
-    t:Show();
+    local f = frame.SpecIcon;
+    f:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
+    f:SetSize(height, height);
+    f:Show();
 
-    t = frame.TrinketIcon;
-    t:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
-    t:SetSize(height, height);
+    f = frame.TrinketIcon;
+    f:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
+    f:SetSize(height, height);
 
-    t = frame.Name;
-    t:SetJustifyH("LEFT");
-    t:SetFontObject("GameFontNormalSmall");
-    t:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 2);
-    t:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 2);
-    t:SetHeight(12);
+    f = frame.Name;
+    f:SetJustifyH("LEFT");
+    f:SetJustifyV("BOTTOM");
+    f:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 2);
+    f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 2);
+    f:SetHeight(12);
+    f:Show();
 
-    t = frame.HealthBar;
-    t:SetPoint("TOPLEFT", frame.SpecIcon, "TOPRIGHT", 2, 0);
-    t:SetPoint("TOPRIGHT", frame.TrinketIcon, "TOPLEFT", -2, 0);
-    t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    t:SetHeight(28);
+    f = frame.HealthBar;
+    f:SetPoint("TOPLEFT", frame.SpecIcon, "TOPRIGHT", 2, 0);
+    f:SetPoint("TOPRIGHT", frame.TrinketIcon, "TOPLEFT", -2, 0);
+    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    f:SetHeight(25);
 
-    t = frame.PowerBar;
-    t:SetPoint("TOPLEFT", frame.HealthBar, "BOTTOMLEFT", 0, 0);
-    t:SetPoint("TOPRIGHT", frame.HealthBar, "BOTTOMRIGHT", 0, 0);
-    t:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0);
-    t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    f = frame.PowerBar;
+    f:SetPoint("TOPLEFT", frame.HealthBar, "BOTTOMLEFT", 0, 0);
+    f:SetPoint("TOPRIGHT", frame.HealthBar, "BOTTOMRIGHT", 0, 0);
+    f:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0);
+    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
-    t = frame.FrameUnderlay;
-    t:SetColorTexture(0, 0, 0, 0.75);
-    t:SetPoint("TOPLEFT", frame.HealthBar, "TOPLEFT");
-    t:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT");
-    t:Show();
+    f = frame.CastBar;
+    f:SetSize(90, 16);
+    f:SetPoint("RIGHT", frame, "LEFT", -4, 0);
+    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
-    t = frame.CastBar;
-    t:SetSize(90, 16);
-    t:SetPoint("RIGHT", frame, "LEFT", -4, 0);
-    t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    frame.AuraText:Show();
+    frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
+
+    local underlay = frame.TexturePool:Acquire();
+    underlay:SetDrawLayer("BACKGROUND", 1);
+    underlay:SetColorTexture(0, 0, 0, 0.75);
+    underlay:SetPoint("TOPLEFT", frame.HealthBar, "TOPLEFT");
+    underlay:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT");
+    underlay:Show();
 end
 
 tinsert(sArenaMixin.layouts, layout);

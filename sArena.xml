@@ -1,9 +1,60 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Script file="sArena.lua"/>
+
     <Script file="Auras.lua"/>
+    <Script file="DRList.lua"/>
     <Script file="Layouts\BlizzArena.lua"/>
     <Script file="Layouts\BlizzTourney.lua"/>
     <Script file="Layouts\Xaryu.lua"/>
+
+    <Frame name="sArenaDRTrackerTemplate" frameStrata="LOW" virtual="true">
+        <Size x="40" y="40"/>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture parentKey="Border" file="Interface\Buttons\UI-Quickslot-Depress">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-2.5" y="2.5"/>
+                        <Anchor point="BOTTOMRIGHT" x="2.5" y="-2.5"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            
+            <Layer level="OVERLAY">
+                <Texture parentKey="Icon">
+                    <TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Cooldown parentKey="Cooldown" drawBling="false" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
+                <SwipeTexture>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </SwipeTexture>
+                <Scripts>
+                    <OnLoad>
+                        self.parent = self:GetParent();
+                    </OnLoad>
+                    <OnShow>
+                        self.parent:SetAlpha(1);
+                        self.parent:GetParent():UpdateDRPositions();
+                    </OnShow>
+                    <OnHide>
+                        self.parent:SetAlpha(0);
+                        self.parent.severity = 1;
+                        self.parent:GetParent():UpdateDRPositions();
+                    </OnHide>
+                </Scripts>
+            </Cooldown>
+        </Frames>
+
+        <Scripts>
+            <OnLoad>
+                self.severity = 1;
+                self:SetAlpha(0);
+            </OnLoad>
+        </Scripts>
+    </Frame>
 
     <StatusBar name="sArenaCastBarTemplate" virtual="true" hidden="true">
         <Layers>
@@ -12,6 +63,7 @@
                     <Color r="0" g="0" b="0" a="0.5"/>
                 </Texture>
             </Layer>
+
             <Layer level="ARTWORK">
                 <Texture parentKey="BorderShield" file="Interface\CastingBar\UI-CastingBar-Arena-Shield" hidden="true">
                     <Size x="42" y="42"/>
@@ -27,6 +79,7 @@
                     </Anchors>
                 </Texture>
             </Layer>
+
             <Layer level="OVERLAY">
                 <Texture parentKey="Spark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
                     <Size x="32" y="32"/>
@@ -55,17 +108,9 @@
 
     <Button name="sArenaEnemyFrameTemplate" frameStrata="LOW" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
         <Layers>
-            <Layer level="BACKGROUND">
-                <Texture parentKey="FrameUnderlay"/>
-            </Layer>
-
             <Layer level="BORDER">
                 <!-- Health/power bar is in this layer -->
                 <Texture parentKey="SpecIcon"/>
-            </Layer>
-
-            <Layer level="ARTWORK" textureSubLevel="1">
-                <Texture parentKey="FrameTexture"/>
             </Layer>
 
             <Layer level="ARTWORK" textureSubLevel="2">
@@ -74,17 +119,22 @@
 
             <Layer level="OVERLAY" textureSubLevel="1">
                 <Texture parentKey="TrinketIcon"/>
-                <FontString parentKey="AuraText" inherits="Game12Font_o1" justifyH="CENTER" justifyV="MIDDLE">
-                    <Color r="0" g="1" b="0"/>
-                </FontString>
+                <FontString parentKey="AuraText"/>
             </Layer>
         </Layers>
+
         <Frames>
             <StatusBar parentKey="HealthBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
             <StatusBar parentKey="PowerBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
             <StatusBar parentKey="CastBar" inherits="sArenaCastBarTemplate"/>
-            <Cooldown parentKey="TrinketCooldown" inherits="CooldownFrameTemplate"/>
+            <Cooldown parentKey="TrinketCooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate"/>
+            <Frame parentKey="Incapacitate" inherits="sArenaDRTrackerTemplate"/>
+            <Frame parentKey="Silence" inherits="sArenaDRTrackerTemplate"/>
+            <Frame parentKey="Disorient" inherits="sArenaDRTrackerTemplate"/>
+            <Frame parentKey="Stun" inherits="sArenaDRTrackerTemplate"/>
+            <Frame parentKey="Root" inherits="sArenaDRTrackerTemplate"/>
         </Frames>
+
         <Scripts>
             <OnUpdate method="OnUpdate"/>
             <OnEvent method="OnEvent"/>
@@ -97,7 +147,7 @@
     <Frame name="sArena" mixin="sArenaMixin">
         <Size x="1" y="1"/>
         <Anchors>
-            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="250" y="100"/>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="400" y="100"/>
         </Anchors>
         <Frames>
             <Button name="sArenaEnemyFrame1" parentKey="arena1" inherits="sArenaEnemyFrameTemplate" id="1">
@@ -116,6 +166,7 @@
                 </Anchors>
             </Button>
         </Frames>
+
         <Scripts>
             <OnEvent method="OnEvent"/>
             <OnLoad method="OnLoad"/>

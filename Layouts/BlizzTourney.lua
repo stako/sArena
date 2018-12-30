@@ -2,52 +2,57 @@ local layout = {};
 layout.name = "BlizzTourney";
 
 function layout:Initialize(frame)
-    sArena.portraitSpecIcon = true;
+    frame.parent.portraitSpecIcon = true;
 
     frame:SetSize(126, 66);
-    
+
     local hp = frame.HealthBar;
     hp:SetSize(87, 23);
     hp:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -30);
     hp:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    
+
     local pp = frame.PowerBar;
     pp:SetSize(87, 12);
     pp:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -53);
     pp:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Resource-Fill");
-    
-    local t = frame.FrameUnderlay;
-    t:SetColorTexture(0, 0, 0, 0.75);
-    t:SetPoint("TOPLEFT", hp, "TOPLEFT");
-    t:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT");
-    t:Show();
-    
-    t = frame.FrameTexture;
-    t:SetSize(160, 80);
-    t:SetPoint("TOPLEFT", frame, "TOPLEFT", -26, 6);
-    t:SetAtlas("UnitFrame");
-    t:SetTexCoord(1, 0, 0, 1);
-    t:Show();
-    
-    t = frame.SpecIcon;
-    t:SetPoint("TOPRIGHT", -2, -2);
-    t:SetSize(34, 34);
-    t:Show();
-    
-    t = frame.Name;
-    t:SetJustifyH("RIGHT");
-    t:SetFontObject("GameFontNormalSmall");
-    t:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -42, -14);
-    t:SetSize(77, 12);
-    
-    t = frame.CastBar;
-    t:SetSize(100, 16);
-    t:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", -4, -3);
-    t:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    
-    t = frame.TrinketIcon;
-    t:SetSize(25, 25);
-    t:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4);
+
+    local f = frame.SpecIcon;
+    f:SetPoint("TOPRIGHT", -2, -2);
+    f:SetSize(34, 34);
+    f:Show();
+
+    f = frame.Name;
+    f:SetJustifyH("RIGHT");
+    f:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -4, 4);
+    f:SetSize(77, 14);
+    f:Show();
+
+    f = frame.CastBar;
+    f:SetSize(100, 16);
+    f:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", -4, -3);
+    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+
+    f = frame.TrinketIcon;
+    f:SetSize(25, 25);
+    f:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4);
+
+    frame.AuraText:Show();
+    frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
+
+    local underlay = frame.TexturePool:Acquire();
+    underlay:SetDrawLayer("BACKGROUND", 1);
+    underlay:SetColorTexture(0, 0, 0, 0.75);
+    underlay:SetPoint("TOPLEFT", hp, "TOPLEFT");
+    underlay:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT");
+    underlay:Show();
+
+    local frameTexture = frame.TexturePool:Acquire();
+    frameTexture:SetDrawLayer("ARTWORK", 1);
+    frameTexture:SetSize(160, 80);
+    frameTexture:SetPoint("TOPLEFT", frame, "TOPLEFT", -26, 6);
+    frameTexture:SetAtlas("UnitFrame");
+    frameTexture:SetTexCoord(1, 0, 0, 1);
+    frameTexture:Show();
 end
 
 tinsert(sArenaMixin.layouts, layout);

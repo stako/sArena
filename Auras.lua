@@ -137,6 +137,7 @@ sArenaMixin.auraList = tInvert({
     45438,  -- Ice Block
     47585,  -- Dispersion
     1022,   -- Blessing of Protection
+    204018, -- Blessing of Spellwarding
     216113, -- Way of the Crane
     31224,  -- Cloak of Shadows
     212182, -- Smoke Bomb
