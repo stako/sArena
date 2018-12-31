@@ -1,5 +1,4 @@
 local layout = {};
-layout.name = "BlizzArena";
 
 function layout:Initialize(frame)
     frame.parent.portraitSpecIcon = true;
@@ -55,4 +54,4 @@ function layout:Initialize(frame)
     frameTexture:Show();
 end
 
-tinsert(sArenaMixin.layouts, layout);
+sArenaMixin.layouts["BlizzArena"] = layout;

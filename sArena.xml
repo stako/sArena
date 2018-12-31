@@ -1,6 +1,8 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <Script file="Ace3\LibStub\LibStub.lua"/>
+    <Include file="Ace3\AceDB-3.0\AceDB-3.0.xml"/>
+    
     <Script file="sArena.lua"/>
-
     <Script file="Auras.lua"/>
     <Script file="DRList.lua"/>
     <Script file="Layouts\BlizzArena.lua"/>
@@ -146,9 +148,6 @@
 
     <Frame name="sArena" mixin="sArenaMixin">
         <Size x="1" y="1"/>
-        <Anchors>
-            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="400" y="100"/>
-        </Anchors>
         <Frames>
             <Button name="sArenaEnemyFrame1" parentKey="arena1" inherits="sArenaEnemyFrameTemplate" id="1">
                 <Anchors>

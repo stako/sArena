@@ -1,5 +1,4 @@
 local layout = {};
-layout.name = "Xaryu";
 
 function layout:Initialize(frame)
     frame.parent.portraitSpecIcon = false;
@@ -53,4 +52,4 @@ function layout:Initialize(frame)
     underlay:Show();
 end
 
-tinsert(sArenaMixin.layouts, layout);
+sArenaMixin.layouts["Xaryu"] = layout;

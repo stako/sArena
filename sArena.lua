@@ -4,6 +4,14 @@ sArenaFrameMixin = {};
 sArenaMixin.layouts = {};
 sArenaMixin.portraitSpecIcon = true;
 
+sArenaMixin.defaultSettings = {
+    profile = {
+        position = { "CENTER", "UIParent", "CENTER", 300, 100 },
+        currentLayout = "BlizzArena",
+    },
+};
+
+local db;
 local auraList;
 local interruptList;
 local drList;
@@ -60,12 +68,26 @@ function sArenaMixin:OnEvent(event)
 end
 
 function sArenaMixin:Initialize()
-    -- TODO: Setup the Ace DB here
+    if ( db ) then return end
+
+    self.db = LibStub("AceDB-3.0"):New("sArena3DB", self.defaultSettings, true)
+    db = self.db;
+
+    self:SetPoint(unpack(db.profile.position));
 end
 
 function sArenaMixin:SetLayout(layout)
+    if ( InCombatLockdown() ) then return end
+
+    layout = sArenaMixin.layouts[layout] and layout or "BlizzArena";
+
+    db.profile.currentLayout = layout;
+
     for i = 1, 3 do
-        self["arena"..i]:SetLayout(layout);
+        local frame = self["arena"..i];
+        frame:ResetLayout();
+        sArenaMixin.layouts[layout]:Initialize(frame);
+        frame:UpdatePlayer();
     end
 end
 
@@ -75,6 +97,7 @@ function sArenaFrameMixin:OnLoad()
     local unit = "arena"..self:GetID();
     self.parent = self:GetParent();
 
+    self:RegisterEvent("PLAYER_LOGIN");
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
     self:RegisterEvent("UNIT_NAME_UPDATE");
     self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS");
@@ -95,10 +118,6 @@ function sArenaFrameMixin:OnLoad()
     self.AuraText:SetPoint("CENTER", self.SpecIcon, "CENTER");
 
     self.TexturePool = CreateTexturePool(self, "ARTWORK");
-
-    self:SetLayout();
-
-    self:SetMysteryPlayer();
 end
 
 function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
@@ -123,6 +142,14 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         elseif ( event == "UNIT_AURA" ) then
             self:FindAura();
         end
+    elseif ( event == "PLAYER_LOGIN" ) then
+        if ( not db ) then
+            self.parent:Initialize();
+        end
+
+        self.parent:SetLayout(db.profile.currentLayout);
+        self:SetMysteryPlayer();
+        self:UnregisterEvent("PLAYER_LOGIN");
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
         self.Name:SetText("");
         self:UpdateVisible();
@@ -268,21 +295,6 @@ function sArenaFrameMixin:ResetTrinket()
     self.TrinketIcon:SetTexture(134400);
     self.TrinketCooldown:Clear();
     self:UpdateTrinket();
-end
-
-function sArenaFrameMixin:SetLayout(layout)
-    if ( InCombatLockdown() ) then return end
-
-    if ( #sArenaMixin.layouts == 0 ) then
-        return;
-    end
-
-    layout = sArenaMixin.layouts[layout] and layout or 1;
-
-    self:ResetLayout();
-    sArenaMixin.layouts[layout]:Initialize(self);
-
-    self:UpdatePlayer();
 end
 
 local function ResetTexture(t)
@@ -496,5 +508,23 @@ do
                 prevFrame = frame;
             end
         end
+    end
+end
+
+function sArenaMixin:Test()
+    self:SetLayout("Xaryu");
+
+    for i = 1,3 do
+        local f = self["arena"..i];
+        f:Show();
+        CastingBarFrame_SetUnit(f.CastBar, 'player', false, true);
+        f.SpecIcon:SetTexture(135810);
+        f.AuraText:SetText("5.3")
+        f.Name:SetText("hello")
+        f.Stun.Cooldown:SetCooldown(GetTime(), 20)
+        f.Stun.Icon:SetTexture("Interface\\Icons\\Spell_Nature_Polymorph")
+        f.Stun.Border:SetColorTexture(1, 1, 1, 1)
+        f.Stun.Border:SetVertexColor(0, 1, 0, 1)
+        f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
     end
 end
