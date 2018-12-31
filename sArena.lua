@@ -8,6 +8,7 @@ sArenaMixin.defaultSettings = {
     profile = {
         position = { "CENTER", "UIParent", "CENTER", 300, 100 },
         currentLayout = "BlizzArena",
+        scale = 1.0,
     },
 };
 
@@ -67,16 +68,30 @@ function sArenaMixin:OnEvent(event)
     end
 end
 
+local function ChatCommand(input)
+    if not input or input:trim() == "" then
+        LibStub("AceConfigDialog-3.0"):Open("sArena");
+    else
+        LibStub("AceConfigCmd-3.0").HandleCommand(sArena, "sarena", "sArena", input);
+    end
+end
+
 function sArenaMixin:Initialize()
     if ( db ) then return end
 
     self.db = LibStub("AceDB-3.0"):New("sArena3DB", self.defaultSettings, true)
     db = self.db;
 
+    self.optionsTable.handler = self;
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("sArena", self.optionsTable);
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("sArena");
+    LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand);
+
     self:SetPoint(unpack(db.profile.position));
+    self:SetScale(db.profile.scale);
 end
 
-function sArenaMixin:SetLayout(layout)
+function sArenaMixin:SetLayout(info, layout)
     if ( InCombatLockdown() ) then return end
 
     layout = sArenaMixin.layouts[layout] and layout or "BlizzArena";
@@ -147,7 +162,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             self.parent:Initialize();
         end
 
-        self.parent:SetLayout(db.profile.currentLayout);
+        self.parent:SetLayout(nil, db.profile.currentLayout);
         self:SetMysteryPlayer();
         self:UnregisterEvent("PLAYER_LOGIN");
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
@@ -512,7 +527,7 @@ do
 end
 
 function sArenaMixin:Test()
-    self:SetLayout("Xaryu");
+    if ( InCombatLockdown() ) then return end
 
     for i = 1,3 do
         local f = self["arena"..i];
