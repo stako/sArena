@@ -1,7 +1,3 @@
-function sArenaMixin:GetLayout()
-    return self.db.profile.currentLayout;
-end
-
 local function getLayoutTable()
     local t = {};
 
@@ -10,10 +6,6 @@ local function getLayoutTable()
     end
 
     return t;
-end
-
-local function setLayout(var)
-    print(var);
 end
 
 local function validateCombat()
@@ -34,7 +26,7 @@ sArenaMixin.optionsTable = {
             name = "Layout",
             type = "select",
             style = "dropdown",
-            get = "GetLayout",
+            get = function(info) return info.handler.db.profile.currentLayout end,
             set = "SetLayout",
             values = getLayoutTable,
         },
