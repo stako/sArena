@@ -6,9 +6,11 @@ sArenaMixin.portraitSpecIcon = true;
 
 sArenaMixin.defaultSettings = {
     profile = {
-        position = { "CENTER", "UIParent", "CENTER", 300, 100 },
+        posX = 300,
+        posY = 100,
         currentLayout = "BlizzArena",
         scale = 1.0,
+        frameSpacing = 20;
         dr = {
             posX = -74,
             posY = 24,
@@ -111,23 +113,34 @@ function sArenaMixin:Initialize()
     self.optionsTable.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("sArena", self.optionsTable);
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("sArena");
-    LibStub("AceConfigDialog-3.0"):SetDefaultSize("sArena", 420, 500);
     LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand);
 
-    self:SetPoint(unpack(db.profile.position));
+    self:UpdatePositioning();
     self:SetScale(db.profile.scale);
 end
 
 function sArenaMixin:RefreshConfig()
-    self:SetPoint(unpack(db.profile.position));
+    self:UpdatePositioning();
     self:SetScale(db.profile.scale);
     self:SetLayout(nil, db.profile.currentLayout);
 
     for i = 1, 3 do
-        frame = self["arena"..1];
+        local frame = self["arena"..i];
         frame:SetDRSize(db.profile.dr.size);
         frame:SetDRBorderSize(db.profile.dr.borderSize);
         frame:UpdateDRPositions();
+    end
+end
+
+function sArenaMixin:UpdatePositioning()
+    self:ClearAllPoints();
+    self:SetPoint("CENTER", UIParent, "CENTER", db.profile.posX, db.profile.posY);
+
+    for i = 2, 3 do
+        local frame = self["arena"..i];
+        local prevFrame = self["arena"..i-1];
+        frame:ClearAllPoints();
+        frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -db.profile.frameSpacing)
     end
 end
 
@@ -613,6 +626,10 @@ function sArenaMixin:Test()
             end
         end
 
+        frame.CastBar.fadeOut = nil;
+        frame.CastBar:Show();
+        frame.CastBar:SetAlpha(1);
+        frame.CastBar.Icon:SetTexture(136071);
         --f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
     end
 end

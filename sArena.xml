@@ -152,19 +152,11 @@
         <Frames>
             <Button name="sArenaEnemyFrame1" parentKey="arena1" inherits="sArenaEnemyFrameTemplate" id="1">
                 <Anchors>
-                    <Anchor point="TOP"/>
+                    <Anchor point="CENTER"/>
                 </Anchors>
             </Button>
-            <Button name="sArenaEnemyFrame2" parentKey="arena2" inherits="sArenaEnemyFrameTemplate" id="2">
-                <Anchors>
-                    <Anchor point="TOP" relativeTo="sArenaEnemyFrame1" relativePoint="BOTTOM" y="-20"/>
-                </Anchors>
-            </Button>
-            <Button name="sArenaEnemyFrame3" parentKey="arena3" inherits="sArenaEnemyFrameTemplate" id="3">
-                <Anchors>
-                    <Anchor point="TOP" relativeTo="sArenaEnemyFrame2" relativePoint="BOTTOM" y="-20"/>
-                </Anchors>
-            </Button>
+            <Button name="sArenaEnemyFrame2" parentKey="arena2" inherits="sArenaEnemyFrameTemplate" id="2"/>
+            <Button name="sArenaEnemyFrame3" parentKey="arena3" inherits="sArenaEnemyFrameTemplate" id="3"/>
         </Frames>
 
         <Scripts>
