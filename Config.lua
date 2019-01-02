@@ -2,7 +2,7 @@ local function getLayoutTable()
     local t = {};
 
     for k, v in pairs(sArenaMixin.layouts) do
-        t[k] = k;
+        t[k] = sArenaMixin.layouts[k].name and sArenaMixin.layouts[k].name or k;
     end
 
     return t;

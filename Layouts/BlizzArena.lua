@@ -1,4 +1,5 @@
 local layout = {};
+layout.name = "|cff00b4ffBlizz|r Arena"
 
 function layout:Initialize(frame)
     frame.parent.portraitSpecIcon = true;
