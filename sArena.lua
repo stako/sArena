@@ -10,10 +10,13 @@ sArenaMixin.defaultSettings = {
         currentLayout = "BlizzArena",
         scale = 1.0,
         dr = {
-            size = 26,
+            posX = -74,
+            posY = 24,
+            size = 22,
             borderSize = 2.5,
             spacing = 6,
         },
+        layoutSettings = {},
     },
 };
 
@@ -33,6 +36,12 @@ local drCategories = {
     "Disorient",
     "Silence",
     "Root",
+};
+local emptyLayoutOptionsTable = {
+    notice = {
+        name = "The selected layout doesn't appear to have any settings.",
+        type = "description",
+    },
 };
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
@@ -128,11 +137,13 @@ function sArenaMixin:SetLayout(info, layout)
     layout = sArenaMixin.layouts[layout] and layout or "BlizzArena";
 
     db.profile.currentLayout = layout;
+    self.optionsTable.args.layoutSettingsGroup.args = self.layouts[layout].optionsTable and self.layouts[layout].optionsTable or emptyLayoutOptionsTable;
+    LibStub("AceConfigRegistry-3.0"):NotifyChange("sArena");
 
     for i = 1, 3 do
         local frame = self["arena"..i];
         frame:ResetLayout();
-        sArenaMixin.layouts[layout]:Initialize(frame);
+        self.layouts[layout]:Initialize(frame);
         frame:UpdatePlayer();
     end
 end
@@ -543,7 +554,7 @@ function sArenaFrameMixin:UpdateDRPositions()
         if ( frame:GetAlpha() == 1 ) then
             frame:ClearAllPoints();
             if ( active == 0 ) then
-                frame:SetPoint("RIGHT", self, "LEFT", 0, 10);
+                frame:SetPoint("CENTER", self, "CENTER", db.profile.dr.posX, db.profile.dr.posY);
             else
                 frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
             end
@@ -574,6 +585,8 @@ end
 function sArenaMixin:Test()
     if ( InCombatLockdown() ) then return end
 
+    local currTime = GetTime();
+
     for i = 1,3 do
         local frame = self["arena"..i];
         frame:Show();
@@ -591,7 +604,7 @@ function sArenaMixin:Test()
             local drFrame = frame[drCategories[i]];
 
             drFrame.Icon:SetTexture(136071);
-            drFrame.Cooldown:SetCooldown(GetTime(), math.random(20, 60));
+            drFrame.Cooldown:SetCooldown(currTime, math.random(20, 60));
 
             if ( i == 1 ) then
                 drFrame.Border:SetVertexColor(1, 0, 0, 1);
