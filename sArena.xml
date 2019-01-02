@@ -2,6 +2,7 @@
     <Script file="Ace3\LibStub\LibStub.lua"/>
     <Include file="Ace3\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
     <Include file="Ace3\AceDB-3.0\AceDB-3.0.xml"/>
+    <Include file="Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml"/>
     <Include file="Ace3\AceConsole-3.0\AceConsole-3.0.xml"/>
     <Include file="Ace3\AceGUI-3.0\AceGUI-3.0.xml"/>
     <Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
@@ -18,12 +19,7 @@
         <Size x="40" y="40"/>
         <Layers>
             <Layer level="BORDER">
-                <Texture parentKey="Border" file="Interface\Buttons\UI-Quickslot-Depress">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" x="-2.5" y="2.5"/>
-                        <Anchor point="BOTTOMRIGHT" x="2.5" y="-2.5"/>
-                    </Anchors>
-                </Texture>
+                <Texture parentKey="Border" file="Interface\Buttons\UI-Quickslot-Depress"/>
             </Layer>
             
             <Layer level="OVERLAY">

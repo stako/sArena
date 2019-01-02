@@ -9,6 +9,11 @@ sArenaMixin.defaultSettings = {
         position = { "CENTER", "UIParent", "CENTER", 300, 100 },
         currentLayout = "BlizzArena",
         scale = 1.0,
+        dr = {
+            size = 26,
+            borderSize = 2.5,
+            spacing = 6,
+        },
     },
 };
 
@@ -90,13 +95,31 @@ function sArenaMixin:Initialize()
     self.db = LibStub("AceDB-3.0"):New("sArena3DB", self.defaultSettings, true)
     db = self.db;
 
+    db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
+	db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+	db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
     self.optionsTable.handler = self;
+    self.optionsTable.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("sArena", self.optionsTable);
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("sArena");
+    LibStub("AceConfigDialog-3.0"):SetDefaultSize("sArena", 420, 500);
     LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand);
 
     self:SetPoint(unpack(db.profile.position));
     self:SetScale(db.profile.scale);
+end
+
+function sArenaMixin:RefreshConfig()
+    self:SetPoint(unpack(db.profile.position));
+    self:SetScale(db.profile.scale);
+    self:SetLayout(nil, db.profile.currentLayout);
+
+    for i = 1, 3 do
+        frame = self["arena"..1];
+        frame:SetDRSize(db.profile.dr.size);
+        frame:SetDRBorderSize(db.profile.dr.borderSize);
+        frame:UpdateDRPositions();
+    end
 end
 
 function sArenaMixin:SetLayout(info, layout)
@@ -166,13 +189,13 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             self:FindAura();
         end
     elseif ( event == "PLAYER_LOGIN" ) then
+        self:UnregisterEvent("PLAYER_LOGIN");
+
         if ( not db ) then
             self.parent:Initialize();
         end
 
-        self.parent:SetLayout(nil, db.profile.currentLayout);
-        self:SetMysteryPlayer();
-        self:UnregisterEvent("PLAYER_LOGIN");
+        self:Initialize();
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
         self.Name:SetText("");
         self:UpdateVisible();
@@ -189,6 +212,14 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:UpdateVisible();
         self:UpdatePlayer();
     end
+end
+
+function sArenaFrameMixin:Initialize()
+    self.parent:SetLayout(nil, db.profile.currentLayout);
+    self:SetMysteryPlayer();
+
+    self:SetDRSize(db.profile.dr.size);
+    self:SetDRBorderSize(db.profile.dr.borderSize);
 end
 
 function sArenaFrameMixin:OnUpdate()
@@ -504,6 +535,7 @@ end
 function sArenaFrameMixin:UpdateDRPositions()
     local active = 0;
     local frame, prevFrame;
+    local spacing = db.profile.dr.spacing;
 
     for i = 1, #drCategories do
         frame = self[drCategories[i]];
@@ -513,11 +545,29 @@ function sArenaFrameMixin:UpdateDRPositions()
             if ( active == 0 ) then
                 frame:SetPoint("RIGHT", self, "LEFT", 0, 10);
             else
-                frame:SetPoint("RIGHT", prevFrame, "LEFT", -2, 0);
+                frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
             end
             active = active + 1;
             prevFrame = frame;
         end
+    end
+end
+
+function sArenaFrameMixin:SetDRSize(size)
+    db.profile.dr.size = size;
+
+    for i = 1, #drCategories do
+        self[drCategories[i]]:SetSize(size, size);
+    end
+end
+
+function sArenaFrameMixin:SetDRBorderSize(size)
+    db.profile.dr.borderSize = size;
+
+    for i = 1, #drCategories do
+        local frame = self[drCategories[i]];
+        frame.Border:SetPoint("TOPLEFT", frame, "TOPLEFT", -size, size);
+        frame.Border:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", size, -size);
     end
 end
 
@@ -541,8 +591,13 @@ function sArenaMixin:Test()
             local drFrame = frame[drCategories[i]];
 
             drFrame.Icon:SetTexture(136071);
-            drFrame.Cooldown:SetCooldown(GetTime(), drTime + 5.3);
-            drFrame.Border:SetVertexColor(0, 1, 0, 1);
+            drFrame.Cooldown:SetCooldown(GetTime(), math.random(20, 60));
+
+            if ( i == 1 ) then
+                drFrame.Border:SetVertexColor(1, 0, 0, 1);
+            else
+                drFrame.Border:SetVertexColor(0, 1, 0, 1);
+            end
         end
 
         --f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
