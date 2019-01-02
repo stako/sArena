@@ -16,10 +16,18 @@ local db;
 local auraList;
 local interruptList;
 local drList;
+local drTime = 18.5;
 local severityColor = {
     [1] = { 0, 1, 0, 1},
     [2] = { 1, 1, 0, 1},
     [3] = { 1, 0, 0, 1},
+};
+local drCategories = {
+    "Stun",
+    "Incapacitate",
+    "Disorient",
+    "Silence",
+    "Root",
 };
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
@@ -451,77 +459,64 @@ function sArenaFrameMixin:FindInterrupt(event, spellID)
     end
 end
 
-do
-    local drTime = 18.5;
 
-    function sArenaFrameMixin:FindDR(combatEvent, spellID)
-        local category = drList[spellID];
-        if ( not category ) then return end
+function sArenaFrameMixin:FindDR(combatEvent, spellID)
+    local category = drList[spellID];
+    if ( not category ) then return end
 
-        local frame = self[category];
-        local currTime = GetTime();
+    local frame = self[category];
+    local currTime = GetTime();
 
-        if ( combatEvent == "SPELL_AURA_REMOVED" or combatEvent == "SPELL_AURA_BROKEN" ) then
-            local startTime, startDuration = frame.Cooldown:GetCooldownTimes();
-            startTime, startDuration = startTime/1000, startDuration/1000;
+    if ( combatEvent == "SPELL_AURA_REMOVED" or combatEvent == "SPELL_AURA_BROKEN" ) then
+        local startTime, startDuration = frame.Cooldown:GetCooldownTimes();
+        startTime, startDuration = startTime/1000, startDuration/1000;
 
-            local newDuration = drTime / (1 - ((currTime - startTime) / startDuration));
-            local newStartTime = drTime + currTime - newDuration;
+        local newDuration = drTime / (1 - ((currTime - startTime) / startDuration));
+        local newStartTime = drTime + currTime - newDuration;
 
-            frame.Cooldown:SetCooldown(newStartTime, newDuration);
+        frame.Cooldown:SetCooldown(newStartTime, newDuration);
 
-            return;
-        elseif ( combatEvent == "SPELL_AURA_APPLIED" or combatEvent == "SPELL_AURA_REFRESH" ) then
-            local unit = self.unit;
+        return;
+    elseif ( combatEvent == "SPELL_AURA_APPLIED" or combatEvent == "SPELL_AURA_REFRESH" ) then
+        local unit = self.unit;
 
-            for i = 1, 30 do
-                local _, _, _, _, duration, _, _, _, _, _spellID = UnitAura(unit, i, "HARMFUL");
+        for i = 1, 30 do
+            local _, _, _, _, duration, _, _, _, _, _spellID = UnitAura(unit, i, "HARMFUL");
 
-                if ( not _spellID ) then break end
+            if ( not _spellID ) then break end
 
-                if ( duration and spellID == _spellID ) then
-                    frame.Cooldown:SetCooldown(currTime, duration + drTime);
-                    break;
-                end
+            if ( duration and spellID == _spellID ) then
+                frame.Cooldown:SetCooldown(currTime, duration + drTime);
+                break;
             end
         end
+    end
 
-        frame.Icon:SetTexture(GetSpellTexture(spellID));
-        frame.Border:SetVertexColor(unpack(severityColor[frame.severity]));
+    frame.Icon:SetTexture(GetSpellTexture(spellID));
+    frame.Border:SetVertexColor(unpack(severityColor[frame.severity]));
 
-        frame.severity = frame.severity + 1;
-        if frame.severity > 3 then
-            frame.severity = 3;
-        end
+    frame.severity = frame.severity + 1;
+    if frame.severity > 3 then
+        frame.severity = 3;
     end
 end
 
-do
-    local categories = {
-        "Stun",
-        "Incapacitate",
-        "Disorient",
-        "Silence",
-        "Root",
-    };
+function sArenaFrameMixin:UpdateDRPositions()
+    local active = 0;
+    local frame, prevFrame;
 
-    function sArenaFrameMixin:UpdateDRPositions()
-        local active = 0;
-        local frame, prevFrame;
+    for i = 1, #drCategories do
+        frame = self[drCategories[i]];
 
-        for i = 1, #categories do
-            frame = self[categories[i]];
-
-            if ( frame:GetAlpha() == 1 ) then
-                frame:ClearAllPoints();
-                if ( active == 0 ) then
-                    frame:SetPoint("RIGHT", self, "LEFT", 0, 10);
-                else
-                    frame:SetPoint("RIGHT", prevFrame, "LEFT", -2, 0);
-                end
-                active = active + 1;
-                prevFrame = frame;
+        if ( frame:GetAlpha() == 1 ) then
+            frame:ClearAllPoints();
+            if ( active == 0 ) then
+                frame:SetPoint("RIGHT", self, "LEFT", 0, 10);
+            else
+                frame:SetPoint("RIGHT", prevFrame, "LEFT", -2, 0);
             end
+            active = active + 1;
+            prevFrame = frame;
         end
     end
 end
@@ -530,16 +525,26 @@ function sArenaMixin:Test()
     if ( InCombatLockdown() ) then return end
 
     for i = 1,3 do
-        local f = self["arena"..i];
-        f:Show();
-        CastingBarFrame_SetUnit(f.CastBar, 'player', false, true);
-        f.SpecIcon:SetTexture(135810);
-        f.AuraText:SetText("5.3")
-        f.Name:SetText("hello")
-        f.Stun.Cooldown:SetCooldown(GetTime(), 20)
-        f.Stun.Icon:SetTexture("Interface\\Icons\\Spell_Nature_Polymorph")
-        f.Stun.Border:SetColorTexture(1, 1, 1, 1)
-        f.Stun.Border:SetVertexColor(0, 1, 0, 1)
-        f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
+        local frame = self["arena"..i];
+        frame:Show();
+
+        if ( frame.parent.portraitSpecIcon ) then
+            SetPortraitToTexture(frame.SpecIcon, 136071);
+        else
+            frame.SpecIcon:SetTexture(136071);
+        end
+
+        frame.AuraText:SetText("5.3");
+        frame.Name:SetText("arena"..i);
+
+        for i = 1, #drCategories do
+            local drFrame = frame[drCategories[i]];
+
+            drFrame.Icon:SetTexture(136071);
+            drFrame.Cooldown:SetCooldown(GetTime(), drTime + 5.3);
+            drFrame.Border:SetVertexColor(0, 1, 0, 1);
+        end
+
+        --f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
     end
 end
