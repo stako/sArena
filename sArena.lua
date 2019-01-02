@@ -225,6 +225,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:UpdateVisible();
         self:UpdatePlayer();
         self:ResetTrinket();
+        self:ResetDR();
 
         local _, instanceType = IsInInstance();
         if ( instanceType == "arena" ) then
@@ -604,6 +605,12 @@ function sArenaFrameMixin:UpdateDRPositions()
     end
 end
 
+function sArenaFrameMixin:ResetDR()
+    for i = 1, #drCategories do
+        self[drCategories[i]].Cooldown:SetCooldown(0, 0);
+    end
+end
+
 function sArenaFrameMixin:SetDRSize(size)
     db.profile.dr.size = size;
 
@@ -661,6 +668,7 @@ function sArenaMixin:Test()
         frame.CastBar:SetStatusBarColor(1, 0.7, 0, 1);
         --f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
 
-        frame.HealthText:SetText("50%");
+        frame.HealthText:SetText("100%");
+        frame.PowerText:SetText("100%");
     end
 end

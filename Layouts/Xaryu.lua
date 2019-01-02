@@ -124,7 +124,7 @@ layout.optionsTable = {
         },
     },
     castBar = {
-        order = 1,
+        order = 2,
         name = "Cast Bars",
         type = "group",
         args = {

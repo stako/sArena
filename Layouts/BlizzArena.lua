@@ -1,7 +1,16 @@
+local layoutName = "BlizzArena";
 local layout = {};
 layout.name = "|cff00b4ffBlizz|r Arena"
 
+local function updateCastBarPositioning(frame)
+    local settings = frame.parent.db.profile.layoutSettings[layoutName];
+
+    frame.CastBar:ClearAllPoints();
+    frame.CastBar:SetPoint("CENTER", frame, "CENTER", settings.castBarPosX, settings.castBarPosY);
+end
+
 function layout:Initialize(frame)
+    local settings = frame.parent.db.profile.layoutSettings[layoutName];
     frame.parent.portraitSpecIcon = true;
 
     frame:SetSize(102, 32);
@@ -28,9 +37,10 @@ function layout:Initialize(frame)
     f:Show();
 
     f = frame.CastBar;
-    f:SetSize(80, 14);
-    f:SetPoint("RIGHT", frame, "LEFT", -10, -1);
+    f:SetWidth(settings.castBarWidth);
+    f:SetScale(settings.castBarScale);
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
+    updateCastBarPositioning(frame);
 
     f = frame.TrinketIcon;
     f:SetSize(20, 20);
@@ -39,6 +49,14 @@ function layout:Initialize(frame)
     frame.AuraText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
+
+    frame.HealthText:Show();
+    frame.HealthText:SetPoint("CENTER", frame.HealthBar);
+    frame.HealthText:SetShadowOffset(0, 0);
+
+    frame.PowerText:Show();
+    frame.PowerText:SetPoint("CENTER", frame.PowerBar);
+    frame.PowerText:SetShadowOffset(0, 0);
 
     local underlay = frame.TexturePool:Acquire();
     underlay:SetDrawLayer("BACKGROUND", 1);
@@ -55,4 +73,80 @@ function layout:Initialize(frame)
     frameTexture:Show();
 end
 
-sArenaMixin.layouts["BlizzArena"] = layout;
+layout.defaultSettings = {
+    castBarPosX = -100,
+    castBarPosY = 0,
+    castBarWidth = 84;
+    castBarScale = 1;
+};
+
+layout.optionsTable = {
+    castBar = {
+        order = 1,
+        name = "Cast Bars",
+        type = "group",
+        args = {
+            positioning = {
+                order = 1,
+                name = "Positioning",
+                type = "group",
+                inline = true,
+                args = {
+                    horizontal = {
+                        order = 1,
+                        name = "Horizontal",
+                        type = "range",
+                        min = -500,
+                        max = 500,
+                        softMin = -200,
+                        softMax = 200,
+                        step = 0.1,
+                        bigStep = 1,
+                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarPosX; end,
+                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarPosX = val; for i = 1, 3 do updateCastBarPositioning(info.handler["arena"..i]); end end,
+                    },
+                    vertical = {
+                        order = 2,
+                        name = "Vertical",
+                        type = "range",
+                        min = -500,
+                        max = 500,
+                        softMin = -200,
+                        softMax = 200,
+                        step = 0.1,
+                        bigStep = 1,
+                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarPosY; end,
+                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarPosY = val; for i = 1, 3 do updateCastBarPositioning(info.handler["arena"..i]); end end,
+                    },
+                },
+            },
+            scale = {
+                order = 2,
+                name = "Scale",
+                type = "range",
+                min = 0.1,
+                max = 5.0,
+                softMin = 0.5,
+                softMax = 3.0,
+                step = 0.01,
+                bigStep = 0.1,
+                isPercent = true,
+                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarScale; end,
+                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarScale = val; for i = 1, 3 do info.handler["arena"..i].CastBar:SetScale(val); end end,
+            },
+            width = {
+                order = 3,
+                name = "Width",
+                type = "range",
+                min = 10,
+                max = 400,
+                step = 1,
+                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarWidth; end,
+                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarWidth = val; for i = 1, 3 do info.handler["arena"..i].CastBar:SetWidth(val); end end,
+            },
+        },
+    },
+};
+
+sArenaMixin.layouts[layoutName] = layout;
+sArenaMixin.defaultSettings.profile.layoutSettings[layoutName] = layout.defaultSettings;

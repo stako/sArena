@@ -34,10 +34,18 @@ sArenaMixin.optionsTable = {
             order = 2,
             name = "Test",
             type = "execute",
-            func = function(info) info.handler:Test() end,
+            func = "Test",
+            width = "half",
+        },
+        hide = {
+            order = 3,
+            name = "Hide",
+            type = "execute",
+            func = function(info) for i = 1, 3 do info.handler["arena"..i]:OnEvent("PLAYER_ENTERING_WORLD"); end end,
             width = "half",
         },
         globalSettingsGroup = {
+            order = 4,
             name = "Global Settings",
             type = "group",
             childGroups = "tree",
@@ -185,6 +193,7 @@ sArenaMixin.optionsTable = {
             },
         },
         layoutSettingsGroup = {
+            order = 5,
             name = "Layout Settings",
             type = "group",
             args = {},
