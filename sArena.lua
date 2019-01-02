@@ -49,11 +49,11 @@ local emptyLayoutOptionsTable = {
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs;
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor;
 
 -- Parent Frame
 
@@ -251,11 +251,19 @@ function sArenaFrameMixin:OnUpdate()
 
     local unit = self.unit;
 
-    self:SetBarMaxValue(self.HealthBar, UnitHealthMax(unit));
-    self:SetBarValue(self.HealthBar, UnitHealth(unit));
+    local hp = UnitHealth(unit);
+    local hpMax = UnitHealthMax(unit);
+    local pp = UnitPower(unit);
+    local ppMax = UnitPowerMax(unit);
+
+    self.HealthText:SetText(floor(hp / hpMax * 100 + 0.5) .. "%");
+    self.PowerText:SetText(floor(pp / ppMax * 100 + 0.5) .. "%");
+
+    self:SetBarMaxValue(self.HealthBar, hpMax);
+    self:SetBarValue(self.HealthBar, hp);
     
-    self:SetBarMaxValue(self.PowerBar, UnitPowerMax(unit));
-    self:SetBarValue(self.PowerBar, UnitPower(unit));
+    self:SetBarMaxValue(self.PowerBar, ppMax);
+    self:SetBarValue(self.PowerBar, pp);
 
     self:SetPowerType(select(2, UnitPowerType(unit)));
 
@@ -265,7 +273,9 @@ function sArenaFrameMixin:OnUpdate()
         local now = GetTime();
         local timeLeft = self.currentAuraExpirationTime - now;
 
-        if ( timeLeft > 0 ) then
+        if ( timeLeft >= 10 ) then
+            self.AuraText:SetFormattedText("%i", timeLeft);
+        elseif (timeLeft > 0 ) then
             self.AuraText:SetFormattedText("%.1f", timeLeft);
         end
     end
@@ -319,6 +329,9 @@ function sArenaFrameMixin:SetMysteryPlayer()
     f:SetMinMaxValues(0,100);
     f:ResetSmoothedValue(100);
     f:SetStatusBarColor(0.5, 0.5, 0.5);
+
+    self.HealthText:SetText("");
+    self.PowerText:SetText("");
 end
 
 function sArenaFrameMixin:UpdateSpecIcon()
@@ -388,6 +401,7 @@ local function ResetStatusBar(f)
     f:SetStatusBarTexture(nil);
     f:ClearAllPoints();
     f:SetSize(0, 0);
+    f:SetScale(1);
 end
 
 local function ResetFontString(f)
@@ -408,6 +422,7 @@ function sArenaFrameMixin:ResetLayout()
     ResetStatusBar(self.HealthBar);
     ResetStatusBar(self.PowerBar);
     ResetStatusBar(self.CastBar);
+    self.CastBar:SetHeight(16);
 
     local f = self.TrinketIcon;
     f:ClearAllPoints();
@@ -422,6 +437,18 @@ function sArenaFrameMixin:ResetLayout()
     f = self.AuraText;
     ResetFontString(f);
     f:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE");
+    f:SetTextColor(1, 1, 1, 1);
+
+    f = self.HealthText;
+    ResetFontString(f);
+    f:SetDrawLayer("ARTWORK", 2);
+    f:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
+    f:SetTextColor(1, 1, 1, 1);
+
+    f = self.PowerText;
+    ResetFontString(f);
+    f:SetDrawLayer("ARTWORK", 2);
+    f:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
     f:SetTextColor(1, 1, 1, 1);
 
     self.TexturePool:ReleaseAll();
@@ -630,6 +657,10 @@ function sArenaMixin:Test()
         frame.CastBar:Show();
         frame.CastBar:SetAlpha(1);
         frame.CastBar.Icon:SetTexture(136071);
+        frame.CastBar.Text:SetText("Polymorph");
+        frame.CastBar:SetStatusBarColor(1, 0.7, 0, 1);
         --f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
+
+        frame.HealthText:SetText("50%");
     end
 end

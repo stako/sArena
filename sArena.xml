@@ -118,6 +118,8 @@
 
             <Layer level="ARTWORK" textureSubLevel="2">
                 <FontString parentKey="Name"/>
+                <FontString parentKey="HealthText"/>
+                <FontString parentKey="PowerText"/>
             </Layer>
 
             <Layer level="OVERLAY" textureSubLevel="1">
