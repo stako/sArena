@@ -481,6 +481,11 @@ function sArenaFrameMixin:FindAura()
     local unit = self.unit;
     local currentSpellID, currentExpirationTime = nil, 0;
 
+    if ( self.currentInterruptSpellID ) then
+        currentSpellID = self.currentInterruptSpellID;
+        currentExpirationTime = self.currentInterruptExpirationTime;
+    end
+
     for i = 1, 2 do
         local filter = (i == 1 and "HELPFUL" or "HARMFUL");
 
@@ -498,21 +503,9 @@ function sArenaFrameMixin:FindAura()
         end
     end
 
-    self:SetAura(currentSpellID, currentExpirationTime);
-end
-
-function sArenaFrameMixin:SetAura(spellID, expirationTime)
-    if ( self.currentInterruptSpellID ) then
-        if ( spellID and auraList[spellID] < auraList[self.currentInterruptSpellID] ) then
-            self.currentAuraSpellID = spellID;
-            self.currentAuraExpirationTime = expirationTime;
-        else
-            self.currentAuraSpellID = self.currentInterruptSpellID;
-            self.currentAuraExpirationTime = self.currentInterruptExpirationTime;
-        end
-    elseif ( spellID ) then
-        self.currentAuraSpellID = spellID;
-        self.currentAuraExpirationTime = expirationTime;
+    if ( currentSpellID ) then
+        self.currentAuraSpellID = currentSpellID;
+        self.currentAuraExpirationTime = currentExpirationTime;
     else
         self.currentAuraSpellID = nil;
         self.currentAuraExpirationTime = 0;
