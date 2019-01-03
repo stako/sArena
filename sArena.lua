@@ -19,6 +19,7 @@ sArenaMixin.defaultSettings = {
             size = 22,
             borderSize = 2.5,
             spacing = 6,
+            growthDirection = 4;
             categories = {
                 Stun = true,
                 Incapacitate = true,
@@ -146,15 +147,16 @@ function sArenaMixin:UpdatePositioning()
     self:ClearAllPoints();
     self:SetPoint("CENTER", UIParent, "CENTER", db.profile.posX, db.profile.posY);
     local growthDirection = db.profile.frameGrowthDirection;
+    local spacing = db.profile.frameSpacing;
 
     for i = 2, 3 do
         local frame = self["arena"..i];
         local prevFrame = self["arena"..i-1];
         frame:ClearAllPoints();
-        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -db.profile.frameSpacing);
-        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, db.profile.frameSpacing);
-        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", db.profile.frameSpacing, 0);
-        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -db.profile.frameSpacing, 0);
+        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
+        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing);
+        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0);
+        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
         end
     end
 end
@@ -602,6 +604,7 @@ function sArenaFrameMixin:UpdateDRPositions()
     local active = 0;
     local frame, prevFrame;
     local spacing = db.profile.dr.spacing;
+    local growthDirection = db.profile.dr.growthDirection;
 
     for i = 1, #drCategories do
         frame = self[drCategories[i]];
@@ -611,7 +614,11 @@ function sArenaFrameMixin:UpdateDRPositions()
             if ( active == 0 ) then
                 frame:SetPoint("CENTER", self, "CENTER", db.profile.dr.posX, db.profile.dr.posY);
             else
-                frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
+                if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
+                elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing);
+                elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0);
+                elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
+                end
             end
             active = active + 1;
             prevFrame = frame;
