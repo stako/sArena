@@ -46,6 +46,11 @@ function layout:Initialize(frame)
     f:SetSize(20, 20);
     f:SetPoint("LEFT", frame, "RIGHT", 4, -1);
 
+    f = frame.DeathIcon;
+    f:ClearAllPoints();
+    f:SetPoint("CENTER", frame.HealthBar, "CENTER");
+    f:SetSize(26, 26);
+
     frame.AuraText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.SpecIcon);

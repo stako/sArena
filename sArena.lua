@@ -45,15 +45,16 @@ local emptyLayoutOptionsTable = {
         type = "description",
     },
 };
+local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor;
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName;
 
 -- Parent Frame
 
@@ -174,6 +175,7 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterEvent("ARENA_OPPONENT_UPDATE");
     self:RegisterEvent("ARENA_COOLDOWNS_UPDATE");
     self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE");
+    self:RegisterUnitEvent("UNIT_HEALTH", unit);
 
     self:RegisterForClicks("AnyUp");
     self:SetAttribute("*type1", "target");
@@ -211,6 +213,8 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             end
         elseif ( event == "UNIT_AURA" ) then
             self:FindAura();
+        elseif ( event == "UNIT_HEALTH" ) then
+            self:SetLifeState();
         end
     elseif ( event == "PLAYER_LOGIN" ) then
         self:UnregisterEvent("PLAYER_LOGIN");
@@ -333,6 +337,8 @@ function sArenaFrameMixin:SetMysteryPlayer()
 
     self.HealthText:SetText("");
     self.PowerText:SetText("");
+
+    self.DeathIcon:Hide();
 end
 
 function sArenaFrameMixin:UpdateSpecIcon()
@@ -535,6 +541,12 @@ function sArenaFrameMixin:FindInterrupt(event, spellID)
     end
 end
 
+function sArenaFrameMixin:SetLifeState()
+    local unit = self.unit;
+    local isFeigning = FindAuraByName(FEIGN_DEATH, unit, "HELPFUL");
+
+    self.DeathIcon:SetShown(UnitIsDeadOrGhost(unit) and not isFeigning);
+end
 
 function sArenaFrameMixin:FindDR(combatEvent, spellID)
     local category = drList[spellID];

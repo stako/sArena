@@ -49,6 +49,11 @@ function layout:Initialize(frame)
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
     updateCastBarPositioning(frame);
 
+    f = frame.DeathIcon;
+    f:ClearAllPoints();
+    f:SetPoint("CENTER", frame, "CENTER");
+    f:SetSize(32, 32);
+
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
 

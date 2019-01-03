@@ -46,6 +46,11 @@ function layout:Initialize(frame)
     f:SetSize(25, 25);
     f:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4);
 
+    f = frame.DeathIcon;
+    f:ClearAllPoints();
+    f:SetPoint("CENTER", frame.HealthBar, "CENTER");
+    f:SetSize(32, 32);
+
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
 

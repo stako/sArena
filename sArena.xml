@@ -126,6 +126,12 @@
                 <Texture parentKey="TrinketIcon"/>
                 <FontString parentKey="AuraText"/>
             </Layer>
+
+            <Layer level="OVERLAY" textureSubLevel="2">
+                <Texture parentKey="DeathIcon" atlas="DeathIcon" hidden="true">
+                    <TexCoords left="0" right="1" top="0" bottom="0.5"/>
+                </Texture>
+            </Layer>
         </Layers>
 
         <Frames>
