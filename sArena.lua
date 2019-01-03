@@ -19,6 +19,13 @@ sArenaMixin.defaultSettings = {
             size = 22,
             borderSize = 2.5,
             spacing = 6,
+            categories = {
+                Stun = true,
+                Incapacitate = true,
+                Disorient = true,
+                Silence = true,
+                Root = true,
+            },
         },
         layoutSettings = {},
     },
@@ -110,8 +117,8 @@ function sArenaMixin:Initialize()
     db = self.db;
 
     db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
-	db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
-	db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+    db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+    db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
     self.optionsTable.handler = self;
     self.optionsTable.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("sArena", self.optionsTable);
@@ -552,6 +559,7 @@ end
 function sArenaFrameMixin:FindDR(combatEvent, spellID)
     local category = drList[spellID];
     if ( not category ) then return end
+    if ( not db.profile.dr.categories[category] ) then return end
 
     local frame = self[category];
     local currTime = GetTime();

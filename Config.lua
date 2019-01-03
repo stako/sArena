@@ -17,6 +17,13 @@ local function validateCombat()
 end
 
 local growthOptions = { "Down", "Up", "Right", "Left" };
+local drCategories = {
+    ["Stun"] = "Stuns",
+    ["Incapacitate"] = "Incapacitates",
+    ["Disorient"] = "Disorients",
+    ["Silence"] = "Silences",
+    ["Root"] = "Roots",
+};
 
 sArenaMixin.optionsTable = {
     type = "group",
@@ -144,8 +151,16 @@ sArenaMixin.optionsTable = {
                     name = "Diminishing Returns",
                     type = "group",
                     args = {
-                        drPositioning = {
+                        categories = {
                             order = 1,
+                            name = "Categories",
+                            type = "multiselect",
+                            get = function(info, key) return info.handler.db.profile.dr.categories[key]; end,
+                            set = function(info, key, val) info.handler.db.profile.dr.categories[key] = val; end,
+                            values = drCategories,
+                        },
+                        drPositioning = {
+                            order = 2,
                             name = "Positioning",
                             type = "group",
                             inline = true,
@@ -179,7 +194,7 @@ sArenaMixin.optionsTable = {
                             },
                         },
                         size = {
-                            order = 2,
+                            order = 3,
                             name = "Size",
                             type = "range",
                             min = 2,
@@ -191,7 +206,7 @@ sArenaMixin.optionsTable = {
                             set = function(info, val) for i = 1, 3 do info.handler["arena"..i]:SetDRSize(val); end end,
                         },
                         borderSize = {
-                            order = 3,
+                            order = 4,
                             name = "Border Size",
                             type = "range",
                             min = 0,
@@ -204,7 +219,7 @@ sArenaMixin.optionsTable = {
                             set = function(info, val) for i = 1, 3 do info.handler["arena"..i]:SetDRBorderSize(val); end end,
                         },
                         spacing = {
-                            order = 4,
+                            order = 5,
                             name = "Spacing",
                             type = "range",
                             min = 0,
