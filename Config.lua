@@ -16,6 +16,8 @@ local function validateCombat()
     return true;
 end
 
+local growthOptions = { "Down", "Up", "Right", "Left" };
+
 sArenaMixin.optionsTable = {
     type = "group",
     childGroups = "tab",
@@ -55,8 +57,22 @@ sArenaMixin.optionsTable = {
                     name = "Arena Frames",
                     type = "group",
                     args = {
-                        framePositioning = {
+                        scale = {
                             order = 1,
+                            name = "Scale",
+                            type = "range",
+                            min = 0.1,
+                            max = 5.0,
+                            softMin = 0.5,
+                            softMax = 3.0,
+                            step = 0.01,
+                            bigStep = 0.1,
+                            isPercent = true,
+                            get = function(info) return info.handler.db.profile.scale end,
+                            set = function(info, val) info.handler.db.profile.scale = val; info.handler:SetScale(val); end,
+                        },
+                        framePositioning = {
+                            order = 2,
                             name = "Positioning",
                             type = "group",
                             inline = true,
@@ -85,30 +101,41 @@ sArenaMixin.optionsTable = {
                                 },
                             },
                         },
-                        scale = {
-                            name = "Scale",
-                            type = "range",
-                            order = 2,
-                            min = 0.1,
-                            max = 5.0,
-                            softMin = 0.5,
-                            softMax = 3.0,
-                            step = 0.01,
-                            bigStep = 0.1,
-                            isPercent = true,
-                            get = function(info) return info.handler.db.profile.scale end,
-                            set = function(info, val) info.handler.db.profile.scale = val; info.handler:SetScale(val); end,
-                        },
-                        frameSpacing = {
-                            name = "Spacing",
-                            desc = "Spacing between each arena frame",
-                            type = "range",
+                        frameGrowth = {
                             order = 3,
-                            min = 0,
-                            max = 100,
-                            step = 1,
-                            get = function(info) return info.handler.db.profile.frameSpacing end,
-                            set = function(info, val) info.handler.db.profile.frameSpacing = val; info.handler:UpdatePositioning() end,
+                            name = "Growth",
+                            type = "group",
+                            inline = true,
+                            args = {
+                                growthDirection = {
+                                    order = 1,
+                                    name = "Direction",
+                                    type = "select",
+                                    style = "dropdown",
+                                    get = function(info) return info.handler.db.profile.frameGrowthDirection end,
+                                    set = function(info, val) info.handler.db.profile.frameGrowthDirection = val; info.handler:UpdatePositioning(); end,
+                                    values = growthOptions,
+                                },
+                                frameSpacing = {
+                                    order = 2,
+                                    name = "Spacing",
+                                    desc = "Spacing between each arena frame",
+                                    type = "range",
+                                    min = 0,
+                                    max = 100,
+                                    step = 1,
+                                    get = function(info) return info.handler.db.profile.frameSpacing end,
+                                    set = function(info, val) info.handler.db.profile.frameSpacing = val; info.handler:UpdatePositioning(); end,
+                                },
+                            },
+                        },
+                        classColors = {
+                            order = 4,
+                            name = "Use Class Colors",
+                            desc = "When disabled, health bars will be green",
+                            type = "toggle",
+                            get = function(info) return info.handler.db.profile.classColors end,
+                            set = function(info, val) info.handler.db.profile.classColors = val; end,
                         },
                     },
                 },

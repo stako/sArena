@@ -11,6 +11,8 @@ sArenaMixin.defaultSettings = {
         currentLayout = "BlizzArena",
         scale = 1.0,
         frameSpacing = 20;
+        frameGrowthDirection = 1;
+        classColors = true,
         dr = {
             posX = -74,
             posY = 24,
@@ -136,12 +138,17 @@ end
 function sArenaMixin:UpdatePositioning()
     self:ClearAllPoints();
     self:SetPoint("CENTER", UIParent, "CENTER", db.profile.posX, db.profile.posY);
+    local growthDirection = db.profile.frameGrowthDirection;
 
     for i = 2, 3 do
         local frame = self["arena"..i];
         local prevFrame = self["arena"..i-1];
         frame:ClearAllPoints();
-        frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -db.profile.frameSpacing)
+        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -db.profile.frameSpacing);
+        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, db.profile.frameSpacing);
+        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", db.profile.frameSpacing, 0);
+        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -db.profile.frameSpacing, 0);
+        end
     end
 end
 
@@ -308,7 +315,7 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
 
     local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))];
 
-    if color then
+    if ( color and db.profile.classColors ) then
         self.HealthBar:SetStatusBarColor(color.r, color.g, color.b, 1.0);
     else
         self.HealthBar:SetStatusBarColor(0, 1.0, 0, 1.0);
