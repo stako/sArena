@@ -1,0 +1,11 @@
+## Interface: 80100
+## Title: sArena
+## Notes: Enhanced arena frames
+## Author: Stako
+## Version: 3.0.0
+## X-Category: PvP/Arena
+## X-Credits: Tekkub, Starship, Kouri, Kollektiv, Lyn, haste, evl, Zork, jturel, wardz
+
+## SavedVariables: sArena3DB
+
+sArena.xml
