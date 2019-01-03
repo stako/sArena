@@ -176,6 +176,7 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterEvent("ARENA_COOLDOWNS_UPDATE");
     self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE");
     self:RegisterUnitEvent("UNIT_HEALTH", unit);
+    self:RegisterUnitEvent("UNIT_AURA", unit);
 
     self:RegisterForClicks("AnyUp");
     self:SetAttribute("*type1", "target");
@@ -230,13 +231,6 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:UpdatePlayer();
         self:ResetTrinket();
         self:ResetDR();
-
-        local _, instanceType = IsInInstance();
-        if ( instanceType == "arena" ) then
-            self:RegisterUnitEvent("UNIT_AURA", unit);
-        else
-            self:UnregisterEvent("UNIT_AURA");
-        end
     elseif ( event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" ) then
         self:UpdateVisible();
         self:UpdatePlayer();
