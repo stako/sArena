@@ -55,11 +55,9 @@ function layout:Initialize(frame)
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
 
-    frame.HealthText:Show();
     frame.HealthText:SetPoint("CENTER", frame.HealthBar);
     frame.HealthText:SetShadowOffset(0, 0);
 
-    frame.PowerText:Show();
     frame.PowerText:SetPoint("CENTER", frame.PowerBar);
     frame.PowerText:SetShadowOffset(0, 0);
 

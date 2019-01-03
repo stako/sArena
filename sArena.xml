@@ -150,8 +150,8 @@
             <OnUpdate method="OnUpdate"/>
             <OnEvent method="OnEvent"/>
             <OnLoad method="OnLoad"/>
-            <OnEnter function="UnitFrame_OnEnter"/>
-            <OnLeave function="UnitFrame_OnLeave"/>
+            <OnEnter method="OnEnter"/>
+            <OnLeave method="OnLeave"/>
         </Scripts>
     </Button>
 

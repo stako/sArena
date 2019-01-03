@@ -60,11 +60,11 @@ local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName, AbbreviateLargeNumbers = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName;
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName, AbbreviateLargeNumbers;
 
 -- Parent Frame
 
@@ -261,6 +261,20 @@ function sArenaFrameMixin:Initialize()
     self:SetDRBorderSize(db.profile.dr.borderSize);
 end
 
+function sArenaFrameMixin:OnEnter()
+    UnitFrame_OnEnter(self);
+
+    self.HealthText:Show();
+    self.PowerText:Show();
+end
+
+function sArenaFrameMixin:OnLeave()
+    UnitFrame_OnLeave(self);
+
+    self.HealthText:Hide();
+    self.PowerText:Hide();
+end
+
 function sArenaFrameMixin:OnUpdate()
     if ( self.hideStatusOnTooltip ) then return end
 
@@ -271,8 +285,8 @@ function sArenaFrameMixin:OnUpdate()
     local pp = UnitPower(unit);
     local ppMax = UnitPowerMax(unit);
 
-    self.HealthText:SetText(floor(hp / hpMax * 100 + 0.5) .. "%");
-    self.PowerText:SetText(floor(pp / ppMax * 100 + 0.5) .. "%");
+    self.HealthText:SetText(AbbreviateLargeNumbers(hp));
+    self.PowerText:SetText(AbbreviateLargeNumbers(pp));
 
     self:SetBarMaxValue(self.HealthBar, hpMax);
     self:SetBarValue(self.HealthBar, hp);
@@ -687,9 +701,8 @@ function sArenaMixin:Test()
         frame.CastBar.Icon:SetTexture(136071);
         frame.CastBar.Text:SetText("Polymorph");
         frame.CastBar:SetStatusBarColor(1, 0.7, 0, 1);
-        --f.HealthBar:SetStatusBarTexture("Interface\\ChatFrame\\ChatFrameBackground")
 
-        frame.HealthText:SetText("100%");
-        frame.PowerText:SetText("100%");
+        frame.HealthText:SetText(AbbreviateLargeNumbers(UnitHealth('player')));
+        frame.PowerText:SetText(AbbreviateLargeNumbers(UnitPower('player')));
     end
 end
