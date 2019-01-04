@@ -115,7 +115,6 @@ end
 local function HideBlizzFrames()
     -- can't set "showArenaEnemyFrames" cvar to 0, so we'll just anchor everything to a hidden frame
     local frame = CreateFrame("Frame", nil, UIParent);
-    frame:Hide();
 
     for i = 1, 5 do
         local arenaFrame = _G["ArenaEnemyFrame"..i];
