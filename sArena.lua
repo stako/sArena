@@ -111,6 +111,24 @@ local function ChatCommand(input)
     end
 end
 
+local function HideBlizzFrames()
+    -- can't set "showArenaEnemyFrames" cvar to 0, so we'll just anchor everything to a hidden frame
+    local frame = CreateFrame("Frame", nil, UIParent);
+    frame:Hide();
+
+    for i = 1, 5 do
+        local arenaFrame = _G["ArenaEnemyFrame"..i];
+        local prepFrame = _G["ArenaPrepFrame"..i];
+
+        arenaFrame:SetParent(frame);
+        arenaFrame:ClearAllPoints();
+        arenaFrame:SetPoint("CENTER", frame, center);
+        prepFrame:SetParent(frame);
+        prepFrame:ClearAllPoints();
+        prepFrame:SetPoint("CENTER", frame, center);
+    end
+end
+
 function sArenaMixin:Initialize()
     if ( db ) then return end
 
@@ -128,6 +146,9 @@ function sArenaMixin:Initialize()
 
     self:UpdatePositioning();
     self:SetScale(db.profile.scale);
+
+    SetCVar("showArenaEnemyFrames", 1); -- ARENA_CROWD_CONTROL_SPELL_UPDATE won't fire if this is set to 0
+    HideBlizzFrames();
 end
 
 function sArenaMixin:RefreshConfig()

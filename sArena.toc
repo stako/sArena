@@ -2,7 +2,8 @@
 ## Title: sArena
 ## Notes: Enhanced arena frames
 ## Author: Stako
-## Version: 3.0.0
+## Version: 3.0.1
+## Dependencies: Blizzard_ArenaUI
 ## X-Category: PvP/Arena
 ## X-Credits: Tekkub, Starship, Kouri, Kollektiv, Lyn, haste, evl, Zork, jturel, wardz
 
