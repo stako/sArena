@@ -55,16 +55,19 @@ local emptyLayoutOptionsTable = {
         type = "description",
     },
 };
-local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName, AbbreviateLargeNumbers = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers =
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName, AbbreviateLargeNumbers;
+    SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers;
+
+local GetSpellInfo = GetSpellInfo
+local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
+local LibStub = LibStub
 
 -- Parent Frame
 
