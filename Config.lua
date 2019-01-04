@@ -1,7 +1,7 @@
 local function getLayoutTable()
     local t = {};
 
-    for k, v in pairs(sArenaMixin.layouts) do
+    for k, _ in pairs(sArenaMixin.layouts) do
         t[k] = sArenaMixin.layouts[k].name and sArenaMixin.layouts[k].name or k;
     end
 
@@ -238,7 +238,12 @@ sArenaMixin.optionsTable = {
                                     type = "select",
                                     style = "dropdown",
                                     get = function(info) return info.handler.db.profile.dr.growthDirection end,
-                                    set = function(info, val) info.handler.db.profile.dr.growthDirection = val; for i = 1, 3 do info.handler["arena"..i]:UpdateDRPositions(); end end,
+                                    set = function(info, val)
+                                            info.handler.db.profile.dr.growthDirection = val;
+                                            for i = 1, 3 do
+                                              info.handler["arena"..i]:UpdateDRPositions();
+                                            end
+                                          end,
                                     values = growthOptions,
                                 },
                                 spacing = {
