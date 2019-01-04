@@ -34,7 +34,6 @@ function layout:Initialize(frame)
     f:SetJustifyH("RIGHT");
     f:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -4, 4);
     f:SetSize(77, 14);
-    f:Show();
 
     f = frame.CastBar;
     f:SetWidth(settings.castBarWidth);

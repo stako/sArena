@@ -29,7 +29,6 @@ function layout:Initialize(frame)
     f:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 2);
     f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 2);
     f:SetHeight(12);
-    f:Show();
 
     f = frame.HealthBar;
     f:SetPoint("TOPLEFT", frame.SpecIcon, "TOPRIGHT", 2, 0);

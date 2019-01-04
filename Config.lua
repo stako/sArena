@@ -144,6 +144,13 @@ sArenaMixin.optionsTable = {
                             get = function(info) return info.handler.db.profile.classColors end,
                             set = function(info, val) info.handler.db.profile.classColors = val; end,
                         },
+                        showNames = {
+                            order = 5,
+                            name = "Show Names",
+                            type = "toggle",
+                            get = function(info) return info.handler.db.profile.showNames end,
+                            set = function(info, val) info.handler.db.profile.showNames = val; for i = 1, 3 do info.handler["arena"..i].Name:SetShown(val); end end,
+                        },
                     },
                 },
                 drGroup = {

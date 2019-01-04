@@ -13,6 +13,7 @@ sArenaMixin.defaultSettings = {
         frameSpacing = 20;
         frameGrowthDirection = 1;
         classColors = true,
+        showNames = true,
         dr = {
             posX = -74,
             posY = 24,
@@ -356,6 +357,7 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
     self.hideStatusOnTooltip = false;
 
     self.Name:SetText(GetUnitName(unit));
+    self.Name:SetShown(db.profile.showNames);
 
     local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))];
 
@@ -702,6 +704,7 @@ function sArenaMixin:Test()
 
         frame.AuraText:SetText("5.3");
         frame.Name:SetText("arena"..i);
+        frame.Name:SetShown(db.profile.showNames)
 
         for i = 1, #drCategories do
             local drFrame = frame[drCategories[i]];
