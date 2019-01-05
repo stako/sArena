@@ -1,4 +1,6 @@
 language: c
 
 script:
-  - echo "Hello!"
+  - sudo apt-get install luarocks
+  - sudo luarocks install luacheck
+  - luacheck -t *.lua

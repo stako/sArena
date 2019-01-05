@@ -71,18 +71,21 @@ local emptyLayoutOptionsTable = {
         type = "description",
     },
 };
-local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName, AbbreviateLargeNumbers,
-    unpack, CLASS_ICON_TCOORDS = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers =
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
-    unpack, CLASS_ICON_TCOORDS;
+    SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers;
+
+local GetSpellInfo = GetSpellInfo
+local InCombatLockdown = InCombatLockdown
+local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
+local LibStub = LibStub
+local C_PvP = C_PvP
 
 -- Parent Frame
 
@@ -125,7 +128,7 @@ local function ChatCommand(input)
     if not input or input:trim() == "" then
         LibStub("AceConfigDialog-3.0"):Open("sArena");
     else
-        LibStub("AceConfigCmd-3.0").HandleCommand(sArena, "sarena", "sArena", input);
+        LibStub("AceConfigCmd-3.0").HandleCommand("sArena", "sarena", "sArena", input);
     end
 end
 
@@ -200,7 +203,7 @@ function sArenaMixin:UpdatePositioning()
     end
 end
 
-function sArenaMixin:SetLayout(info, layout)
+function sArenaMixin:SetLayout(_, layout)
     if ( InCombatLockdown() ) then return end
 
     layout = sArenaMixin.layouts[layout] and layout or "BlizzArena";
@@ -339,7 +342,7 @@ function sArenaFrameMixin:OnUpdate()
 
     self:SetBarMaxValue(self.HealthBar, hpMax);
     self:SetBarValue(self.HealthBar, hp);
-    
+
     self:SetBarMaxValue(self.PowerBar, ppMax);
     self:SetBarValue(self.PowerBar, pp);
 
@@ -381,7 +384,7 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
             self:SetMysteryPlayer();
             return;
     end
-    
+
     self.hideStatusOnTooltip = false;
 
     self.Name:SetText(GetUnitName(unit));
@@ -590,8 +593,8 @@ function sArenaFrameMixin:FindAura()
     for i = 1, 2 do
         local filter = (i == 1 and "HELPFUL" or "HARMFUL");
 
-        for i = 1, 30 do
-            local _, _, _, _, _, expirationTime, _, _, _, spellID = UnitAura(unit, i, filter);
+        for n = 1, 30 do
+            local _, _, _, _, _, expirationTime, _, _, _, spellID = UnitAura(unit, n, filter);
 
             if ( not spellID ) then break end
 
@@ -760,13 +763,13 @@ function sArenaMixin:Test()
         frame.Name:SetText("arena"..i);
         frame.Name:SetShown(db.profile.showNames)
 
-        for i = 1, #drCategories do
-            local drFrame = frame[drCategories[i]];
+        for n = 1, #drCategories do
+            local drFrame = frame[drCategories[n]];
 
             drFrame.Icon:SetTexture(136071);
             drFrame.Cooldown:SetCooldown(currTime, math.random(20, 60));
 
-            if ( i == 1 ) then
+            if ( n == 1 ) then
                 drFrame.Border:SetVertexColor(1, 0, 0, 1);
             else
                 drFrame.Border:SetVertexColor(0, 1, 0, 1);
