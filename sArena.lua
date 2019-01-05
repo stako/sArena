@@ -814,6 +814,9 @@ function sArenaMixin:Test()
         frame.Name:SetText("arena"..i);
         frame.Name:SetShown(db.profile.showNames)
 
+        frame.TrinketIcon:SetTexture(1322720);
+        frame.TrinketCooldown:SetCooldown(currTime, math.random(20, 60));
+
         for n = 1, #drCategories do
             local drFrame = frame[drCategories[n]];
 
