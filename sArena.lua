@@ -64,7 +64,7 @@ local classIcons = {
     ["WARRIOR"] = 626008,
     ["DEATHKNIGHT"] = 135771,
     ["DEMONHUNTER"] = 1260827,
-}
+};
 local emptyLayoutOptionsTable = {
     notice = {
         name = "The selected layout doesn't appear to have any settings.",
@@ -83,11 +83,11 @@ local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, Unit
     SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
     unpack, CLASS_ICON_TCOORDS, UnitClass;
 
-local GetSpellInfo = GetSpellInfo
-local InCombatLockdown = InCombatLockdown
+local GetSpellInfo = GetSpellInfo;
+local InCombatLockdown = InCombatLockdown;
 local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
-local LibStub = LibStub
-local C_PvP = C_PvP
+local LibStub = LibStub;
+local C_PvP = C_PvP;
 
 -- Parent Frame
 
@@ -219,6 +219,11 @@ function sArenaMixin:SetLayout(_, layout)
         frame:ResetLayout();
         self.layouts[layout]:Initialize(frame);
         frame:UpdatePlayer();
+    end
+
+    local _, instanceType = IsInInstance();
+    if ( instanceType ~= "arena" and self.arena1:IsShown() ) then
+        self:Test();
     end
 end
 
