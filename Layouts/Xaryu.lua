@@ -77,7 +77,7 @@ function layout:Initialize(frame)
     f = frame.DeathIcon;
     f:ClearAllPoints();
     f:SetPoint("CENTER", frame, "CENTER");
-    f:SetSize(32, 32);
+    f:SetSize(settings.height * 0.8, settings.height * 0.8);
 
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.ClassIcon);
