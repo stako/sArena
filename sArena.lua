@@ -15,6 +15,10 @@ sArenaMixin.defaultSettings = {
         frameGrowthDirection = 1;
         classColors = true,
         showNames = true,
+        statusText = {
+            usePercentage = false,
+            alwaysShow = true,
+        },
         dr = {
             posX = -74,
             posY = 24,
@@ -76,12 +80,12 @@ local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, Unit
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
     SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers, 
-    unpack, CLASS_ICON_TCOORDS, UnitClass = 
+    unpack, CLASS_ICON_TCOORDS, UnitClass, ceil = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
     SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
-    unpack, CLASS_ICON_TCOORDS, UnitClass;
+    unpack, CLASS_ICON_TCOORDS, UnitClass, math.ceil;
 
 local GetSpellInfo = GetSpellInfo;
 local InCombatLockdown = InCombatLockdown;
@@ -292,6 +296,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             self:FindAura();
         elseif ( event == "UNIT_HEALTH" ) then
             self:SetLifeState();
+            self:SetStatusText();
         end
     elseif ( event == "PLAYER_LOGIN" ) then
         self:UnregisterEvent("PLAYER_LOGIN");
@@ -330,8 +335,7 @@ end
 function sArenaFrameMixin:OnLeave()
     UnitFrame_OnLeave(self);
 
-    self.HealthText:Hide();
-    self.PowerText:Hide();
+    self:UpdateStatusTextVisible();
 end
 
 function sArenaFrameMixin:OnUpdate()
@@ -343,9 +347,6 @@ function sArenaFrameMixin:OnUpdate()
     local hpMax = UnitHealthMax(unit);
     local pp = UnitPower(unit);
     local ppMax = UnitPowerMax(unit);
-
-    self.HealthText:SetText(AbbreviateLargeNumbers(hp));
-    self.PowerText:SetText(AbbreviateLargeNumbers(pp));
 
     self:SetBarMaxValue(self.HealthBar, hpMax);
     self:SetBarValue(self.HealthBar, hp);
@@ -396,6 +397,8 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
 
     self.Name:SetText(GetUnitName(unit));
     self.Name:SetShown(db.profile.showNames);
+
+    self:UpdateStatusTextVisible();
 
     local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))];
 
@@ -653,6 +656,30 @@ function sArenaFrameMixin:SetLifeState()
     self.DeathIcon:SetShown(UnitIsDeadOrGhost(unit) and not isFeigning);
 end
 
+function sArenaFrameMixin:SetStatusText(unit)
+    if ( not unit ) then
+        unit = self.unit;
+    end
+
+    local hp = UnitHealth(unit);
+    local hpMax = UnitHealthMax(unit);
+    local pp = UnitPower(unit);
+    local ppMax = UnitPowerMax(unit);
+
+    if ( db.profile.statusText.usePercentage ) then
+        self.HealthText:SetText(ceil((hp / hpMax) * 100) .. "%");
+        self.PowerText:SetText(ceil((pp / ppMax) * 100) .. "%");
+    else
+        self.HealthText:SetText(AbbreviateLargeNumbers(hp));
+        self.PowerText:SetText(AbbreviateLargeNumbers(pp));
+    end
+end
+
+function sArenaFrameMixin:UpdateStatusTextVisible()
+    self.HealthText:SetShown(db.profile.statusText.alwaysShow);
+    self.PowerText:SetShown(db.profile.statusText.alwaysShow);
+end
+
 function sArenaFrameMixin:FindDR(combatEvent, spellID)
     local category = drList[spellID];
     if ( not category ) then return end
@@ -790,7 +817,7 @@ function sArenaMixin:Test()
         frame.CastBar.Text:SetText("Polymorph");
         frame.CastBar:SetStatusBarColor(1, 0.7, 0, 1);
 
-        frame.HealthText:SetText(AbbreviateLargeNumbers(UnitHealth('player')));
-        frame.PowerText:SetText(AbbreviateLargeNumbers(UnitPower('player')));
+        frame:SetStatusText("player");
+        frame:UpdateStatusTextVisible();
     end
 end

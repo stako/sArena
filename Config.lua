@@ -136,20 +136,58 @@ sArenaMixin.optionsTable = {
                                 },
                             },
                         },
-                        classColors = {
+                        statusText = {
                             order = 4,
-                            name = "Use Class Colors",
-                            desc = "When disabled, health bars will be green",
-                            type = "toggle",
-                            get = function(info) return info.handler.db.profile.classColors end,
-                            set = function(info, val) info.handler.db.profile.classColors = val; end,
+                            name = "Status Text",
+                            type = "group",
+                            inline = true,
+                            args = {
+                                alwaysShow = {
+                                    order = 1,
+                                    name = "Always Show",
+                                    desc = "If disabled, text only shows on mouseover",
+                                    type = "toggle",
+                                    get = function(info) return info.handler.db.profile.statusText.alwaysShow end,
+                                    set = function(info, val) info.handler.db.profile.statusText.alwaysShow = val; for i = 1, 3 do info.handler["arena"..i]:UpdateStatusTextVisible(); end end,
+                                },
+                                usePercentage = {
+                                    order = 2,
+                                    name = "Use Percentage",
+                                    type = "toggle",
+                                    get = function(info) return info.handler.db.profile.statusText.usePercentage end,
+                                    set =   function(info, val)
+                                                info.handler.db.profile.statusText.usePercentage = val;
+
+                                                local _, instanceType = IsInInstance();
+                                                if ( instanceType ~= "arena" and info.handler.arena1:IsShown() ) then
+                                                    info.handler:Test();
+                                                end
+                                            end,
+                                },
+                            },
                         },
-                        showNames = {
+                        misc = {
                             order = 5,
-                            name = "Show Names",
-                            type = "toggle",
-                            get = function(info) return info.handler.db.profile.showNames end,
-                            set = function(info, val) info.handler.db.profile.showNames = val; for i = 1, 3 do info.handler["arena"..i].Name:SetShown(val); end end,
+                            name = "Miscellaneous",
+                            type = "group",
+                            inline = true,
+                            args = {
+                                classColors = {
+                                    order = 1,
+                                    name = "Use Class Colors",
+                                    desc = "When disabled, health bars will be green",
+                                    type = "toggle",
+                                    get = function(info) return info.handler.db.profile.classColors end,
+                                    set = function(info, val) info.handler.db.profile.classColors = val; end,
+                                },
+                                showNames = {
+                                    order = 2,
+                                    name = "Show Names",
+                                    type = "toggle",
+                                    get = function(info) return info.handler.db.profile.showNames end,
+                                    set = function(info, val) info.handler.db.profile.showNames = val; for i = 1, 3 do info.handler["arena"..i].Name:SetShown(val); end end,
+                                },
+                            },
                         },
                     },
                 },
