@@ -75,11 +75,13 @@ local emptyLayoutOptionsTable = {
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers =
+    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers, 
+    unpack, CLASS_ICON_TCOORDS = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers;
+    SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
+    unpack, CLASS_ICON_TCOORDS;
 
 local GetSpellInfo = GetSpellInfo
 local InCombatLockdown = InCombatLockdown
