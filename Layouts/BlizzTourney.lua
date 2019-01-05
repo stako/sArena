@@ -40,7 +40,7 @@ function layout:Initialize(frame)
     specBorder:SetDrawLayer("ARTWORK", 3);
     specBorder:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder");
     specBorder:SetDesaturated(1);
-    specBorder:SetVertexColor(0.8, 0.8, 0.8, 1);
+    specBorder:SetVertexColor(0.9, 0.9, 0.9, 1);
     specBorder:SetSize(38, 38);
     specBorder:SetPoint("CENTER", f, "CENTER", 7.5, -8);
     specBorder:Show();
