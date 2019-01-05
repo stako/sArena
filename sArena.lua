@@ -80,8 +80,8 @@ local blizzFrame = CreateFrame("Frame", nil, UIParent);
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers, 
-    unpack, CLASS_ICON_TCOORDS, UnitClass, ceil = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers,
+    unpack, CLASS_ICON_TCOORDS, UnitClass, ceil =
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
@@ -287,7 +287,7 @@ function sArenaFrameMixin:OnLoad()
     self.TrinketCooldown:SetAllPoints(self.TrinketIcon);
     self.AuraText:SetPoint("CENTER", self.ClassIcon, "CENTER");
 
-    self.TexturePool = CreateTexturePool(self, "ARTWORK", _, _, ResetTexture);
+    self.TexturePool = CreateTexturePool(self, "ARTWORK", nil, nil, ResetTexture);
 end
 
 function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
@@ -466,7 +466,7 @@ function sArenaFrameMixin:GetClassAndSpec()
 
                 self.class = strupper(select(6, GetSpecializationInfoByID(specID)));
                 if ( not self.class ) then
-                    self.class = select(2, UnitClass(unit));
+                    self.class = select(2, UnitClass(self.unit));
                 end
             end
         end
