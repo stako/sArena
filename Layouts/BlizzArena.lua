@@ -9,6 +9,13 @@ local function updateCastBarPositioning(frame)
     frame.CastBar:SetPoint("CENTER", frame, "CENTER", settings.castBarPosX, settings.castBarPosY);
 end
 
+local function updateTrinketPositioning(frame)
+    local settings = frame.parent.db.profile.layoutSettings[layoutName];
+
+    frame.TrinketIcon:ClearAllPoints();
+    frame.TrinketIcon:SetPoint("CENTER", frame, "CENTER", settings.trinketPosX, settings.trinketPosY);
+end
+
 function layout:Initialize(frame)
     local settings = frame.parent.db.profile.layoutSettings[layoutName];
     frame.parent.portraitClassIcon = true;
@@ -56,7 +63,7 @@ function layout:Initialize(frame)
 
     f = frame.TrinketIcon;
     f:SetSize(20, 20);
-    f:SetPoint("LEFT", frame, "RIGHT", 4, -1);
+    updateTrinketPositioning(frame);
 
     f = frame.DeathIcon;
     f:ClearAllPoints();
@@ -91,13 +98,56 @@ end
 layout.defaultSettings = {
     castBarPosX = -100,
     castBarPosY = 0,
-    castBarWidth = 84;
-    castBarScale = 1;
+    castBarWidth = 84,
+    castBarScale = 1,
+    trinketPosX = 64,
+    trinketPosY = 0,
 };
 
 layout.optionsTable = {
-    castBar = {
+    arenaFrames = {
         order = 1,
+        name = "Arena Frames",
+        type = "group",
+        args = {
+            trinketPositioning = {
+                order = 1,
+                name = "Trinket Positioning",
+                type = "group",
+                inline = true,
+                args = {
+                    horizontal = {
+                        order = 1,
+                        name = "Horizontal",
+                        type = "range",
+                        min = -500,
+                        max = 500,
+                        softMin = -200,
+                        softMax = 200,
+                        step = 0.1,
+                        bigStep = 1,
+                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].trinketPosX; end,
+                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].trinketPosX = val; for i = 1, 3 do updateTrinketPositioning(info.handler["arena"..i]); end end,
+                    },
+                    vertical = {
+                        order = 2,
+                        name = "Vertical",
+                        type = "range",
+                        min = -500,
+                        max = 500,
+                        softMin = -200,
+                        softMax = 200,
+                        step = 0.1,
+                        bigStep = 1,
+                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].trinketPosY; end,
+                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].trinketPosY = val; for i = 1, 3 do updateTrinketPositioning(info.handler["arena"..i]); end end,
+                    },
+                },
+            },
+        },
+    },
+    castBar = {
+        order = 2,
         name = "Cast Bars",
         type = "group",
         args = {
