@@ -493,7 +493,7 @@ function sArenaFrameMixin:UpdateClassIcon()
     if ( self.parent.portraitClassIcon ) then
         if ( texture == "class" ) then
             self.ClassIcon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles");
-            self.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS(self.class)));
+            self.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.class]));
         else
             SetPortraitToTexture(self.ClassIcon, texture);
         end
