@@ -52,19 +52,19 @@ function layout:Initialize(frame)
     f = frame.Name;
     f:SetJustifyH("LEFT");
     f:SetJustifyV("BOTTOM");
-    f:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 2);
-    f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 2);
+    f:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 0);
+    f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 0);
     f:SetHeight(12);
 
     f = frame.HealthBar;
-    f:SetPoint("TOPLEFT", frame.ClassIcon, "TOPRIGHT", 2, 0);
-    f:SetPoint("TOPRIGHT", frame.TrinketIcon, "TOPLEFT", -2, 0);
+    f:SetPoint("TOPLEFT", frame.ClassIcon, "TOPRIGHT", 2, -1);
+    f:SetPoint("TOPRIGHT", frame.TrinketIcon, "TOPLEFT", -2, -1);
     f:SetPoint("BOTTOM", frame.PowerBar, "TOP");
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
     f = frame.PowerBar;
-    f:SetPoint("BOTTOMLEFT", frame.ClassIcon, "BOTTOMRIGHT", 2, 0);
-    f:SetPoint("BOTTOMRIGHT", frame.TrinketIcon, "BOTTOMLEFT", -2, 0);
+    f:SetPoint("BOTTOMLEFT", frame.ClassIcon, "BOTTOMRIGHT", 2, 1);
+    f:SetPoint("BOTTOMRIGHT", frame.TrinketIcon, "BOTTOMLEFT", -2, 1);
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
     f:SetHeight(settings.powerBarHeight);
 
@@ -104,14 +104,14 @@ local function setFrameHeight(frame, val)
 end
 
 layout.defaultSettings = {
-    width = 160,
-    height = 32,
+    width = 180,
+    height = 40,
     powerBarHeight = 8,
-    castBarPosX = -4,
-    castBarPosY = -24,
-    castBarWidth = 84;
+    castBarPosX = -6,
+    castBarPosY = -25,
+    castBarWidth = 92;
     castBarScale = 1.2;
-    specIconSize = 12;
+    specIconSize = 16;
 };
 
 layout.optionsTable = {
