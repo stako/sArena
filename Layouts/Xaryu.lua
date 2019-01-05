@@ -8,6 +8,26 @@ local function updateCastBarPositioning(frame)
     frame.CastBar:SetPoint("CENTER", frame, "CENTER", settings.castBarPosX, settings.castBarPosY);
 end
 
+local function getSetting(info)
+    return info.handler.db.profile.layoutSettings[layoutName][info[#info]];
+end
+
+local function setSetting(info, val)
+    local db = info.handler.db.profile.layoutSettings[layoutName];
+    local setting = info[#info];
+
+    db[setting] = val;
+    for i = 1,3 do
+        local frame = info.handler["arena"..i];
+        frame:SetSize(db.width, db.height);
+        frame.ClassIcon:SetSize(db.height, db.height);
+        frame.TrinketIcon:SetSize(db.height, db.height);
+        frame.DeathIcon:SetSize(db.height * 0.8, db.height * 0.8);
+        frame.SpecIcon:SetSize(db.specIconSize, db.specIconSize);
+        frame.PowerBar:SetHeight(db.powerBarHeight);
+    end
+end
+
 function layout:Initialize(frame)
     local settings = frame.parent.db.profile.layoutSettings[layoutName];
     frame.parent.portraitClassIcon = false;
@@ -99,6 +119,8 @@ layout.optionsTable = {
         order = 1,
         name = "Arena Frames",
         type = "group",
+        get = getSetting,
+        set = setSetting,
         args = {
             width = {
                 order = 1,
@@ -107,8 +129,6 @@ layout.optionsTable = {
                 min = 40,
                 max = 400,
                 step = 1,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].width; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].width = val; for i = 1, 3 do info.handler["arena"..i]:SetWidth(val); end end,
             },
             height = {
                 order = 2,
@@ -117,8 +137,6 @@ layout.optionsTable = {
                 min = 2,
                 max = 100,
                 step = 1,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].height; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].height = val; for i = 1, 3 do setFrameHeight(info.handler["arena"..i], val); end end,
             },
             powerBarHeight = {
                 order = 2,
@@ -127,8 +145,6 @@ layout.optionsTable = {
                 min = 1,
                 max = 50,
                 step = 1,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].powerBarHeight; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].powerBarHeight = val; for i = 1, 3 do info.handler["arena"..i].PowerBar:SetHeight(val); end end,
             },
             specIconSize = {
                 order = 2,
@@ -138,8 +154,6 @@ layout.optionsTable = {
                 max = 64,
                 step = 0.1,
                 bigStep = 1,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].specIconSize; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].specIconSize = val; for i = 1, 3 do info.handler["arena"..i].SpecIcon:SetSize(val, val); end end,
             },
         },
     },
