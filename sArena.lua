@@ -2,6 +2,7 @@ sArenaMixin = {};
 sArenaFrameMixin = {};
 
 sArenaMixin.layouts = {};
+sArenaMixin.portraitClassIcon = true;
 sArenaMixin.portraitSpecIcon = true;
 
 sArenaMixin.defaultSettings = {
@@ -50,6 +51,20 @@ local drCategories = {
     "Silence",
     "Root",
 };
+local classIcons = {
+    ["DRUID"] = 625999,
+    ["HUNTER"] = 626000,
+    ["MAGE"] = 626001,
+    ["MONK"] = 626002,
+    ["PALADIN"] = 626003,
+    ["PRIEST"] = 626004,
+    ["ROGUE"] = 626005,
+    ["SHAMAN"] = 626006,
+    ["WARLOCK"] = 626007,
+    ["WARRIOR"] = 626008,
+    ["DEATHKNIGHT"] = 135771,
+    ["DEMONHUNTER"] = 1260827,
+}
 local emptyLayoutOptionsTable = {
     notice = {
         name = "The selected layout doesn't appear to have any settings.",
@@ -61,11 +76,13 @@ local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName, AbbreviateLargeNumbers = 
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, FindAuraByName, AbbreviateLargeNumbers,
+    unpack, CLASS_ICON_TCOORDS = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName, AbbreviateLargeNumbers;
+    SetPortraitToTexture, PowerBarColor, UnitAura, pairs, floor, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
+    unpack, CLASS_ICON_TCOORDS;
 
 -- Parent Frame
 
@@ -144,6 +161,7 @@ function sArenaMixin:Initialize()
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("sArena");
     LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand);
 
+    self:SetLayout(nil, db.profile.currentLayout);
     self:UpdatePositioning();
     self:SetScale(db.profile.scale);
 
@@ -201,6 +219,17 @@ end
 
 -- Arena Frames
 
+local function ResetTexture(framePool, t)
+    t:SetTexture(nil);
+    t:SetColorTexture(0, 0, 0, 0);
+    t:SetVertexColor(1, 1, 1, 1);
+    t:SetDesaturated();
+    t:SetTexCoord(0, 1, 0, 1);
+    t:ClearAllPoints();
+    t:SetSize(0, 0);
+    t:Hide();
+end
+
 function sArenaFrameMixin:OnLoad()
     local unit = "arena"..self:GetID();
     self.parent = self:GetParent();
@@ -225,9 +254,9 @@ function sArenaFrameMixin:OnLoad()
     CastingBarFrame_SetUnit(self.CastBar, unit, false, true);
 
     self.TrinketCooldown:SetAllPoints(self.TrinketIcon);
-    self.AuraText:SetPoint("CENTER", self.SpecIcon, "CENTER");
+    self.AuraText:SetPoint("CENTER", self.ClassIcon, "CENTER");
 
-    self.TexturePool = CreateTexturePool(self, "ARTWORK");
+    self.TexturePool = CreateTexturePool(self, "ARTWORK", _, _, ResetTexture);
 end
 
 function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
@@ -275,7 +304,6 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
 end
 
 function sArenaFrameMixin:Initialize()
-    self.parent:SetLayout(nil, db.profile.currentLayout);
     self:SetMysteryPlayer();
 
     self:SetDRSize(db.profile.dr.size);
@@ -346,6 +374,7 @@ end
 function sArenaFrameMixin:UpdatePlayer(unitEvent)
     local unit = self.unit;
 
+    self:GetClassAndSpec();
     self:FindAura();
 
     if ( ( unitEvent and unitEvent ~= "seen" ) or not UnitExists(unit) ) then
@@ -387,34 +416,62 @@ function sArenaFrameMixin:SetMysteryPlayer()
     self.DeathIcon:Hide();
 end
 
-function sArenaFrameMixin:UpdateSpecIcon()
+function sArenaFrameMixin:GetClassAndSpec()
     local _, instanceType = IsInInstance();
 
     if ( instanceType ~= "arena" ) then
         self.specTexture = nil;
-    elseif ( not self.specTexture ) then
+        self.class = nil;
+    elseif ( not self.specTexture or not self.class ) then
         local id = self:GetID();
         if ( GetNumArenaOpponentSpecs() >= id ) then
             local specID = GetArenaOpponentSpec(id);
             if ( specID > 0 ) then
                 self.specTexture = select(4, GetSpecializationInfoByID(specID));
+                if ( self.parent.portraitSpecIcon ) then
+                    SetPortraitToTexture(self.SpecIcon, self.specTexture);
+                else
+                    self.SpecIcon:SetTexture(self.specTexture);
+                end
+
+                self.class = strupper(select(6, GetSpecializationInfoByID(specID)));
+                if ( not self.class ) then
+                    self.class = select(2, UnitClass(unit));
+                end
             end
         end
     end
 
-    local texture = self.currentAuraSpellID and GetSpellTexture(self.currentAuraSpellID) or self.specTexture and self.specTexture or 134400;
-
-    if ( self.currentSpecTexture == texture ) then return end
-
-    self.currentSpecTexture = texture;
-
-    if ( self.parent.portraitSpecIcon ) then
-        if ( texture == 134400 ) then
-            texture = "Interface\\CharacterFrame\\TempPortrait";
+    if ( not self.specTexture ) then
+        if ( self.parent.portraitSpecIcon ) then
+            SetPortraitToTexture(self.SpecIcon, 134400);
+        else
+            self.SpecIcon:SetTexture(134400);
         end
-        SetPortraitToTexture(self.SpecIcon, texture)
+    end
+end
+
+function sArenaFrameMixin:UpdateClassIcon()
+    local texture = self.currentAuraSpellID and GetSpellTexture(self.currentAuraSpellID) or self.class and "class" or 134400;
+
+    if ( self.currentClassTexture == texture ) then return end
+
+    self.currentClassTexture = texture;
+
+    self.ClassIcon:SetTexCoord(0, 1, 0, 1);
+
+    if ( self.parent.portraitClassIcon ) then
+        if ( texture == "class" ) then
+            self.ClassIcon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles");
+            self.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS(self.class)));
+        else
+            SetPortraitToTexture(self.ClassIcon, texture);
+        end
     else
-        self.SpecIcon:SetTexture(texture);
+        if ( texture == "class" ) then
+            texture = classIcons[self.class];
+        end
+        self.ClassIcon:SetTexture(texture);
     end
 end
 
@@ -441,15 +498,6 @@ function sArenaFrameMixin:ResetTrinket()
     self:UpdateTrinket();
 end
 
-local function ResetTexture(t)
-    t:SetTexture(nil);
-    t:SetColorTexture(0, 0, 0, 0);
-    t:SetTexCoord(0, 1, 0, 1);
-    t:ClearAllPoints();
-    t:SetSize(0, 0);
-    t:Hide();
-end
-
 local function ResetStatusBar(f)
     f:SetStatusBarTexture(nil);
     f:ClearAllPoints();
@@ -469,9 +517,10 @@ local function ResetFontString(f)
 end
 
 function sArenaFrameMixin:ResetLayout()
-    self.currentSpecTexture = nil;
+    self.currentClassTexture = nil;
 
-    ResetTexture(self.SpecIcon);
+    ResetTexture(nil, self.ClassIcon);
+    ResetTexture(nil, self.SpecIcon);
     ResetStatusBar(self.HealthBar);
     ResetStatusBar(self.PowerBar);
     ResetStatusBar(self.CastBar);
@@ -567,7 +616,7 @@ function sArenaFrameMixin:FindAura()
         self.AuraText:SetText("");
     end
 
-    self:UpdateSpecIcon();
+    self:UpdateClassIcon();
 end
 
 function sArenaFrameMixin:FindInterrupt(event, spellID)
@@ -695,10 +744,16 @@ function sArenaMixin:Test()
         local frame = self["arena"..i];
         frame:Show();
 
-        if ( frame.parent.portraitSpecIcon ) then
-            SetPortraitToTexture(frame.SpecIcon, 136071);
+        if ( frame.parent.portraitClassIcon ) then
+            SetPortraitToTexture(frame.ClassIcon, 626001);
         else
-            frame.SpecIcon:SetTexture(136071);
+            frame.ClassIcon:SetTexture(626001);
+        end
+
+        if ( frame.parent.portraitSpecIcon ) then
+            SetPortraitToTexture(frame.SpecIcon, 135846);
+        else
+            frame.SpecIcon:SetTexture(135846);
         end
 
         frame.AuraText:SetText("5.3");

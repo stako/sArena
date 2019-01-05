@@ -11,6 +11,7 @@ end
 
 function layout:Initialize(frame)
     local settings = frame.parent.db.profile.layoutSettings[layoutName];
+    frame.parent.portraitClassIcon = true;
     frame.parent.portraitSpecIcon = true;
 
     frame:SetSize(102, 32);
@@ -25,10 +26,22 @@ function layout:Initialize(frame)
     powerBar:SetPoint("TOPLEFT", healthBar, "BOTTOMLEFT", 0, -1);
     powerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Resource-Fill");
 
-    local f = frame.SpecIcon;
+    local f = frame.ClassIcon;
     f:SetPoint("TOPRIGHT", -2, -2);
     f:SetSize(26, 26);
     f:Show();
+
+    f = frame.SpecIcon;
+    f:SetPoint("CENTER", frame, "CENTER", 22, -13);
+    f:SetSize(14, 14);
+    f:Show();
+
+    local specBorder = frame.TexturePool:Acquire();
+    specBorder:SetDrawLayer("ARTWORK", 3);
+    specBorder:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder");
+    specBorder:SetSize(38, 38);
+    specBorder:SetPoint("CENTER", f, "CENTER", 7.5, -8);
+    specBorder:Show();
 
     f = frame.Name;
     f:SetJustifyH("LEFT");
@@ -52,7 +65,7 @@ function layout:Initialize(frame)
 
     frame.AuraText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
     frame.AuraText:Show();
-    frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
+    frame.AuraText:SetPoint("CENTER", frame.ClassIcon);
 
     frame.HealthText:SetPoint("CENTER", frame.HealthBar);
     frame.HealthText:SetShadowOffset(0, 0);

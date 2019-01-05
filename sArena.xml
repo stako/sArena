@@ -113,10 +113,11 @@
         <Layers>
             <Layer level="BORDER">
                 <!-- Health/power bar is in this layer -->
-                <Texture parentKey="SpecIcon"/>
+                <Texture parentKey="ClassIcon"/>
             </Layer>
 
             <Layer level="ARTWORK" textureSubLevel="2">
+                <Texture parentKey="SpecIcon"/>
                 <FontString parentKey="Name"/>
                 <FontString parentKey="HealthText"/>
                 <FontString parentKey="PowerText"/>

@@ -10,11 +10,12 @@ end
 
 function layout:Initialize(frame)
     local settings = frame.parent.db.profile.layoutSettings[layoutName];
+    frame.parent.portraitClassIcon = false;
     frame.parent.portraitSpecIcon = false;
 
     frame:SetSize(settings.width, settings.height);
 
-    local f = frame.SpecIcon;
+    local f = frame.ClassIcon;
     f:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
     f:SetSize(settings.height, settings.height);
     f:Show();
@@ -22,6 +23,11 @@ function layout:Initialize(frame)
     f = frame.TrinketIcon;
     f:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
     f:SetSize(settings.height, settings.height);
+
+    local f = frame.SpecIcon;
+    f:SetPoint("BOTTOMLEFT", frame.HealthBar, "BOTTOMLEFT");
+    f:SetSize(settings.specIconSize, settings.specIconSize);
+    f:Show();
 
     f = frame.Name;
     f:SetJustifyH("LEFT");
@@ -31,13 +37,13 @@ function layout:Initialize(frame)
     f:SetHeight(12);
 
     f = frame.HealthBar;
-    f:SetPoint("TOPLEFT", frame.SpecIcon, "TOPRIGHT", 2, 0);
+    f:SetPoint("TOPLEFT", frame.ClassIcon, "TOPRIGHT", 2, 0);
     f:SetPoint("TOPRIGHT", frame.TrinketIcon, "TOPLEFT", -2, 0);
     f:SetPoint("BOTTOM", frame.PowerBar, "TOP");
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
     f = frame.PowerBar;
-    f:SetPoint("BOTTOMLEFT", frame.SpecIcon, "BOTTOMRIGHT", 2, 0);
+    f:SetPoint("BOTTOMLEFT", frame.ClassIcon, "BOTTOMRIGHT", 2, 0);
     f:SetPoint("BOTTOMRIGHT", frame.TrinketIcon, "BOTTOMLEFT", -2, 0);
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
     f:SetHeight(settings.powerBarHeight);
@@ -54,7 +60,7 @@ function layout:Initialize(frame)
     f:SetSize(32, 32);
 
     frame.AuraText:Show();
-    frame.AuraText:SetPoint("CENTER", frame.SpecIcon);
+    frame.AuraText:SetPoint("CENTER", frame.ClassIcon);
 
     frame.HealthText:SetPoint("CENTER", frame.HealthBar);
     frame.HealthText:SetShadowOffset(0, 0);
@@ -73,7 +79,7 @@ end
 local function setFrameHeight(frame, val)
     frame:SetHeight(val);
 
-    frame.SpecIcon:SetSize(val, val);
+    frame.ClassIcon:SetSize(val, val);
     frame.TrinketIcon:SetSize(val, val);
 end
 
@@ -85,6 +91,7 @@ layout.defaultSettings = {
     castBarPosY = -24,
     castBarWidth = 84;
     castBarScale = 1.2;
+    specIconSize = 12;
 };
 
 layout.optionsTable = {
@@ -122,6 +129,17 @@ layout.optionsTable = {
                 step = 1,
                 get = function(info) return info.handler.db.profile.layoutSettings[layoutName].powerBarHeight; end,
                 set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].powerBarHeight = val; for i = 1, 3 do info.handler["arena"..i].PowerBar:SetHeight(val); end end,
+            },
+            specIconSize = {
+                order = 2,
+                name = "Spec Icon Size",
+                type = "range",
+                min = 2,
+                max = 64,
+                step = 0.1,
+                bigStep = 1,
+                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].specIconSize; end,
+                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].specIconSize = val; for i = 1, 3 do info.handler["arena"..i].SpecIcon:SetSize(val, val); end end,
             },
         },
     },
