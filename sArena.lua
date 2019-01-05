@@ -102,19 +102,18 @@ local function UpdateBlizzVisibility(instanceType)
         local arenaFrame = _G["ArenaEnemyFrame"..i];
         local prepFrame = _G["ArenaPrepFrame"..i];
 
+        arenaFrame:ClearAllPoints();
+        prepFrame:ClearAllPoints();
+
         -- frames should be visible in battlegrounds
         if ( instanceType == "arena" ) then
             arenaFrame:SetParent(blizzFrame);
-            arenaFrame:ClearAllPoints();
             arenaFrame:SetPoint("CENTER", blizzFrame, "CENTER");
             prepFrame:SetParent(blizzFrame);
-            prepFrame:ClearAllPoints();
             prepFrame:SetPoint("CENTER", blizzFrame, "CENTER");
         else
             arenaFrame:SetParent("ArenaEnemyFrames");
-            arenaFrame:ClearAllPoints();
             prepFrame:SetParent("ArenaPrepFrames");
-            prepFrame:ClearAllPoints();
 
             if ( i == 1 ) then
                 arenaFrame:SetPoint("TOP", arenaFrame:GetParent(), "TOP");
