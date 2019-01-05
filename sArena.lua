@@ -564,23 +564,23 @@ function sArenaFrameMixin:ResetLayout()
     f = self.Name;
     ResetFontString(f);
     f:SetDrawLayer("ARTWORK", 2);
-    f:SetFont("Fonts\\FRIZQT__.TTF", 10, nil);
+    f:SetFontObject("SystemFont_Shadow_Small2");
 
     f = self.AuraText;
     ResetFontString(f);
-    f:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE");
+    f:SetFontObject("SystemFont_Shadow_Large_Outline");
     f:SetTextColor(1, 1, 1, 1);
 
     f = self.HealthText;
     ResetFontString(f);
     f:SetDrawLayer("ARTWORK", 2);
-    f:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
+    f:SetFontObject("Game10Font_o1");
     f:SetTextColor(1, 1, 1, 1);
 
     f = self.PowerText;
     ResetFontString(f);
     f:SetDrawLayer("ARTWORK", 2);
-    f:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
+    f:SetFontObject("Game10Font_o1");
     f:SetTextColor(1, 1, 1, 1);
 
     self.TexturePool:ReleaseAll();
