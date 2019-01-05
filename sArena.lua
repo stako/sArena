@@ -76,12 +76,12 @@ local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, Unit
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
     SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers, 
-    unpack, CLASS_ICON_TCOORDS = 
+    unpack, CLASS_ICON_TCOORDS, UnitClass = 
     CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
     GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
     SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
-    unpack, CLASS_ICON_TCOORDS;
+    unpack, CLASS_ICON_TCOORDS, UnitClass;
 
 local GetSpellInfo = GetSpellInfo
 local InCombatLockdown = InCombatLockdown
