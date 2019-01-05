@@ -15,6 +15,7 @@ sArenaMixin.defaultSettings = {
         frameGrowthDirection = 1;
         classColors = true,
         showNames = true,
+        trinketFontSize = 12,
         statusText = {
             usePercentage = false,
             alwaysShow = true,
@@ -24,6 +25,7 @@ sArenaMixin.defaultSettings = {
             posY = 24,
             size = 22,
             borderSize = 2,
+            fontSize = 12,
             spacing = 6,
             growthDirection = 4;
             categories = {
@@ -202,8 +204,10 @@ function sArenaMixin:RefreshConfig()
 
     for i = 1, 3 do
         local frame = self["arena"..i];
+        frame:SetTrinketFontSize(db.profile.trinketFontSize);
         frame:SetDRSize(db.profile.dr.size);
         frame:SetDRBorderSize(db.profile.dr.borderSize);
+        frame:SetDRFontSize(db.profile.dr.fontSize);
         frame:UpdateDRPositions();
     end
 end
@@ -338,8 +342,10 @@ end
 function sArenaFrameMixin:Initialize()
     self:SetMysteryPlayer();
 
+    self:SetTrinketFontSize(db.profile.trinketFontSize);
     self:SetDRSize(db.profile.dr.size);
     self:SetDRBorderSize(db.profile.dr.borderSize);
+    self:SetDRFontSize(db.profile.dr.fontSize);
 end
 
 function sArenaFrameMixin:OnEnter()
@@ -526,6 +532,13 @@ function sArenaFrameMixin:ResetTrinket()
     self.TrinketIcon:SetTexture(134400);
     self.TrinketCooldown:Clear();
     self:UpdateTrinket();
+end
+
+function sArenaFrameMixin:SetTrinketFontSize(size)
+    db.profile.trinketFontSize = size;
+
+    local text = self.TrinketCooldown.Text;
+    text:SetFont(text.fontFile, size, "OUTLINE");
 end
 
 local function ResetStatusBar(f)
@@ -786,6 +799,15 @@ function sArenaFrameMixin:SetDRBorderSize(size)
         local frame = self[drCategories[i]];
         frame.Border:SetPoint("TOPLEFT", frame, "TOPLEFT", -size, size);
         frame.Border:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", size, -size);
+    end
+end
+
+function sArenaFrameMixin:SetDRFontSize(size)
+    db.profile.dr.fontSize = size;
+
+    for i = 1, #drCategories do
+        local text = self[drCategories[i]].Cooldown.Text;
+        text:SetFont(text.fontFile, size, "OUTLINE");
     end
 end
 
