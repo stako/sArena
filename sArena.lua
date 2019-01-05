@@ -75,6 +75,7 @@ local emptyLayoutOptionsTable = {
         type = "description",
     },
 };
+local blizzFrame = CreateFrame("Frame", nil, UIParent);
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
@@ -93,6 +94,39 @@ local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
 local LibStub = LibStub;
 local C_PvP = C_PvP;
 
+local function UpdateBlizzVisibility(instanceType)
+    -- can't set "showArenaEnemyFrames" cvar to 0, so we'll just anchor everything to a hidden frame
+    if ( InCombatLockdown() ) then return end
+
+    for i = 1, 5 do
+        local arenaFrame = _G["ArenaEnemyFrame"..i];
+        local prepFrame = _G["ArenaPrepFrame"..i];
+
+        -- frames should be visible in battlegrounds
+        if ( instanceType == "arena" ) then
+            arenaFrame:SetParent(blizzFrame);
+            arenaFrame:ClearAllPoints();
+            arenaFrame:SetPoint("CENTER", blizzFrame, "CENTER");
+            prepFrame:SetParent(blizzFrame);
+            prepFrame:ClearAllPoints();
+            prepFrame:SetPoint("CENTER", blizzFrame, "CENTER");
+        else
+            arenaFrame:SetParent("ArenaEnemyFrames");
+            arenaFrame:ClearAllPoints();
+            prepFrame:SetParent("ArenaPrepFrames");
+            prepFrame:ClearAllPoints();
+
+            if ( i == 1 ) then
+                arenaFrame:SetPoint("TOP", arenaFrame:GetParent(), "TOP");
+                prepFrame:SetPoint("TOP", prepFrame:GetParent(), "TOP");
+            else
+                arenaFrame:SetPoint("TOP", "ArenaEnemyFrame"..i-1, "BOTTOM", 0, -20);
+                prepFrame:SetPoint("TOP", "ArenaPrepFrame"..i-1, "BOTTOM", 0, -20);
+            end
+        end
+    end
+end
+
 -- Parent Frame
 
 function sArenaMixin:OnLoad()
@@ -110,6 +144,8 @@ function sArenaMixin:OnEvent(event)
         self:UnregisterEvent("PLAYER_LOGIN");
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
         local _, instanceType = IsInInstance();
+        UpdateBlizzVisibility(instanceType);
+
         if ( instanceType == "arena" ) then
             self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
         else
@@ -138,23 +174,6 @@ local function ChatCommand(input)
     end
 end
 
-local function HideBlizzFrames()
-    -- can't set "showArenaEnemyFrames" cvar to 0, so we'll just anchor everything to a hidden frame
-    local frame = CreateFrame("Frame", nil, UIParent);
-
-    for i = 1, 5 do
-        local arenaFrame = _G["ArenaEnemyFrame"..i];
-        local prepFrame = _G["ArenaPrepFrame"..i];
-
-        arenaFrame:SetParent(frame);
-        arenaFrame:ClearAllPoints();
-        arenaFrame:SetPoint("CENTER", frame, center);
-        prepFrame:SetParent(frame);
-        prepFrame:ClearAllPoints();
-        prepFrame:SetPoint("CENTER", frame, center);
-    end
-end
-
 function sArenaMixin:Initialize()
     if ( db ) then return end
 
@@ -175,7 +194,6 @@ function sArenaMixin:Initialize()
     self:SetScale(db.profile.scale);
 
     SetCVar("showArenaEnemyFrames", 1); -- ARENA_CROWD_CONTROL_SPELL_UPDATE won't fire if this is set to 0
-    HideBlizzFrames();
 end
 
 function sArenaMixin:RefreshConfig()
