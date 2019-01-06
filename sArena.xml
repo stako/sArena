@@ -65,7 +65,7 @@
         </Scripts>
     </Frame>
 
-    <StatusBar name="sArenaCastBarTemplate" virtual="true" hidden="true">
+    <StatusBar name="sArenaCastBarTemplate" enablemouse="true" movable="true" virtual="true" hidden="true">
         <Layers>
             <Layer level="BACKGROUND">
                 <Texture setAllPoints="true">
@@ -161,7 +161,7 @@
             <Frame parentKey="Incapacitate" inherits="sArenaDRTrackerTemplate"/>
             <Frame parentKey="Silence" inherits="sArenaDRTrackerTemplate"/>
             <Frame parentKey="Disorient" inherits="sArenaDRTrackerTemplate"/>
-            <Frame parentKey="Stun" inherits="sArenaDRTrackerTemplate"/>
+            <Frame parentKey="Stun" inherits="sArenaDRTrackerTemplate" enablemouse="true" movable="true"/>
             <Frame parentKey="Root" inherits="sArenaDRTrackerTemplate"/>
         </Frames>
 
@@ -174,7 +174,7 @@
         </Scripts>
     </Button>
 
-    <Frame name="sArena" mixin="sArenaMixin">
+    <Frame name="sArena" mixin="sArenaMixin" movable="true" parent="UIParent">
         <Size x="1" y="1"/>
         <Frames>
             <Button name="sArenaEnemyFrame1" parentKey="arena1" inherits="sArenaEnemyFrameTemplate" id="1">

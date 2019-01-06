@@ -126,7 +126,7 @@ function layout:Initialize(frame)
 
     f = frame.Name;
     f:SetJustifyH("LEFT");
-    f:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, 4);
+    f:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, 5);
     f:SetSize(66, 12);
 
     f = frame.CastBar;

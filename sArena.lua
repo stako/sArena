@@ -7,15 +7,9 @@ sArenaMixin.portraitSpecIcon = true;
 
 sArenaMixin.defaultSettings = {
     profile = {
-        posX = 300,
-        posY = 100,
         currentLayout = "BlizzArena",
-        scale = 1.0,
-        frameSpacing = 20;
-        frameGrowthDirection = 1;
         classColors = true,
         showNames = true,
-        trinketFontSize = 12,
         statusText = {
             usePercentage = false,
             alwaysShow = true,
@@ -214,6 +208,47 @@ function sArenaMixin:SetLayout(_, layout)
     end
 end
 
+function sArenaMixin:SetupDrag(frameToClick, frameToMove, settingsTable, updateMethod)
+    frameToClick:HookScript("OnMouseDown", function()
+        if ( InCombatLockdown() ) then return end
+
+        if ( IsShiftKeyDown() and IsControlKeyDown() and not frameToMove.isMoving ) then
+            frameToMove:StartMoving();
+            frameToMove.isMoving = true;
+        end
+    end);
+
+    frameToClick:HookScript("OnMouseUp", function()
+        if ( InCombatLockdown() ) then return end
+
+        if ( frameToMove.isMoving ) then
+            frameToMove:StopMovingOrSizing();
+            frameToMove.isMoving = false;
+
+            local settings = db.profile.layoutSettings[db.profile.currentLayout];
+
+            if ( settingsTable ) then
+                settings = settings[settingsTable];
+            end
+
+            local parentX, parentY = frameToMove:GetParent():GetCenter();
+            local frameX, frameY = frameToMove:GetCenter();
+            local scale = frameToMove:GetScale();
+
+            frameX = ((frameX * scale) - parentX) / scale;
+            frameY = ((frameY * scale) - parentY) / scale;
+
+            -- round to 1 decimal place
+            frameX = floor(frameX * 10 + 0.5 ) / 10;
+            frameY = floor(frameY * 10 + 0.5 ) / 10;
+
+            settings.posX, settings.posY = frameX, frameY;
+            self[updateMethod](self, settings);
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("sArena");
+        end
+    end);
+end
+
 -- Arena Frames
 
 local function ResetTexture(framePool, t)
@@ -306,6 +341,9 @@ end
 
 function sArenaFrameMixin:Initialize()
     self:SetMysteryPlayer();
+    self.parent:SetupDrag(self, self.parent, nil, "UpdateFrameSettings");
+    self.parent:SetupDrag(self.CastBar, self.CastBar, "castBar", "UpdateCastBarSettings");
+    self.parent:SetupDrag(self.Stun, self.Stun, "dr", "UpdateDRSettings");
 end
 
 function sArenaFrameMixin:OnEnter()

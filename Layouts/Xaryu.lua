@@ -2,20 +2,20 @@ local layoutName = "Xaryu";
 local layout = {};
 
 layout.defaultSettings = {
-    posX = 275,
+    posX = 303,
     posY = 3,
     scale = 1,
-    spacing = 32,
+    spacing = 35,
     growthDirection = 1,
     trinketFontSize = 14,
     castBar = {
         posX = -6,
-        posY = -25,
-        scale = 1.2,
-        width = 94,
+        posY = -26,
+        scale = 1.25,
+        width = 98,
     },
     dr = {
-        posX = -108,
+        posX = -115,
         posY = 0,
         size = 28,
         borderSize = 2,
@@ -25,8 +25,8 @@ layout.defaultSettings = {
     },
 
     -- custom layout settings
-    width = 180,
-    height = 39,
+    width = 194,
+    height = 42,
     powerBarHeight = 8,
     specIconSize = 16;
 };
