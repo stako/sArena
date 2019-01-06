@@ -239,6 +239,7 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterEvent("ARENA_COOLDOWNS_UPDATE");
     self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE");
     self:RegisterUnitEvent("UNIT_HEALTH", unit);
+    self:RegisterUnitEvent("UNIT_MANA", unit);
     self:RegisterUnitEvent("UNIT_AURA", unit);
 
     self:RegisterForClicks("AnyUp");
@@ -279,6 +280,8 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             self:FindAura();
         elseif ( event == "UNIT_HEALTH" ) then
             self:SetLifeState();
+            self:SetStatusText();
+        elseif ( event == "UNIT_MANA" ) then
             self:SetStatusText();
         end
     elseif ( event == "PLAYER_LOGIN" ) then
