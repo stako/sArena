@@ -2,22 +2,84 @@ local layoutName = "BlizzArena";
 local layout = {};
 layout.name = "|cff00b4ffBlizz|r Arena"
 
-local function updateCastBarPositioning(frame)
-    local settings = frame.parent.db.profile.layoutSettings[layoutName];
-
-    frame.CastBar:ClearAllPoints();
-    frame.CastBar:SetPoint("CENTER", frame, "CENTER", settings.castBarPosX, settings.castBarPosY);
-end
+layout.defaultSettings = {
+    trinketPosX = 64,
+    trinketPosY = 0,
+    castBar = {
+        posX = -100,
+        posY = 0,
+        scale = 1,
+        width = 84,
+    },
+    dr = {
+        posX = -74,
+        posY = 24,
+        size = 22,
+        borderSize = 2,
+        fontSize = 12,
+        spacing = 6,
+        growthDirection = 4;
+    },
+};
 
 local function updateTrinketPositioning(frame)
-    local settings = frame.parent.db.profile.layoutSettings[layoutName];
-
     frame.TrinketIcon:ClearAllPoints();
-    frame.TrinketIcon:SetPoint("CENTER", frame, "CENTER", settings.trinketPosX, settings.trinketPosY);
+    frame.TrinketIcon:SetPoint("CENTER", frame, "CENTER", layout.db.trinketPosX, layout.db.trinketPosY);
+end
+
+local function setupOptionsTable(self)
+    layout.optionsTable = {
+        arenaFrames = {
+            order = 1,
+            name = "Arena Frames",
+            type = "group",
+            args = {
+                trinketPositioning = {
+                    order = 1,
+                    name = "Trinket Positioning",
+                    type = "group",
+                    inline = true,
+                    get = function(info) return layout.db[info[#info]]; end,
+                    set = function(info, val) layout.db[info[#info]] = val; for i = 1, 3 do updateTrinketPositioning(self["arena"..i]); end end,
+                    args = {
+                        trinketPosX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        trinketPosY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                    },
+                },
+            },
+        },
+        castBar = self:OptionsTable_GetCastBar(layoutName, 2),
+        dr = self:OptionsTable_GetDR(layoutName, 3),
+    };
 end
 
 function layout:Initialize(frame)
-    local settings = frame.parent.db.profile.layoutSettings[layoutName];
+    self.db = frame.parent.db.profile.layoutSettings[layoutName];
+
+    if ( not self.optionsTable ) then
+        setupOptionsTable(frame.parent);
+    end
+
     frame.parent.portraitClassIcon = true;
     frame.parent.portraitSpecIcon = true;
 
@@ -56,10 +118,10 @@ function layout:Initialize(frame)
     f:SetSize(66, 12);
 
     f = frame.CastBar;
-    f:SetWidth(settings.castBarWidth);
-    f:SetScale(settings.castBarScale);
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
-    updateCastBarPositioning(frame);
+    frame.parent:UpdateCastBarSettings(frame, self.db.castBar);
+
+    frame.parent:UpdateDRSettings(frame, self.db.dr);
 
     f = frame.TrinketIcon;
     f:SetSize(20, 20);
@@ -94,124 +156,6 @@ function layout:Initialize(frame)
     frameTexture:SetTexCoord(0, 0.796, 0, 0.5);
     frameTexture:Show();
 end
-
-layout.defaultSettings = {
-    castBarPosX = -100,
-    castBarPosY = 0,
-    castBarWidth = 84,
-    castBarScale = 1,
-    trinketPosX = 64,
-    trinketPosY = 0,
-};
-
-layout.optionsTable = {
-    arenaFrames = {
-        order = 1,
-        name = "Arena Frames",
-        type = "group",
-        args = {
-            trinketPositioning = {
-                order = 1,
-                name = "Trinket Positioning",
-                type = "group",
-                inline = true,
-                args = {
-                    horizontal = {
-                        order = 1,
-                        name = "Horizontal",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].trinketPosX; end,
-                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].trinketPosX = val; for i = 1, 3 do updateTrinketPositioning(info.handler["arena"..i]); end end,
-                    },
-                    vertical = {
-                        order = 2,
-                        name = "Vertical",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].trinketPosY; end,
-                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].trinketPosY = val; for i = 1, 3 do updateTrinketPositioning(info.handler["arena"..i]); end end,
-                    },
-                },
-            },
-        },
-    },
-    castBar = {
-        order = 2,
-        name = "Cast Bars",
-        type = "group",
-        args = {
-            positioning = {
-                order = 1,
-                name = "Positioning",
-                type = "group",
-                inline = true,
-                args = {
-                    horizontal = {
-                        order = 1,
-                        name = "Horizontal",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarPosX; end,
-                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarPosX = val; for i = 1, 3 do updateCastBarPositioning(info.handler["arena"..i]); end end,
-                    },
-                    vertical = {
-                        order = 2,
-                        name = "Vertical",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarPosY; end,
-                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarPosY = val; for i = 1, 3 do updateCastBarPositioning(info.handler["arena"..i]); end end,
-                    },
-                },
-            },
-            scale = {
-                order = 2,
-                name = "Scale",
-                type = "range",
-                min = 0.1,
-                max = 5.0,
-                softMin = 0.5,
-                softMax = 3.0,
-                step = 0.01,
-                bigStep = 0.1,
-                isPercent = true,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarScale; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarScale = val; for i = 1, 3 do info.handler["arena"..i].CastBar:SetScale(val); end end,
-            },
-            width = {
-                order = 3,
-                name = "Width",
-                type = "range",
-                min = 10,
-                max = 400,
-                step = 1,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarWidth; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarWidth = val; for i = 1, 3 do info.handler["arena"..i].CastBar:SetWidth(val); end end,
-            },
-        },
-    },
-};
 
 sArenaMixin.layouts[layoutName] = layout;
 sArenaMixin.defaultSettings.profile.layoutSettings[layoutName] = layout.defaultSettings;

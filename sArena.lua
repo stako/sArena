@@ -20,21 +20,12 @@ sArenaMixin.defaultSettings = {
             usePercentage = false,
             alwaysShow = true,
         },
-        dr = {
-            posX = -74,
-            posY = 24,
-            size = 22,
-            borderSize = 2,
-            fontSize = 12,
-            spacing = 6,
-            growthDirection = 4;
-            categories = {
-                Stun = true,
-                Incapacitate = true,
-                Disorient = true,
-                Silence = true,
-                Root = true,
-            },
+        drCategories = {
+            Stun = true,
+            Incapacitate = true,
+            Disorient = true,
+            Silence = true,
+            Root = true,
         },
         layoutSettings = {},
     },
@@ -205,10 +196,6 @@ function sArenaMixin:RefreshConfig()
     for i = 1, 3 do
         local frame = self["arena"..i];
         frame:SetTrinketFontSize(db.profile.trinketFontSize);
-        frame:SetDRSize(db.profile.dr.size);
-        frame:SetDRBorderSize(db.profile.dr.borderSize);
-        frame:SetDRFontSize(db.profile.dr.fontSize);
-        frame:UpdateDRPositions();
     end
 end
 
@@ -236,8 +223,7 @@ function sArenaMixin:SetLayout(_, layout)
     layout = sArenaMixin.layouts[layout] and layout or "BlizzArena";
 
     db.profile.currentLayout = layout;
-    self.optionsTable.args.layoutSettingsGroup.args = self.layouts[layout].optionsTable and self.layouts[layout].optionsTable or emptyLayoutOptionsTable;
-    LibStub("AceConfigRegistry-3.0"):NotifyChange("sArena");
+    self.layoutdb = self.db.profile.layoutSettings[layout];
 
     for i = 1, 3 do
         local frame = self["arena"..i];
@@ -245,6 +231,9 @@ function sArenaMixin:SetLayout(_, layout)
         self.layouts[layout]:Initialize(frame);
         frame:UpdatePlayer();
     end
+
+    self.optionsTable.args.layoutSettingsGroup.args = self.layouts[layout].optionsTable and self.layouts[layout].optionsTable or emptyLayoutOptionsTable;
+    LibStub("AceConfigRegistry-3.0"):NotifyChange("sArena");
 
     local _, instanceType = IsInInstance();
     if ( instanceType ~= "arena" and self.arena1:IsShown() ) then
@@ -342,10 +331,8 @@ end
 function sArenaFrameMixin:Initialize()
     self:SetMysteryPlayer();
 
+    local layoutdb = self.parent.layoutdb;
     self:SetTrinketFontSize(db.profile.trinketFontSize);
-    self:SetDRSize(db.profile.dr.size);
-    self:SetDRBorderSize(db.profile.dr.borderSize);
-    self:SetDRFontSize(db.profile.dr.fontSize);
 end
 
 function sArenaFrameMixin:OnEnter()
@@ -713,7 +700,7 @@ end
 function sArenaFrameMixin:FindDR(combatEvent, spellID)
     local category = drList[spellID];
     if ( not category ) then return end
-    if ( not db.profile.dr.categories[category] ) then return end
+    if ( not db.profile.drCategories[category] ) then return end
 
     local frame = self[category];
     local currTime = GetTime();
@@ -753,10 +740,11 @@ function sArenaFrameMixin:FindDR(combatEvent, spellID)
 end
 
 function sArenaFrameMixin:UpdateDRPositions()
+    local layoutdb = self.parent.layoutdb;
     local active = 0;
     local frame, prevFrame;
-    local spacing = db.profile.dr.spacing;
-    local growthDirection = db.profile.dr.growthDirection;
+    local spacing = layoutdb.dr.spacing;
+    local growthDirection = layoutdb.dr.growthDirection;
 
     for i = 1, #drCategories do
         frame = self[drCategories[i]];
@@ -764,7 +752,7 @@ function sArenaFrameMixin:UpdateDRPositions()
         if ( frame:GetAlpha() == 1 ) then
             frame:ClearAllPoints();
             if ( active == 0 ) then
-                frame:SetPoint("CENTER", self, "CENTER", db.profile.dr.posX, db.profile.dr.posY);
+                frame:SetPoint("CENTER", self, "CENTER", layoutdb.dr.posX, layoutdb.dr.posY);
             else
                 if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
                 elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing);
@@ -781,33 +769,6 @@ end
 function sArenaFrameMixin:ResetDR()
     for i = 1, #drCategories do
         self[drCategories[i]].Cooldown:SetCooldown(0, 0);
-    end
-end
-
-function sArenaFrameMixin:SetDRSize(size)
-    db.profile.dr.size = size;
-
-    for i = 1, #drCategories do
-        self[drCategories[i]]:SetSize(size, size);
-    end
-end
-
-function sArenaFrameMixin:SetDRBorderSize(size)
-    db.profile.dr.borderSize = size;
-
-    for i = 1, #drCategories do
-        local frame = self[drCategories[i]];
-        frame.Border:SetPoint("TOPLEFT", frame, "TOPLEFT", -size, size);
-        frame.Border:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", size, -size);
-    end
-end
-
-function sArenaFrameMixin:SetDRFontSize(size)
-    db.profile.dr.fontSize = size;
-
-    for i = 1, #drCategories do
-        local text = self[drCategories[i]].Cooldown.Text;
-        text:SetFont(text.fontFile, size, "OUTLINE");
     end
 end
 

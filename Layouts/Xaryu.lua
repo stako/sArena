@@ -1,52 +1,119 @@
 local layoutName = "Xaryu";
 local layout = {};
 
-local function updateCastBarPositioning(frame)
-    local settings = frame.parent.db.profile.layoutSettings[layoutName];
-
-    frame.CastBar:ClearAllPoints();
-    frame.CastBar:SetPoint("CENTER", frame, "CENTER", settings.castBarPosX, settings.castBarPosY);
-end
+layout.defaultSettings = {
+    width = 180,
+    height = 40,
+    powerBarHeight = 8,
+    specIconSize = 16;
+    castBar = {
+        posX = -6,
+        posY = -25,
+        scale = 1.2,
+        width = 92,
+    },
+    dr = {
+        posX = -106,
+        posY = 0,
+        size = 26,
+        borderSize = 2,
+        fontSize = 12,
+        spacing = 6,
+        growthDirection = 4;
+    },
+};
 
 local function getSetting(info)
-    return info.handler.db.profile.layoutSettings[layoutName][info[#info]];
+    return layout.db[info[#info]];
 end
 
 local function setSetting(info, val)
-    local db = info.handler.db.profile.layoutSettings[layoutName];
-    local setting = info[#info];
+    layout.db[info[#info]] = val;
 
-    db[setting] = val;
     for i = 1,3 do
         local frame = info.handler["arena"..i];
-        frame:SetSize(db.width, db.height);
-        frame.ClassIcon:SetSize(db.height, db.height);
-        frame.TrinketIcon:SetSize(db.height, db.height);
-        frame.DeathIcon:SetSize(db.height * 0.8, db.height * 0.8);
-        frame.SpecIcon:SetSize(db.specIconSize, db.specIconSize);
-        frame.PowerBar:SetHeight(db.powerBarHeight);
+        frame:SetSize(layout.db.width, layout.db.height);
+        frame.ClassIcon:SetSize(layout.db.height, layout.db.height);
+        frame.TrinketIcon:SetSize(layout.db.height, layout.db.height);
+        frame.DeathIcon:SetSize(layout.db.height * 0.8, layout.db.height * 0.8);
+        frame.SpecIcon:SetSize(layout.db.specIconSize, layout.db.specIconSize);
+        frame.PowerBar:SetHeight(layout.db.powerBarHeight);
     end
 end
 
+local function setupOptionsTable(self)
+    layout.optionsTable = {
+        arenaFrames = {
+            order = 1,
+            name = "Arena Frames",
+            type = "group",
+            get = getSetting,
+            set = setSetting,
+            args = {
+                width = {
+                    order = 1,
+                    name = "Width",
+                    type = "range",
+                    min = 40,
+                    max = 400,
+                    step = 1,
+                },
+                height = {
+                    order = 2,
+                    name = "Height",
+                    type = "range",
+                    min = 2,
+                    max = 100,
+                    step = 1,
+                },
+                powerBarHeight = {
+                    order = 2,
+                    name = "Power Bar Height",
+                    type = "range",
+                    min = 1,
+                    max = 50,
+                    step = 1,
+                },
+                specIconSize = {
+                    order = 2,
+                    name = "Spec Icon Size",
+                    type = "range",
+                    min = 2,
+                    max = 64,
+                    step = 0.1,
+                    bigStep = 1,
+                },
+            },
+        },
+        castBar = self:OptionsTable_GetCastBar(layoutName, 2),
+        dr = self:OptionsTable_GetDR(layoutName, 3),
+    };
+end
+
 function layout:Initialize(frame)
-    local settings = frame.parent.db.profile.layoutSettings[layoutName];
+    self.db = frame.parent.db.profile.layoutSettings[layoutName];
+
+    if ( not self.optionsTable ) then
+        setupOptionsTable(frame.parent);
+    end
+
     frame.parent.portraitClassIcon = false;
     frame.parent.portraitSpecIcon = false;
 
-    frame:SetSize(settings.width, settings.height);
+    frame:SetSize(self.db.width, self.db.height);
 
     local f = frame.ClassIcon;
     f:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
-    f:SetSize(settings.height, settings.height);
+    f:SetSize(self.db.height, self.db.height);
     f:Show();
 
     f = frame.TrinketIcon;
     f:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
-    f:SetSize(settings.height, settings.height);
+    f:SetSize(self.db.height, self.db.height);
 
     local f = frame.SpecIcon;
     f:SetPoint("BOTTOMLEFT", frame.HealthBar, "BOTTOMLEFT");
-    f:SetSize(settings.specIconSize, settings.specIconSize);
+    f:SetSize(self.db.specIconSize, self.db.specIconSize);
     f:Show();
 
     f = frame.Name;
@@ -66,18 +133,18 @@ function layout:Initialize(frame)
     f:SetPoint("BOTTOMLEFT", frame.ClassIcon, "BOTTOMRIGHT", 2, 1);
     f:SetPoint("BOTTOMRIGHT", frame.TrinketIcon, "BOTTOMLEFT", -2, 1);
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    f:SetHeight(settings.powerBarHeight);
+    f:SetHeight(self.db.powerBarHeight);
 
     f = frame.CastBar;
-    f:SetWidth(settings.castBarWidth);
-    f:SetScale(settings.castBarScale);
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    updateCastBarPositioning(frame);
+    frame.parent:UpdateCastBarSettings(frame, self.db.castBar);
+
+    frame.parent:UpdateDRSettings(frame, self.db.dr);
 
     f = frame.DeathIcon;
     f:ClearAllPoints();
     f:SetPoint("CENTER", frame, "CENTER");
-    f:SetSize(settings.height * 0.8, settings.height * 0.8);
+    f:SetSize(self.db.height * 0.8, self.db.height * 0.8);
 
     frame.AuraText:Show();
     frame.AuraText:SetPoint("CENTER", frame.ClassIcon);
@@ -95,134 +162,6 @@ function layout:Initialize(frame)
     underlay:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT");
     underlay:Show();
 end
-
-local function setFrameHeight(frame, val)
-    frame:SetHeight(val);
-
-    frame.ClassIcon:SetSize(val, val);
-    frame.TrinketIcon:SetSize(val, val);
-end
-
-layout.defaultSettings = {
-    width = 180,
-    height = 40,
-    powerBarHeight = 8,
-    castBarPosX = -6,
-    castBarPosY = -25,
-    castBarWidth = 92;
-    castBarScale = 1.2;
-    specIconSize = 16;
-};
-
-layout.optionsTable = {
-    arenaFrames = {
-        order = 1,
-        name = "Arena Frames",
-        type = "group",
-        get = getSetting,
-        set = setSetting,
-        args = {
-            width = {
-                order = 1,
-                name = "Width",
-                type = "range",
-                min = 40,
-                max = 400,
-                step = 1,
-            },
-            height = {
-                order = 2,
-                name = "Height",
-                type = "range",
-                min = 2,
-                max = 100,
-                step = 1,
-            },
-            powerBarHeight = {
-                order = 2,
-                name = "Power Bar Height",
-                type = "range",
-                min = 1,
-                max = 50,
-                step = 1,
-            },
-            specIconSize = {
-                order = 2,
-                name = "Spec Icon Size",
-                type = "range",
-                min = 2,
-                max = 64,
-                step = 0.1,
-                bigStep = 1,
-            },
-        },
-    },
-    castBar = {
-        order = 2,
-        name = "Cast Bars",
-        type = "group",
-        args = {
-            positioning = {
-                order = 1,
-                name = "Positioning",
-                type = "group",
-                inline = true,
-                args = {
-                    horizontal = {
-                        order = 1,
-                        name = "Horizontal",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarPosX; end,
-                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarPosX = val; for i = 1, 3 do updateCastBarPositioning(info.handler["arena"..i]); end end,
-                    },
-                    vertical = {
-                        order = 2,
-                        name = "Vertical",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarPosY; end,
-                        set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarPosY = val; for i = 1, 3 do updateCastBarPositioning(info.handler["arena"..i]); end end,
-                    },
-                },
-            },
-            scale = {
-                order = 2,
-                name = "Scale",
-                type = "range",
-                min = 0.1,
-                max = 5.0,
-                softMin = 0.5,
-                softMax = 3.0,
-                step = 0.01,
-                bigStep = 0.1,
-                isPercent = true,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarScale; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarScale = val; for i = 1, 3 do info.handler["arena"..i].CastBar:SetScale(val); end end,
-            },
-            width = {
-                order = 3,
-                name = "Width",
-                type = "range",
-                min = 10,
-                max = 400,
-                step = 1,
-                get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBarWidth; end,
-                set = function(info, val) info.handler.db.profile.layoutSettings[layoutName].castBarWidth = val; for i = 1, 3 do info.handler["arena"..i].CastBar:SetWidth(val); end end,
-            },
-        },
-    },
-};
 
 sArenaMixin.layouts[layoutName] = layout;
 sArenaMixin.defaultSettings.profile.layoutSettings[layoutName] = layout.defaultSettings;
