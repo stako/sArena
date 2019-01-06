@@ -2,25 +2,33 @@ local layoutName = "Xaryu";
 local layout = {};
 
 layout.defaultSettings = {
-    width = 180,
-    height = 40,
-    powerBarHeight = 8,
-    specIconSize = 16;
+    posX = 275,
+    posY = 3,
+    scale = 1,
+    spacing = 32,
+    growthDirection = 1,
+    trinketFontSize = 14,
     castBar = {
         posX = -6,
         posY = -25,
         scale = 1.2,
-        width = 92,
+        width = 94,
     },
     dr = {
-        posX = -106,
+        posX = -108,
         posY = 0,
-        size = 26,
+        size = 28,
         borderSize = 2,
         fontSize = 12,
         spacing = 6,
-        growthDirection = 4;
+        growthDirection = 4,
     },
+
+    -- custom layout settings
+    width = 180,
+    height = 39,
+    powerBarHeight = 8,
+    specIconSize = 16;
 };
 
 local function getSetting(info)
@@ -42,51 +50,49 @@ local function setSetting(info, val)
 end
 
 local function setupOptionsTable(self)
-    layout.optionsTable = {
-        arenaFrames = {
-            order = 1,
-            name = "Arena Frames",
-            type = "group",
-            get = getSetting,
-            set = setSetting,
-            args = {
-                width = {
-                    order = 1,
-                    name = "Width",
-                    type = "range",
-                    min = 40,
-                    max = 400,
-                    step = 1,
-                },
-                height = {
-                    order = 2,
-                    name = "Height",
-                    type = "range",
-                    min = 2,
-                    max = 100,
-                    step = 1,
-                },
-                powerBarHeight = {
-                    order = 2,
-                    name = "Power Bar Height",
-                    type = "range",
-                    min = 1,
-                    max = 50,
-                    step = 1,
-                },
-                specIconSize = {
-                    order = 2,
-                    name = "Spec Icon Size",
-                    type = "range",
-                    min = 2,
-                    max = 64,
-                    step = 0.1,
-                    bigStep = 1,
-                },
+    layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
+    
+    layout.optionsTable.special = {
+        order = 4,
+        name = "Special",
+        type = "group",
+        get = getSetting,
+        set = setSetting,
+        args = {
+            width = {
+                order = 1,
+                name = "Width",
+                type = "range",
+                min = 40,
+                max = 400,
+                step = 1,
+            },
+            height = {
+                order = 2,
+                name = "Height",
+                type = "range",
+                min = 2,
+                max = 100,
+                step = 1,
+            },
+            powerBarHeight = {
+                order = 2,
+                name = "Power Bar Height",
+                type = "range",
+                min = 1,
+                max = 50,
+                step = 1,
+            },
+            specIconSize = {
+                order = 2,
+                name = "Spec Icon Size",
+                type = "range",
+                min = 2,
+                max = 64,
+                step = 0.1,
+                bigStep = 1,
             },
         },
-        castBar = self:OptionsTable_GetCastBar(layoutName, 2),
-        dr = self:OptionsTable_GetDR(layoutName, 3),
     };
 end
 
@@ -99,6 +105,12 @@ function layout:Initialize(frame)
 
     frame.parent.portraitClassIcon = false;
     frame.parent.portraitSpecIcon = false;
+
+    if ( frame:GetID() == 3 ) then
+        frame.parent:UpdateCastBarSettings(self.db.castBar);
+        frame.parent:UpdateDRSettings(self.db.dr);
+        frame.parent:UpdateFrameSettings(self.db);
+    end
 
     frame:SetSize(self.db.width, self.db.height);
 
@@ -137,9 +149,6 @@ function layout:Initialize(frame)
 
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    frame.parent:UpdateCastBarSettings(frame, self.db.castBar);
-
-    frame.parent:UpdateDRSettings(frame, self.db.dr);
 
     f = frame.DeathIcon;
     f:ClearAllPoints();

@@ -16,7 +16,7 @@ local function validateCombat()
     return true;
 end
 
-local growthOptions = { "Down", "Up", "Right", "Left" };
+local growthValues = { "Down", "Up", "Right", "Left" };
 local drCategories = {
     ["Stun"] = "Stuns",
     ["Incapacitate"] = "Incapacitates",
@@ -25,202 +25,312 @@ local drCategories = {
     ["Root"] = "Roots",
 };
 
-function sArenaMixin:OptionsTable_GetCastBar(layoutName, layoutOrder)
-    local castBar = {
-        order = layoutOrder,
-        name = "Cast Bars",
-        type = "group",
-        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBar[info[#info]] end,
-        set = function(info, val) self:UpdateCastBarSettings(nil, info.handler.db.profile.layoutSettings[layoutName].castBar, info, val) end,
-        args = {
-            positioning = {
-                order = 1,
-                name = "Positioning",
-                type = "group",
-                inline = true,
-                args = {
-                    posX = {
-                        order = 1,
-                        name = "Horizontal",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
+function sArenaMixin:GetLayoutOptionsTable(layoutName)
+    local optionsTable = {
+        arenaFrames = {
+            order = 1,
+            name = "Arena Frames",
+            type = "group",
+            get = function(info) return info.handler.db.profile.layoutSettings[layoutName][info[#info]] end,
+            set = function(info, val) self:UpdateFrameSettings(info.handler.db.profile.layoutSettings[layoutName], info, val) end,
+            args = {
+                positioning = {
+                    order = 1,
+                    name = "Positioning",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        posX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -1000,
+                            max = 1000,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        posY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -1000,
+                            max = 1000,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        spacing = {
+                            order = 3,
+                            name = "Spacing",
+                            desc = "Spacing between each arena frame",
+                            type = "range",
+                            min = 0,
+                            max = 100,
+                            step = 1,
+                        },
+                        growthDirection = {
+                            order = 4,
+                            name = "Growth Direction",
+                            type = "select",
+                            style = "dropdown",
+                            values = growthValues,
+                        },
                     },
-                    posY = {
-                        order = 2,
-                        name = "Vertical",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
+                },
+                sizing = {
+                    order = 2,
+                    name = "Sizing",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        scale = {
+                            order = 1,
+                            name = "Scale",
+                            type = "range",
+                            min = 0.1,
+                            max = 5.0,
+                            softMin = 0.5,
+                            softMax = 3.0,
+                            step = 0.01,
+                            bigStep = 0.1,
+                            isPercent = true,
+                        },
+                    },
+                },
+                trinket = {
+                    order = 4,
+                    name = "Trinkets",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        trinketFontSize = {
+                            order = 3,
+                            name = "Font Size",
+                            desc = "Only works with Blizzard cooldown count (not OmniCC)",
+                            type = "range",
+                            min = 2,
+                            max = 48,
+                            softMin = 4,
+                            softMax = 32,
+                            step = 1,
+                        },
                     },
                 },
             },
-            sizing = {
-                order = 2,
-                name = "Sizing",
-                type = "group",
-                inline = true,
-                args = {
-                    scale = {
-                        order = 1,
-                        name = "Scale",
-                        type = "range",
-                        min = 0.1,
-                        max = 5.0,
-                        softMin = 0.5,
-                        softMax = 3.0,
-                        step = 0.01,
-                        bigStep = 0.1,
-                        isPercent = true,
+        },
+        castBar = {
+            order = 2,
+            name = "Cast Bars",
+            type = "group",
+            get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBar[info[#info]] end,
+            set = function(info, val) self:UpdateCastBarSettings(info.handler.db.profile.layoutSettings[layoutName].castBar, info, val) end,
+            args = {
+                positioning = {
+                    order = 1,
+                    name = "Positioning",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        posX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        posY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
                     },
-                    width = {
-                        order = 2,
-                        name = "Width",
-                        type = "range",
-                        min = 10,
-                        max = 400,
-                        step = 1,
+                },
+                sizing = {
+                    order = 2,
+                    name = "Sizing",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        scale = {
+                            order = 1,
+                            name = "Scale",
+                            type = "range",
+                            min = 0.1,
+                            max = 5.0,
+                            softMin = 0.5,
+                            softMax = 3.0,
+                            step = 0.01,
+                            bigStep = 0.1,
+                            isPercent = true,
+                        },
+                        width = {
+                            order = 2,
+                            name = "Width",
+                            type = "range",
+                            min = 10,
+                            max = 400,
+                            step = 1,
+                        },
+                    },
+                },
+            },
+        },
+        dr = {
+            order = 3,
+            name = "Diminishing Returns",
+            type = "group",
+            get = function(info) return info.handler.db.profile.layoutSettings[layoutName].dr[info[#info]] end,
+            set = function(info, val) self:UpdateDRSettings(info.handler.db.profile.layoutSettings[layoutName].dr, info, val) end,
+            args = {
+                positioning = {
+                    order = 1,
+                    name = "Positioning",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        posX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        posY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        spacing = {
+                            order = 3,
+                            name = "Spacing",
+                            type = "range",
+                            min = 0,
+                            max = 32,
+                            softMin = 0,
+                            softMax = 32,
+                            step = 1,
+                        },
+                        growthDirection = {
+                            order = 4,
+                            name = "Growth Direction",
+                            type = "select",
+                            style = "dropdown",
+                            values = growthValues,
+                        },
+                    },
+                },
+                sizing = {
+                    order = 2,
+                    name = "Sizing",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        size = {
+                            order = 1,
+                            name = "Size",
+                            type = "range",
+                            min = 2,
+                            max = 128,
+                            softMin = 8,
+                            softMax = 64,
+                            step = 1,
+                        },
+                        borderSize = {
+                            order = 2,
+                            name = "Border Size",
+                            type = "range",
+                            min = 0,
+                            max = 24,
+                            softMin = 1,
+                            softMax = 16,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        fontSize = {
+                            order = 3,
+                            name = "Font Size",
+                            desc = "Only works with Blizzard cooldown count (not OmniCC)",
+                            type = "range",
+                            min = 2,
+                            max = 48,
+                            softMin = 4,
+                            softMax = 32,
+                            step = 1,
+                        },
                     },
                 },
             },
         },
     };
 
-    return castBar;
+    return optionsTable;
 end
 
-function sArenaMixin:UpdateCastBarSettings(frame, db, info, val)
+function sArenaMixin:UpdateFrameSettings(db, info, val)
     if ( val ) then
         db[info[#info]] = val;
     end
 
-    if ( frame ) then
+    self:ClearAllPoints();
+    self:SetPoint("CENTER", UIParent, "CENTER", db.posX, db.posY);
+    self:SetScale(db.scale);
+    
+    local growthDirection = db.growthDirection;
+    local spacing = db.spacing;
+
+    for i = 2, 3 do
+        local frame = self["arena"..i];
+        local prevFrame = self["arena"..i-1];
+
+        frame:ClearAllPoints();
+        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
+        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing);
+        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0);
+        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
+        end
+    end
+
+    for i = 1, 3 do
+        local text = self["arena"..i].TrinketCooldown.Text;
+        text:SetFont(text.fontFile, db.trinketFontSize, "OUTLINE");
+    end
+end
+
+function sArenaMixin:UpdateCastBarSettings(db, info, val)
+    if ( val ) then
+        db[info[#info]] = val;
+    end
+
+    for i = 1, 3 do
+        local frame = self["arena"..i];
+
         frame.CastBar:ClearAllPoints();
         frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
         frame.CastBar:SetScale(db.scale);
         frame.CastBar:SetWidth(db.width);
-    else
-        for i = 1, 3 do
-            frame = self["arena"..i];
-
-            frame.CastBar:ClearAllPoints();
-            frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
-            frame.CastBar:SetScale(db.scale);
-            frame.CastBar:SetWidth(db.width);
-        end
     end
 end
 
-function sArenaMixin:OptionsTable_GetDR(layoutName, layoutOrder)
-    local diminishingReturns = {
-        order = layoutOrder,
-        name = "Diminishing Returns",
-        type = "group",
-        get = function(info) return info.handler.db.profile.layoutSettings[layoutName].dr[info[#info]] end,
-        set = function(info, val) self:UpdateDRSettings(nil, info.handler.db.profile.layoutSettings[layoutName].dr, info, val) end,
-        args = {
-            positioning = {
-                order = 1,
-                name = "Positioning",
-                type = "group",
-                inline = true,
-                args = {
-                    posX = {
-                        order = 1,
-                        name = "Horizontal",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                    },
-                    posY = {
-                        order = 2,
-                        name = "Vertical",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                    },
-                    spacing = {
-                        order = 3,
-                        name = "Spacing",
-                        type = "range",
-                        min = 0,
-                        max = 32,
-                        softMin = 0,
-                        softMax = 32,
-                        step = 1,
-                    },
-                    growthDirection = {
-                        order = 4,
-                        name = "Growth Direction",
-                        type = "select",
-                        style = "dropdown",
-                        values = growthOptions,
-                    },
-                },
-            },
-            sizing = {
-                order = 2,
-                name = "Sizing",
-                type = "group",
-                inline = true,
-                args = {
-                    size = {
-                        order = 1,
-                        name = "Size",
-                        type = "range",
-                        min = 2,
-                        max = 128,
-                        softMin = 8,
-                        softMax = 64,
-                        step = 1,
-                    },
-                    borderSize = {
-                        order = 2,
-                        name = "Border Size",
-                        type = "range",
-                        min = 0,
-                        max = 24,
-                        softMin = 1,
-                        softMax = 16,
-                        step = 0.1,
-                        bigStep = 1,
-                    },
-                    fontSize = {
-                        order = 3,
-                        name = "Font Size",
-                        desc = "Only works with Blizzard cooldown count (not OmniCC)",
-                        type = "range",
-                        min = 2,
-                        max = 48,
-                        softMin = 4,
-                        softMax = 32,
-                        step = 1,
-                    },
-                },
-            },
-        },
-    };
-
-    return diminishingReturns;
-end
-
-function sArenaMixin:UpdateDRSettings(frame, db, info, val)
+function sArenaMixin:UpdateDRSettings(db, info, val)
     local drCategories = {
         "Stun",
         "Incapacitate",
@@ -233,11 +343,12 @@ function sArenaMixin:UpdateDRSettings(frame, db, info, val)
         db[info[#info]] = val;
     end
 
-    if ( frame ) then
+    for i = 1, 3 do
+        local frame = self["arena"..i];
         frame:UpdateDRPositions();
 
-        for i = 1, #drCategories do
-            local dr = frame[drCategories[i]];
+        for n = 1, #drCategories do
+            local dr = frame[drCategories[n]];
 
             dr:SetSize(db.size, db.size);
             dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize);
@@ -245,24 +356,6 @@ function sArenaMixin:UpdateDRSettings(frame, db, info, val)
 
             local text = dr.Cooldown.Text;
             text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
-        end
-
-        return
-    else
-        for i = 1, 3 do
-            frame = self["arena"..i];
-            frame:UpdateDRPositions();
-
-            for n = 1, #drCategories do
-                local dr = frame[drCategories[n]];
-
-                dr:SetSize(db.size, db.size);
-                dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize);
-                dr.Border:SetPoint("BOTTOMRIGHT", dr, "BOTTOMRIGHT", db.borderSize, -db.borderSize);
-
-                local text = dr.Cooldown.Text;
-                text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
-            end
         end
     end
 end
@@ -306,91 +399,6 @@ sArenaMixin.optionsTable = {
                     name = "Arena Frames",
                     type = "group",
                     args = {
-                        scale = {
-                            order = 1,
-                            name = "Scale",
-                            type = "range",
-                            min = 0.1,
-                            max = 5.0,
-                            softMin = 0.5,
-                            softMax = 3.0,
-                            step = 0.01,
-                            bigStep = 0.1,
-                            isPercent = true,
-                            get = function(info) return info.handler.db.profile.scale end,
-                            set = function(info, val) info.handler.db.profile.scale = val; info.handler:SetScale(val); end,
-                        },
-                        framePositioning = {
-                            order = 2,
-                            name = "Positioning",
-                            type = "group",
-                            inline = true,
-                            args = {
-                                horizontal = {
-                                    order = 1,
-                                    name = "Horizontal",
-                                    type = "range",
-                                    min = -1000,
-                                    max = 1000,
-                                    step = 0.1,
-                                    bigStep = 1,
-                                    get = function(info) return info.handler.db.profile.posX; end,
-                                    set = function(info, val) info.handler.db.profile.posX = val; info.handler:UpdatePositioning(); end,
-                                },
-                                vertical = {
-                                    order = 2,
-                                    name = "Vertical",
-                                    type = "range",
-                                    min = -1000,
-                                    max = 1000,
-                                    step = 0.1,
-                                    bigStep = 1,
-                                    get = function(info) return info.handler.db.profile.posY; end,
-                                    set = function(info, val) info.handler.db.profile.posY = val; info.handler:UpdatePositioning(); end,
-                                },
-                                frameSpacing = {
-                                    order = 3,
-                                    name = "Spacing",
-                                    desc = "Spacing between each arena frame",
-                                    type = "range",
-                                    min = 0,
-                                    max = 100,
-                                    step = 1,
-                                    get = function(info) return info.handler.db.profile.frameSpacing end,
-                                    set = function(info, val) info.handler.db.profile.frameSpacing = val; info.handler:UpdatePositioning(); end,
-                                },
-                                growthDirection = {
-                                    order = 4,
-                                    name = "Growth Direction",
-                                    type = "select",
-                                    style = "dropdown",
-                                    get = function(info) return info.handler.db.profile.frameGrowthDirection end,
-                                    set = function(info, val) info.handler.db.profile.frameGrowthDirection = val; info.handler:UpdatePositioning(); end,
-                                    values = growthOptions,
-                                },
-                            },
-                        },
-                        Trinket = {
-                            order = 4,
-                            name = "Trinket",
-                            type = "group",
-                            inline = true,
-                            args = {
-                                fontSize = {
-                                    order = 3,
-                                    name = "Font Size",
-                                    desc = "Only works with Blizzard cooldown count (not OmniCC)",
-                                    type = "range",
-                                    min = 2,
-                                    max = 48,
-                                    softMin = 4,
-                                    softMax = 32,
-                                    step = 1,
-                                    get = function(info) return info.handler.db.profile.trinketFontSize; end,
-                                    set = function(info, val) for i = 1, 3 do info.handler["arena"..i]:SetTrinketFontSize(val); end end,
-                                },
-                            },
-                        },
                         statusText = {
                             order = 5,
                             name = "Status Text",

@@ -182,39 +182,12 @@ function sArenaMixin:Initialize()
     LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand);
 
     self:SetLayout(nil, db.profile.currentLayout);
-    self:UpdatePositioning();
-    self:SetScale(db.profile.scale);
 
     SetCVar("showArenaEnemyFrames", 1); -- ARENA_CROWD_CONTROL_SPELL_UPDATE won't fire if this is set to 0
 end
 
 function sArenaMixin:RefreshConfig()
-    self:UpdatePositioning();
-    self:SetScale(db.profile.scale);
     self:SetLayout(nil, db.profile.currentLayout);
-
-    for i = 1, 3 do
-        local frame = self["arena"..i];
-        frame:SetTrinketFontSize(db.profile.trinketFontSize);
-    end
-end
-
-function sArenaMixin:UpdatePositioning()
-    self:ClearAllPoints();
-    self:SetPoint("CENTER", UIParent, "CENTER", db.profile.posX, db.profile.posY);
-    local growthDirection = db.profile.frameGrowthDirection;
-    local spacing = db.profile.frameSpacing;
-
-    for i = 2, 3 do
-        local frame = self["arena"..i];
-        local prevFrame = self["arena"..i-1];
-        frame:ClearAllPoints();
-        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
-        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing);
-        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0);
-        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
-        end
-    end
 end
 
 function sArenaMixin:SetLayout(_, layout)
@@ -330,7 +303,6 @@ end
 
 function sArenaFrameMixin:Initialize()
     self:SetMysteryPlayer();
-    self:SetTrinketFontSize(db.profile.trinketFontSize);
 end
 
 function sArenaFrameMixin:OnEnter()
@@ -517,13 +489,6 @@ function sArenaFrameMixin:ResetTrinket()
     self.TrinketIcon:SetTexture(134400);
     self.TrinketCooldown:Clear();
     self:UpdateTrinket();
-end
-
-function sArenaFrameMixin:SetTrinketFontSize(size)
-    db.profile.trinketFontSize = size;
-
-    local text = self.TrinketCooldown.Text;
-    text:SetFont(text.fontFile, size, "OUTLINE");
 end
 
 local function ResetStatusBar(f)

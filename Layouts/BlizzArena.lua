@@ -3,8 +3,12 @@ local layout = {};
 layout.name = "|cff00b4ffBlizz|r Arena"
 
 layout.defaultSettings = {
-    trinketPosX = 64,
-    trinketPosY = 0,
+    posX = 300,
+    posY = 100,
+    scale = 1,
+    spacing = 20,
+    growthDirection = 1,
+    trinketFontSize = 12,
     castBar = {
         posX = -100,
         posY = 0,
@@ -18,8 +22,12 @@ layout.defaultSettings = {
         borderSize = 2,
         fontSize = 12,
         spacing = 6,
-        growthDirection = 4;
+        growthDirection = 4,
     },
+
+    -- custom layout settings
+    trinketPosX = 64,
+    trinketPosY = 0,
 };
 
 local function updateTrinketPositioning(frame)
@@ -28,48 +36,46 @@ local function updateTrinketPositioning(frame)
 end
 
 local function setupOptionsTable(self)
-    layout.optionsTable = {
-        arenaFrames = {
-            order = 1,
-            name = "Arena Frames",
-            type = "group",
-            args = {
-                trinketPositioning = {
-                    order = 1,
-                    name = "Trinket Positioning",
-                    type = "group",
-                    inline = true,
-                    get = function(info) return layout.db[info[#info]]; end,
-                    set = function(info, val) layout.db[info[#info]] = val; for i = 1, 3 do updateTrinketPositioning(self["arena"..i]); end end,
-                    args = {
-                        trinketPosX = {
-                            order = 1,
-                            name = "Horizontal",
-                            type = "range",
-                            min = -500,
-                            max = 500,
-                            softMin = -200,
-                            softMax = 200,
-                            step = 0.1,
-                            bigStep = 1,
-                        },
-                        trinketPosY = {
-                            order = 2,
-                            name = "Vertical",
-                            type = "range",
-                            min = -500,
-                            max = 500,
-                            softMin = -200,
-                            softMax = 200,
-                            step = 0.1,
-                            bigStep = 1,
-                        },
+    layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
+
+    layout.optionsTable.special = {
+        order = 4,
+        name = "Special",
+        type = "group",
+        args = {
+            trinketPositioning = {
+                order = 1,
+                name = "Trinket Positioning",
+                type = "group",
+                inline = true,
+                get = function(info) return layout.db[info[#info]]; end,
+                set = function(info, val) layout.db[info[#info]] = val; for i = 1, 3 do updateTrinketPositioning(self["arena"..i]); end end,
+                args = {
+                    trinketPosX = {
+                        order = 1,
+                        name = "Horizontal",
+                        type = "range",
+                        min = -500,
+                        max = 500,
+                        softMin = -200,
+                        softMax = 200,
+                        step = 0.1,
+                        bigStep = 1,
+                    },
+                    trinketPosY = {
+                        order = 2,
+                        name = "Vertical",
+                        type = "range",
+                        min = -500,
+                        max = 500,
+                        softMin = -200,
+                        softMax = 200,
+                        step = 0.1,
+                        bigStep = 1,
                     },
                 },
             },
         },
-        castBar = self:OptionsTable_GetCastBar(layoutName, 2),
-        dr = self:OptionsTable_GetDR(layoutName, 3),
     };
 end
 
@@ -82,6 +88,12 @@ function layout:Initialize(frame)
 
     frame.parent.portraitClassIcon = true;
     frame.parent.portraitSpecIcon = true;
+
+    if ( frame:GetID() == 3 ) then
+        frame.parent:UpdateCastBarSettings(self.db.castBar);
+        frame.parent:UpdateDRSettings(self.db.dr);
+        frame.parent:UpdateFrameSettings(self.db);
+    end
 
     frame:SetSize(102, 32);
 
@@ -119,9 +131,6 @@ function layout:Initialize(frame)
 
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
-    frame.parent:UpdateCastBarSettings(frame, self.db.castBar);
-
-    frame.parent:UpdateDRSettings(frame, self.db.dr);
 
     f = frame.TrinketIcon;
     f:SetSize(20, 20);

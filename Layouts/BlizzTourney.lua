@@ -3,6 +3,12 @@ local layout = {};
 layout.name = "|cff00b4ffBlizz|r Tourney"
 
 layout.defaultSettings = {
+    posX = 300,
+    posY = 100,
+    scale = 1,
+    spacing = 20;
+    growthDirection = 1,
+    trinketFontSize = 12,
     castBar = {
         posX = -110,
         posY = -10,
@@ -21,10 +27,7 @@ layout.defaultSettings = {
 };
 
 local function setupOptionsTable(self)
-    layout.optionsTable = {
-        castBar = self:OptionsTable_GetCastBar(layoutName, 1),
-        dr = self:OptionsTable_GetDR(layoutName, 2),
-    };
+    layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
 end
 
 function layout:Initialize(frame)
@@ -36,6 +39,12 @@ function layout:Initialize(frame)
 
     frame.parent.portraitClassIcon = true;
     frame.parent.portraitSpecIcon = true;
+
+    if ( frame:GetID() == 3 ) then
+        frame.parent:UpdateCastBarSettings(self.db.castBar);
+        frame.parent:UpdateDRSettings(self.db.dr);
+        frame.parent:UpdateFrameSettings(self.db);
+    end
 
     frame:SetSize(126, 66);
 
@@ -75,9 +84,6 @@ function layout:Initialize(frame)
 
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    frame.parent:UpdateCastBarSettings(frame, self.db.castBar);
-
-    frame.parent:UpdateDRSettings(frame, self.db.dr);
 
     f = frame.TrinketIcon;
     f:SetSize(25, 25);
