@@ -107,16 +107,15 @@ function sArenaMixin:UpdateCastBarSettings(frame, db, info, val)
         frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
         frame.CastBar:SetScale(db.scale);
         frame.CastBar:SetWidth(db.width);
-        return
-    end
+    else
+        for i = 1, 3 do
+            frame = self["arena"..i];
 
-    for i = 1, 3 do
-        local frame = self["arena"..i];
-
-        frame.CastBar:ClearAllPoints();
-        frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
-        frame.CastBar:SetScale(db.scale);
-        frame.CastBar:SetWidth(db.width);
+            frame.CastBar:ClearAllPoints();
+            frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
+            frame.CastBar:SetScale(db.scale);
+            frame.CastBar:SetWidth(db.width);
+        end
     end
 end
 
@@ -229,7 +228,7 @@ function sArenaMixin:UpdateDRSettings(frame, db, info, val)
         "Silence",
         "Root",
     };
-    
+
     if ( val ) then
         db[info[#info]] = val;
     end
@@ -249,21 +248,21 @@ function sArenaMixin:UpdateDRSettings(frame, db, info, val)
         end
 
         return
-    end
+    else
+        for i = 1, 3 do
+            frame = self["arena"..i];
+            frame:UpdateDRPositions();
 
-    for i = 1, 3 do
-        local frame = self["arena"..i];
-        frame:UpdateDRPositions();
+            for n = 1, #drCategories do
+                local dr = frame[drCategories[n]];
 
-        for i = 1, #drCategories do
-            local dr = frame[drCategories[i]];
+                dr:SetSize(db.size, db.size);
+                dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize);
+                dr.Border:SetPoint("BOTTOMRIGHT", dr, "BOTTOMRIGHT", db.borderSize, -db.borderSize);
 
-            dr:SetSize(db.size, db.size);
-            dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize);
-            dr.Border:SetPoint("BOTTOMRIGHT", dr, "BOTTOMRIGHT", db.borderSize, -db.borderSize);
-
-            local text = dr.Cooldown.Text;
-            text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
+                local text = dr.Cooldown.Text;
+                text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
+            end
         end
     end
 end

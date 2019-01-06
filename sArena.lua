@@ -330,8 +330,6 @@ end
 
 function sArenaFrameMixin:Initialize()
     self:SetMysteryPlayer();
-
-    local layoutdb = self.parent.layoutdb;
     self:SetTrinketFontSize(db.profile.trinketFontSize);
 end
 
