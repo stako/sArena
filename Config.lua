@@ -391,6 +391,7 @@ sArenaMixin.optionsTable = {
         globalSettingsGroup = {
             order = 4,
             name = "Global Settings",
+            desc = "These settings will apply to all layouts",
             type = "group",
             childGroups = "tree",
             args = {
@@ -474,6 +475,7 @@ sArenaMixin.optionsTable = {
         layoutSettingsGroup = {
             order = 5,
             name = "Layout Settings",
+            desc = "These settings will apply only to the selected layout",
             type = "group",
             args = {},
         },
