@@ -388,8 +388,15 @@ sArenaMixin.optionsTable = {
             func = function(info) for i = 1, 3 do info.handler["arena"..i]:OnEvent("PLAYER_ENTERING_WORLD"); end end,
             width = "half",
         },
-        globalSettingsGroup = {
+        dragNotice = {
             order = 4,
+            name = "|cffffd100Ctrl+shift+click & drag things to move them|r",
+            type = "description",
+            fontSize = "medium",
+            width = 1.5,
+        },
+        globalSettingsGroup = {
+            order = 5,
             name = "Global Settings",
             desc = "These settings will apply to all layouts",
             type = "group",
@@ -473,7 +480,7 @@ sArenaMixin.optionsTable = {
             },
         },
         layoutSettingsGroup = {
-            order = 5,
+            order = 6,
             name = "Layout Settings",
             desc = "These settings will apply only to the selected layout",
             type = "group",
