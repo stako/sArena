@@ -2,33 +2,42 @@ local layoutName = "Xaryu";
 local layout = {};
 
 layout.defaultSettings = {
-    posX = 303,
+    posX = 281,
     posY = 3,
     scale = 1,
     spacing = 35,
     growthDirection = 1,
-    trinketFontSize = 14,
+    specIcon = {
+        posX = -21,
+        posY = -2,
+        scale = 1,
+    },
+    trinket = {
+        posX = 101,
+        posY = 0,
+        scale = 1,
+        fontSize = 14,
+    },
     castBar = {
-        posX = -6,
-        posY = -26,
+        posX = 12,
+        posY = -27,
         scale = 1.25,
         width = 98,
     },
     dr = {
-        posX = -115,
+        posX = -95,
         posY = 0,
         size = 28,
-        borderSize = 2,
+        borderSize = 2.5,
         fontSize = 12,
         spacing = 6,
         growthDirection = 4,
     },
 
     -- custom layout settings
-    width = 194,
-    height = 42,
-    powerBarHeight = 8,
-    specIconSize = 16;
+    width = 152,
+    height = 44,
+    powerBarHeight = 9,
 };
 
 local function getSetting(info)
@@ -42,9 +51,7 @@ local function setSetting(info, val)
         local frame = info.handler["arena"..i];
         frame:SetSize(layout.db.width, layout.db.height);
         frame.ClassIcon:SetSize(layout.db.height, layout.db.height);
-        frame.TrinketIcon:SetSize(layout.db.height, layout.db.height);
         frame.DeathIcon:SetSize(layout.db.height * 0.8, layout.db.height * 0.8);
-        frame.SpecIcon:SetSize(layout.db.specIconSize, layout.db.specIconSize);
         frame.PowerBar:SetHeight(layout.db.powerBarHeight);
     end
 end
@@ -53,7 +60,7 @@ local function setupOptionsTable(self)
     layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
     
     layout.optionsTable.special = {
-        order = 4,
+        order = 6,
         name = "Special",
         type = "group",
         get = getSetting,
@@ -83,15 +90,6 @@ local function setupOptionsTable(self)
                 max = 50,
                 step = 1,
             },
-            specIconSize = {
-                order = 2,
-                name = "Spec Icon Size",
-                type = "range",
-                min = 2,
-                max = 64,
-                step = 0.1,
-                bigStep = 1,
-            },
         },
     };
 end
@@ -110,22 +108,28 @@ function layout:Initialize(frame)
         frame.parent:UpdateCastBarSettings(self.db.castBar);
         frame.parent:UpdateDRSettings(self.db.dr);
         frame.parent:UpdateFrameSettings(self.db);
+        frame.parent:UpdateSpecIconSettings(self.db.specIcon);
+        frame.parent:UpdateTrinketSettings(self.db.trinket);
     end
 
     frame:SetSize(self.db.width, self.db.height);
+    frame.SpecIcon:SetSize(18, 18);
+    frame.Trinket:SetSize(44, 44);
+
+    local healthBar = frame.HealthBar;
+    healthBar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -2);
+    healthBar:SetPoint("BOTTOMLEFT", frame.PowerBar, "TOPLEFT");
+    healthBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+
+    local powerBar = frame.PowerBar;
+    powerBar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 2);
+    powerBar:SetPoint("LEFT", frame.ClassIcon, "RIGHT", 2, 0);
+    powerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    powerBar:SetHeight(self.db.powerBarHeight);
 
     local f = frame.ClassIcon;
     f:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
     f:SetSize(self.db.height, self.db.height);
-    f:Show();
-
-    f = frame.TrinketIcon;
-    f:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
-    f:SetSize(self.db.height, self.db.height);
-
-    local f = frame.SpecIcon;
-    f:SetPoint("BOTTOMLEFT", frame.HealthBar, "BOTTOMLEFT");
-    f:SetSize(self.db.specIconSize, self.db.specIconSize);
     f:Show();
 
     f = frame.Name;
@@ -135,24 +139,12 @@ function layout:Initialize(frame)
     f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 0);
     f:SetHeight(12);
 
-    f = frame.HealthBar;
-    f:SetPoint("TOPLEFT", frame.ClassIcon, "TOPRIGHT", 2, -1);
-    f:SetPoint("TOPRIGHT", frame.TrinketIcon, "TOPLEFT", -2, -1);
-    f:SetPoint("BOTTOM", frame.PowerBar, "TOP");
-    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-
-    f = frame.PowerBar;
-    f:SetPoint("BOTTOMLEFT", frame.ClassIcon, "BOTTOMRIGHT", 2, 1);
-    f:SetPoint("BOTTOMRIGHT", frame.TrinketIcon, "BOTTOMLEFT", -2, 1);
-    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    f:SetHeight(self.db.powerBarHeight);
-
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
     f = frame.DeathIcon;
     f:ClearAllPoints();
-    f:SetPoint("CENTER", frame, "CENTER");
+    f:SetPoint("CENTER", healthBar, "CENTER");
     f:SetSize(self.db.height * 0.8, self.db.height * 0.8);
 
     frame.AuraText:Show();

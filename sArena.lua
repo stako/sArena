@@ -62,7 +62,7 @@ local emptyLayoutOptionsTable = {
         type = "description",
     },
 };
-local blizzFrame = CreateFrame("Frame", nil, UIParent);
+local blizzFrame;
 
 local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
     UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
@@ -82,8 +82,17 @@ local LibStub = LibStub;
 local C_PvP = C_PvP;
 
 local function UpdateBlizzVisibility(instanceType)
-    -- can't set "showArenaEnemyFrames" cvar to 0, so we'll just anchor everything to a hidden frame
+    -- if blizz arena frames are disabled or hidden, ARENA_CROWD_CONTROL_SPELL_UPDATE will not fire
+    -- just move the frames off screen
+
     if ( InCombatLockdown() ) then return end
+
+    if ( not blizzFrame ) then
+        blizzFrame = CreateFrame("Frame", nil, UIParent);
+        blizzFrame:SetSize(1, 1);
+        blizzFrame:SetPoint("RIGHT", UIParent, "RIGHT", 500, 0);
+        blizzFrame:Show();
+    end
 
     for i = 1, 5 do
         local arenaFrame = _G["ArenaEnemyFrame"..i];
@@ -122,6 +131,8 @@ function sArenaMixin:OnLoad()
 
     self:RegisterEvent("PLAYER_LOGIN");
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
+    self:RegisterEvent("PLAYER_REGEN_DISABLED");
+    self:RegisterEvent("PLAYER_REGEN_ENABLED");
 end
 
 function sArenaMixin:OnEvent(event)
@@ -149,6 +160,10 @@ function sArenaMixin:OnEvent(event)
                 return;
             end
         end
+    elseif ( event == "PLAYER_REGEN_DISABLED" ) then
+        self:MouseState(false);
+    elseif ( event == "PLAYER_REGEN_ENABLED" ) then
+        self:MouseState(true);
     end
 end
 
@@ -177,7 +192,7 @@ function sArenaMixin:Initialize()
 
     self:SetLayout(nil, db.profile.currentLayout);
 
-    SetCVar("showArenaEnemyFrames", 1); -- ARENA_CROWD_CONTROL_SPELL_UPDATE won't fire if this is set to 0
+    SetCVar("showArenaEnemyFrames", 1);
 end
 
 function sArenaMixin:RefreshConfig()
@@ -249,9 +264,24 @@ function sArenaMixin:SetupDrag(frameToClick, frameToMove, settingsTable, updateM
     end);
 end
 
+function sArenaMixin:MouseState(state)
+    -- revent secondary frames from intercepting mouse clicks while in combat
+    for i = 1, 3 do
+        local frame = self["arena"..i];
+        frame.CastBar:EnableMouse(state);
+        frame.Stun:EnableMouse(state);
+        frame.SpecIcon:EnableMouse(state);
+        frame.Trinket:EnableMouse(state);
+    end
+end
+
 -- Arena Frames
 
-local function ResetTexture(framePool, t)
+local function ResetTexture(texturePool, t)
+    if ( texturePool ) then
+        t:SetParent(texturePool.parent);
+    end
+
     t:SetTexture(nil);
     t:SetColorTexture(0, 0, 0, 0);
     t:SetVertexColor(1, 1, 1, 1);
@@ -286,7 +316,6 @@ function sArenaFrameMixin:OnLoad()
 
     CastingBarFrame_SetUnit(self.CastBar, unit, false, true);
 
-    self.TrinketCooldown:SetAllPoints(self.TrinketIcon);
     self.AuraText:SetPoint("CENTER", self.ClassIcon, "CENTER");
 
     self.TexturePool = CreateTexturePool(self, "ARTWORK", nil, nil, ResetTexture);
@@ -306,10 +335,10 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             self:UpdateTrinket();
         elseif ( event == "ARENA_CROWD_CONTROL_SPELL_UPDATE" ) then
             -- arg1 == spellID
-            if (arg1 ~= self.TrinketIcon.spellID) then
+            if (arg1 ~= self.Trinket.spellID) then
                 local _, spellTextureNoOverride = GetSpellTexture(arg1);
-                self.TrinketIcon.spellID = arg1;
-                self.TrinketIcon:SetTexture(spellTextureNoOverride);
+                self.Trinket.spellID = arg1;
+                self.Trinket.Texture:SetTexture(spellTextureNoOverride);
             end
         elseif ( event == "UNIT_AURA" ) then
             self:FindAura();
@@ -344,6 +373,8 @@ function sArenaFrameMixin:Initialize()
     self.parent:SetupDrag(self, self.parent, nil, "UpdateFrameSettings");
     self.parent:SetupDrag(self.CastBar, self.CastBar, "castBar", "UpdateCastBarSettings");
     self.parent:SetupDrag(self.Stun, self.Stun, "dr", "UpdateDRSettings");
+    self.parent:SetupDrag(self.SpecIcon, self.SpecIcon, "specIcon", "UpdateSpecIconSettings");
+    self.parent:SetupDrag(self.Trinket, self.Trinket, "trinket", "UpdateTrinketSettings");
 end
 
 function sArenaFrameMixin:OnEnter()
@@ -456,19 +487,21 @@ function sArenaFrameMixin:GetClassAndSpec()
     if ( instanceType ~= "arena" ) then
         self.specTexture = nil;
         self.class = nil;
+        self.SpecIcon:Hide();
     elseif ( not self.specTexture or not self.class ) then
         local id = self:GetID();
         if ( GetNumArenaOpponentSpecs() >= id ) then
             local specID = GetArenaOpponentSpec(id);
             if ( specID > 0 ) then
+                self.SpecIcon:Show();
                 self.specTexture = select(4, GetSpecializationInfoByID(specID));
                 if ( self.parent.portraitSpecIcon ) then
-                    SetPortraitToTexture(self.SpecIcon, self.specTexture);
+                    SetPortraitToTexture(self.SpecIcon.Texture, self.specTexture);
                 else
-                    self.SpecIcon:SetTexture(self.specTexture);
+                    self.SpecIcon.Texture:SetTexture(self.specTexture);
                 end
 
-                self.class = strupper(select(6, GetSpecializationInfoByID(specID)));
+                self.class = select(6, GetSpecializationInfoByID(specID));
                 if ( not self.class ) then
                     self.class = select(2, UnitClass(self.unit));
                 end
@@ -477,11 +510,7 @@ function sArenaFrameMixin:GetClassAndSpec()
     end
 
     if ( not self.specTexture ) then
-        if ( self.parent.portraitSpecIcon ) then
-            SetPortraitToTexture(self.SpecIcon, 134400);
-        else
-            self.SpecIcon:SetTexture(134400);
-        end
+        self.SpecIcon:Hide();
     end
 end
 
@@ -512,23 +541,23 @@ end
 function sArenaFrameMixin:UpdateTrinket()
     local spellID, startTime, duration = C_PvP.GetArenaCrowdControlInfo(self.unit);
     if ( spellID ) then
-        if ( spellID ~= self.TrinketIcon.spellID ) then
+        if ( spellID ~= self.Trinket.spellID ) then
             local _, spellTextureNoOverride = GetSpellTexture(spellID);
-            self.TrinketIcon.spellID = spellID;
-            self.TrinketIcon:SetTexture(spellTextureNoOverride);
+            self.Trinket.spellID = spellID;
+            self.Trinket.Texture:SetTexture(spellTextureNoOverride);
         end
         if ( startTime ~= 0 and duration ~= 0 ) then
-            self.TrinketCooldown:SetCooldown(startTime/1000.0, duration/1000.0);
+            self.Trinket.Cooldown:SetCooldown(startTime/1000.0, duration/1000.0);
         else
-            self.TrinketCooldown:Clear();
+            self.Trinket.Cooldown:Clear();
         end
     end
 end
 
 function sArenaFrameMixin:ResetTrinket()
-    self.TrinketIcon.spellID = nil;
-    self.TrinketIcon:SetTexture(134400);
-    self.TrinketCooldown:Clear();
+    self.Trinket.spellID = nil;
+    self.Trinket.Texture:SetTexture(134400);
+    self.Trinket.Cooldown:Clear();
     self:UpdateTrinket();
 end
 
@@ -554,16 +583,20 @@ function sArenaFrameMixin:ResetLayout()
     self.currentClassTexture = nil;
 
     ResetTexture(nil, self.ClassIcon);
-    ResetTexture(nil, self.SpecIcon);
     ResetStatusBar(self.HealthBar);
     ResetStatusBar(self.PowerBar);
     ResetStatusBar(self.CastBar);
     self.CastBar:SetHeight(16);
 
-    local f = self.TrinketIcon;
+    local f = self.Trinket;
     f:ClearAllPoints();
     f:SetSize(0, 0);
-    f:SetTexCoord(0, 1, 0, 1);
+    f.Texture:SetTexCoord(0, 1, 0, 1);
+
+    f = self.SpecIcon;
+    f:ClearAllPoints();
+    f:SetSize(0, 0);
+    f:SetScale(1);
 
     f = self.Name;
     ResetFontString(f);
@@ -791,18 +824,20 @@ function sArenaMixin:Test()
             frame.ClassIcon:SetTexture(626001);
         end
 
+        frame.SpecIcon:Show();
+
         if ( frame.parent.portraitSpecIcon ) then
-            SetPortraitToTexture(frame.SpecIcon, 135846);
+            SetPortraitToTexture(frame.SpecIcon.Texture, 135846);
         else
-            frame.SpecIcon:SetTexture(135846);
+            frame.SpecIcon.Texture:SetTexture(135846);
         end
 
         frame.AuraText:SetText("5.3");
         frame.Name:SetText("arena"..i);
         frame.Name:SetShown(db.profile.showNames)
 
-        frame.TrinketIcon:SetTexture(1322720);
-        frame.TrinketCooldown:SetCooldown(currTime, math.random(20, 60));
+        frame.Trinket.Texture:SetTexture(1322720);
+        frame.Trinket.Cooldown:SetCooldown(currTime, math.random(20, 60));
 
         for n = 1, #drCategories do
             local drFrame = frame[drCategories[n]];

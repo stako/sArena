@@ -8,10 +8,20 @@ layout.defaultSettings = {
     scale = 1,
     spacing = 20;
     growthDirection = 1,
-    trinketFontSize = 12,
+    specIcon = {
+        posX = 26,
+        posY = 26,
+        scale = 1,
+    },
+    trinket = {
+        posX = 43,
+        posY = -17,
+        scale = 1,
+        fontSize = 12,
+    },
     castBar = {
         posX = -110,
-        posY = -10,
+        posY = -14,
         scale = 1,
         width = 90,
     },
@@ -19,7 +29,7 @@ layout.defaultSettings = {
         posX = -79,
         posY = 13,
         size = 22,
-        borderSize = 2,
+        borderSize = 2.5,
         fontSize = 12,
         spacing = 6,
         growthDirection = 4;
@@ -44,9 +54,13 @@ function layout:Initialize(frame)
         frame.parent:UpdateCastBarSettings(self.db.castBar);
         frame.parent:UpdateDRSettings(self.db.dr);
         frame.parent:UpdateFrameSettings(self.db);
+        frame.parent:UpdateSpecIconSettings(self.db.specIcon);
+        frame.parent:UpdateTrinketSettings(self.db.trinket);
     end
 
     frame:SetSize(126, 66);
+    frame.SpecIcon:SetSize(14, 14);
+    frame.Trinket:SetSize(25, 25);
 
     local hp = frame.HealthBar;
     hp:SetSize(87, 23);
@@ -63,18 +77,14 @@ function layout:Initialize(frame)
     f:SetSize(34, 34);
     f:Show();
 
-    f = frame.SpecIcon;
-    f:SetPoint("CENTER", frame, "CENTER", 27, 27);
-    f:SetSize(14, 14);
-    f:Show();
-
     local specBorder = frame.TexturePool:Acquire();
+    specBorder:SetParent(frame.SpecIcon);
     specBorder:SetDrawLayer("ARTWORK", 3);
-    specBorder:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder");
+    specBorder:SetTexture("Interface\\CHARACTERFRAME\\TotemBorder");
+    specBorder:SetPoint("TOPLEFT", frame.SpecIcon, "TOPLEFT", -5, 5);
+    specBorder:SetPoint("BOTTOMRIGHT", frame.SpecIcon, "BOTTOMRIGHT", 5, -5);
     specBorder:SetDesaturated(1);
     specBorder:SetVertexColor(0.9, 0.9, 0.9, 1);
-    specBorder:SetSize(38, 38);
-    specBorder:SetPoint("CENTER", f, "CENTER", 7.5, -8);
     specBorder:Show();
 
     f = frame.Name;
@@ -85,9 +95,9 @@ function layout:Initialize(frame)
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
-    f = frame.TrinketIcon;
+    --[[f = frame.TrinketIcon;
     f:SetSize(25, 25);
-    f:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4);
+    f:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4);]]
 
     f = frame.DeathIcon;
     f:ClearAllPoints();

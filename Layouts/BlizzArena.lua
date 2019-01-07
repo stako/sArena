@@ -8,9 +8,19 @@ layout.defaultSettings = {
     scale = 1,
     spacing = 20,
     growthDirection = 1,
-    trinketFontSize = 12,
+    specIcon = {
+        posX = 47,
+        posY = -12,
+        scale = 1,
+    },
+    trinket = {
+        posX = -66,
+        posY = -1,
+        scale = 1,
+        fontSize = 12,
+    },
     castBar = {
-        posX = -100,
+        posX = -124,
         posY = 0,
         scale = 1,
         width = 84,
@@ -19,64 +29,15 @@ layout.defaultSettings = {
         posX = -74,
         posY = 24,
         size = 22,
-        borderSize = 2,
+        borderSize = 2.5,
         fontSize = 12,
         spacing = 6,
         growthDirection = 4,
     },
-
-    -- custom layout settings
-    trinketPosX = 64,
-    trinketPosY = 0,
 };
-
-local function updateTrinketPositioning(frame)
-    frame.TrinketIcon:ClearAllPoints();
-    frame.TrinketIcon:SetPoint("CENTER", frame, "CENTER", layout.db.trinketPosX, layout.db.trinketPosY);
-end
 
 local function setupOptionsTable(self)
     layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
-
-    layout.optionsTable.special = {
-        order = 4,
-        name = "Special",
-        type = "group",
-        args = {
-            trinketPositioning = {
-                order = 1,
-                name = "Trinket Positioning",
-                type = "group",
-                inline = true,
-                get = function(info) return layout.db[info[#info]]; end,
-                set = function(info, val) layout.db[info[#info]] = val; for i = 1, 3 do updateTrinketPositioning(self["arena"..i]); end end,
-                args = {
-                    trinketPosX = {
-                        order = 1,
-                        name = "Horizontal",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                    },
-                    trinketPosY = {
-                        order = 2,
-                        name = "Vertical",
-                        type = "range",
-                        min = -500,
-                        max = 500,
-                        softMin = -200,
-                        softMax = 200,
-                        step = 0.1,
-                        bigStep = 1,
-                    },
-                },
-            },
-        },
-    };
 end
 
 function layout:Initialize(frame)
@@ -93,9 +54,13 @@ function layout:Initialize(frame)
         frame.parent:UpdateCastBarSettings(self.db.castBar);
         frame.parent:UpdateDRSettings(self.db.dr);
         frame.parent:UpdateFrameSettings(self.db);
+        frame.parent:UpdateSpecIconSettings(self.db.specIcon);
+        frame.parent:UpdateTrinketSettings(self.db.trinket);
     end
 
     frame:SetSize(102, 32);
+    frame.SpecIcon:SetSize(14, 14);
+    frame.Trinket:SetSize(22, 22);
 
     local healthBar = frame.HealthBar;
     healthBar:SetSize(69, 7);
@@ -112,16 +77,12 @@ function layout:Initialize(frame)
     f:SetSize(26, 26);
     f:Show();
 
-    f = frame.SpecIcon;
-    f:SetPoint("CENTER", frame, "CENTER", 22, -13);
-    f:SetSize(14, 14);
-    f:Show();
-
     local specBorder = frame.TexturePool:Acquire();
+    specBorder:SetParent(frame.SpecIcon);
     specBorder:SetDrawLayer("ARTWORK", 3);
-    specBorder:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder");
-    specBorder:SetSize(38, 38);
-    specBorder:SetPoint("CENTER", f, "CENTER", 7.5, -8);
+    specBorder:SetTexture("Interface\\CHARACTERFRAME\\TotemBorder");
+    specBorder:SetPoint("TOPLEFT", frame.SpecIcon, "TOPLEFT", -5, 5);
+    specBorder:SetPoint("BOTTOMRIGHT", frame.SpecIcon, "BOTTOMRIGHT", 5, -5);
     specBorder:Show();
 
     f = frame.Name;
@@ -132,9 +93,9 @@ function layout:Initialize(frame)
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 
-    f = frame.TrinketIcon;
+    --[[f = frame.TrinketIcon;
     f:SetSize(20, 20);
-    updateTrinketPositioning(frame);
+    updateTrinketPositioning(frame);]]
 
     f = frame.DeathIcon;
     f:ClearAllPoints();

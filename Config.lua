@@ -96,13 +96,123 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
                         },
                     },
                 },
-                trinket = {
-                    order = 4,
-                    name = "Trinkets",
+            },
+        },
+        specIcon = {
+            order = 2,
+            name = "Spec Icons",
+            type = "group",
+            get = function(info) return info.handler.db.profile.layoutSettings[layoutName].specIcon[info[#info]] end,
+            set = function(info, val) self:UpdateSpecIconSettings(info.handler.db.profile.layoutSettings[layoutName].specIcon, info, val) end,
+            args = {
+                positioning = {
+                    order = 1,
+                    name = "Positioning",
                     type = "group",
                     inline = true,
                     args = {
-                        trinketFontSize = {
+                        posX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        posY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                    },
+                },
+                sizing = {
+                    order = 2,
+                    name = "Sizing",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        scale = {
+                            order = 1,
+                            name = "Scale",
+                            type = "range",
+                            min = 0.1,
+                            max = 5.0,
+                            softMin = 0.5,
+                            softMax = 3.0,
+                            step = 0.01,
+                            bigStep = 0.1,
+                            isPercent = true,
+                        },
+                    },
+                },
+            },
+        },
+        trinket = {
+            order = 3,
+            name = "Trinkets",
+            type = "group",
+            get = function(info) return info.handler.db.profile.layoutSettings[layoutName].trinket[info[#info]] end,
+            set = function(info, val) self:UpdateTrinketSettings(info.handler.db.profile.layoutSettings[layoutName].trinket, info, val) end,
+            args = {
+                positioning = {
+                    order = 1,
+                    name = "Positioning",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        posX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        posY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                    },
+                },
+                sizing = {
+                    order = 2,
+                    name = "Sizing",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        scale = {
+                            order = 1,
+                            name = "Scale",
+                            type = "range",
+                            min = 0.1,
+                            max = 5.0,
+                            softMin = 0.5,
+                            softMax = 3.0,
+                            step = 0.01,
+                            bigStep = 0.1,
+                            isPercent = true,
+                        },
+                        fontSize = {
                             order = 3,
                             name = "Font Size",
                             desc = "Only works with Blizzard cooldown count (not OmniCC)",
@@ -118,7 +228,7 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
             },
         },
         castBar = {
-            order = 2,
+            order = 4,
             name = "Cast Bars",
             type = "group",
             get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBar[info[#info]] end,
@@ -185,7 +295,7 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
             },
         },
         dr = {
-            order = 3,
+            order = 5,
             name = "Diminishing Returns",
             type = "group",
             get = function(info) return info.handler.db.profile.layoutSettings[layoutName].dr[info[#info]] end,
@@ -308,11 +418,6 @@ function sArenaMixin:UpdateFrameSettings(db, info, val)
         elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
         end
     end
-
-    for i = 1, 3 do
-        local text = self["arena"..i].TrinketCooldown.Text;
-        text:SetFont(text.fontFile, db.trinketFontSize, "OUTLINE");
-    end
 end
 
 function sArenaMixin:UpdateCastBarSettings(db, info, val)
@@ -360,6 +465,37 @@ function sArenaMixin:UpdateDRSettings(db, info, val)
     end
 end
 
+function sArenaMixin:UpdateSpecIconSettings(db, info, val)
+    if ( val ) then
+        db[info[#info]] = val;
+    end
+
+    for i = 1, 3 do
+        local frame = self["arena"..i];
+
+        frame.SpecIcon:ClearAllPoints();
+        frame.SpecIcon:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
+        frame.SpecIcon:SetScale(db.scale);
+    end
+end
+
+function sArenaMixin:UpdateTrinketSettings(db, info, val)
+    if ( val ) then
+        db[info[#info]] = val;
+    end
+
+    for i = 1, 3 do
+        local frame = self["arena"..i];
+
+        frame.Trinket:ClearAllPoints();
+        frame.Trinket:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
+        frame.Trinket:SetScale(db.scale);
+
+        local text = self["arena"..i].Trinket.Cooldown.Text;
+        text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
+    end
+end
+
 sArenaMixin.optionsTable = {
     type = "group",
     childGroups = "tab",
@@ -390,15 +526,22 @@ sArenaMixin.optionsTable = {
         },
         dragNotice = {
             order = 4,
-            name = "|cffffd100Ctrl+shift+click & drag things to move them|r",
+            name = "|cffffd100     Ctrl+shift+click to drag stuff|r",
             type = "description",
             fontSize = "medium",
             width = 1.5,
         },
-        globalSettingsGroup = {
+        layoutSettingsGroup = {
             order = 5,
+            name = "Layout Settings",
+            desc = "These settings apply only to the selected layout",
+            type = "group",
+            args = {},
+        },
+        globalSettingsGroup = {
+            order = 6,
             name = "Global Settings",
-            desc = "These settings will apply to all layouts",
+            desc = "These settings apply to all layouts",
             type = "group",
             childGroups = "tree",
             args = {
@@ -478,13 +621,6 @@ sArenaMixin.optionsTable = {
                     },
                 },
             },
-        },
-        layoutSettingsGroup = {
-            order = 6,
-            name = "Layout Settings",
-            desc = "These settings will apply only to the selected layout",
-            type = "group",
-            args = {},
         },
     },
 };

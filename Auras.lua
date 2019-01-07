@@ -111,6 +111,20 @@ sArenaMixin.auraList = tInvert({
     236025, -- Enraged Maim (Incapacitate)
     197214, -- Sundering (Incapacitate)
 
+    -- Immunities
+    642,    -- Divine Shield
+    186265, -- Aspect of the Turtle
+    45438,  -- Ice Block
+    47585,  -- Dispersion
+    1022,   -- Blessing of Protection
+    204018, -- Blessing of Spellwarding
+    216113, -- Way of the Crane
+    31224,  -- Cloak of Shadows
+    212182, -- Smoke Bomb
+    212183, -- Smoke Bomb
+    8178,   -- Grounding Totem Effect
+    199448, -- Blessing of Sacrifice
+
     -- Interrupts
     1766,   -- Kick (Rogue)
     2139,   -- Counterspell (Mage)
@@ -130,20 +144,6 @@ sArenaMixin.auraList = tInvert({
     187707, -- Muzzle (Hunter)
     212619, -- Call Felhunter (Warlock)
     231665, -- Avengers Shield (Paladin)
-
-    -- Immunities
-    642,    -- Divine Shield
-    186265, -- Aspect of the Turtle
-    45438,  -- Ice Block
-    47585,  -- Dispersion
-    1022,   -- Blessing of Protection
-    204018, -- Blessing of Spellwarding
-    216113, -- Way of the Crane
-    31224,  -- Cloak of Shadows
-    212182, -- Smoke Bomb
-    212183, -- Smoke Bomb
-    8178,   -- Grounding Totem Effect
-    199448, -- Blessing of Sacrifice
 
     -- Anti CCs
     23920,  -- Spell Reflection
