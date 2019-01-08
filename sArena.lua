@@ -133,8 +133,6 @@ function sArenaMixin:OnLoad()
 
     self:RegisterEvent("PLAYER_LOGIN");
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
-    self:RegisterEvent("PLAYER_REGEN_DISABLED");
-    self:RegisterEvent("PLAYER_REGEN_ENABLED");
 end
 
 function sArenaMixin:OnEvent(event)
@@ -144,6 +142,7 @@ function sArenaMixin:OnEvent(event)
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
         local _, instanceType = IsInInstance();
         UpdateBlizzVisibility(instanceType);
+        self:SetMouseState(true);
 
         if ( instanceType == "arena" ) then
             self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -162,10 +161,6 @@ function sArenaMixin:OnEvent(event)
                 return;
             end
         end
-    elseif ( event == "PLAYER_REGEN_DISABLED" ) then
-        self:MouseState(false);
-    elseif ( event == "PLAYER_REGEN_ENABLED" ) then
-        self:MouseState(true);
     end
 end
 
@@ -266,8 +261,7 @@ function sArenaMixin:SetupDrag(frameToClick, frameToMove, settingsTable, updateM
     end);
 end
 
-function sArenaMixin:MouseState(state)
-    -- revent secondary frames from intercepting mouse clicks while in combat
+function sArenaMixin:SetMouseState(state)
     for i = 1, 3 do
         local frame = self["arena"..i];
         frame.CastBar:EnableMouse(state);
@@ -443,6 +437,11 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
     if ( ( unitEvent and unitEvent ~= "seen" ) or not UnitExists(unit) ) then
             self:SetMysteryPlayer();
             return;
+    end
+
+    -- prevent castbar and other frames from intercepting mouse clicks during a match
+    if ( unitEvent == "seen" ) then
+        self.parent:SetMouseState(false);
     end
 
     self.hideStatusOnTooltip = false;
