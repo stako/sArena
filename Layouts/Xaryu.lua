@@ -58,7 +58,7 @@ end
 
 local function setupOptionsTable(self)
     layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
-    
+
     layout.optionsTable.special = {
         order = 6,
         name = "Special",

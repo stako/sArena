@@ -403,7 +403,7 @@ function sArenaMixin:UpdateFrameSettings(db, info, val)
     self:ClearAllPoints();
     self:SetPoint("CENTER", UIParent, "CENTER", db.posX, db.posY);
     self:SetScale(db.scale);
-    
+
     local growthDirection = db.growthDirection;
     local spacing = db.spacing;
 
@@ -436,7 +436,7 @@ function sArenaMixin:UpdateCastBarSettings(db, info, val)
 end
 
 function sArenaMixin:UpdateDRSettings(db, info, val)
-    local drCategories = {
+    local categories = {
         "Stun",
         "Incapacitate",
         "Disorient",
@@ -452,8 +452,8 @@ function sArenaMixin:UpdateDRSettings(db, info, val)
         local frame = self["arena"..i];
         frame:UpdateDRPositions();
 
-        for n = 1, #drCategories do
-            local dr = frame[drCategories[n]];
+        for n = 1, #categories do
+            local dr = frame[categories[n]];
 
             dr:SetSize(db.size, db.size);
             dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize);
@@ -562,7 +562,11 @@ sArenaMixin.optionsTable = {
                                     desc = "If disabled, text only shows on mouseover",
                                     type = "toggle",
                                     get = function(info) return info.handler.db.profile.statusText.alwaysShow end,
-                                    set = function(info, val) info.handler.db.profile.statusText.alwaysShow = val; for i = 1, 3 do info.handler["arena"..i]:UpdateStatusTextVisible(); end end,
+                                    set = function(info, val)
+                                        info.handler.db.profile.statusText.alwaysShow = val;
+                                        for i = 1, 3 do info.handler["arena"..i]:UpdateStatusTextVisible();
+                                        end
+                                    end,
                                 },
                                 usePercentage = {
                                     order = 2,
