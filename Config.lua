@@ -526,7 +526,7 @@ sArenaMixin.optionsTable = {
         },
         dragNotice = {
             order = 4,
-            name = "|cffffd100     Ctrl+shift+click to drag stuff|r",
+            name = "|cffff3300     |T840662:16|t Ctrl+shift+click to drag stuff|r",
             type = "description",
             fontSize = "medium",
             width = 1.5,

@@ -354,6 +354,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:Initialize();
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
         self.Name:SetText("");
+        self.currentClassTexture = nil;
         self:UpdateVisible();
         self:UpdatePlayer();
         self:ResetTrinket();
@@ -501,10 +502,11 @@ function sArenaFrameMixin:GetClassAndSpec()
                 end
 
                 self.class = select(6, GetSpecializationInfoByID(specID));
-                if ( not self.class ) then
-                    self.class = select(2, UnitClass(self.unit));
-                end
             end
+        end
+
+        if ( not self.class and UnitExists(self.unit) ) then
+            _, self.class = UnitClass(self.unit);
         end
     end
 

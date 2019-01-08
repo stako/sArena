@@ -38,6 +38,7 @@ layout.defaultSettings = {
     width = 152,
     height = 44,
     powerBarHeight = 9,
+    mirrored = true,
 };
 
 local function getSetting(info)
@@ -53,11 +54,21 @@ local function setSetting(info, val)
         frame.ClassIcon:SetSize(layout.db.height, layout.db.height);
         frame.DeathIcon:SetSize(layout.db.height * 0.8, layout.db.height * 0.8);
         frame.PowerBar:SetHeight(layout.db.powerBarHeight);
+        layout:UpdateOrientation(frame);
     end
 end
 
 local function setupOptionsTable(self)
     layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
+
+    layout.optionsTable.arenaFrames.args.positioning.args.mirrored = {
+        order = 5,
+        name = "Mirrored Frames",
+        type = "toggle",
+        width = "full",
+        get = getSetting,
+        set = setSetting,
+    };
 
     layout.optionsTable.special = {
         order = 6,
@@ -112,27 +123,21 @@ function layout:Initialize(frame)
         frame.parent:UpdateTrinketSettings(self.db.trinket);
     end
 
+    self:UpdateOrientation(frame);
+
     frame:SetSize(self.db.width, self.db.height);
     frame.SpecIcon:SetSize(18, 18);
     frame.Trinket:SetSize(44, 44);
 
-    local healthBar = frame.HealthBar;
-    healthBar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -2);
-    healthBar:SetPoint("BOTTOMLEFT", frame.PowerBar, "TOPLEFT");
-    healthBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    frame.HealthBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
-    local powerBar = frame.PowerBar;
-    powerBar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 2);
-    powerBar:SetPoint("LEFT", frame.ClassIcon, "RIGHT", 2, 0);
-    powerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-    powerBar:SetHeight(self.db.powerBarHeight);
+    frame.PowerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    frame.PowerBar:SetHeight(self.db.powerBarHeight);
 
-    local f = frame.ClassIcon;
-    f:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
-    f:SetSize(self.db.height, self.db.height);
-    f:Show();
+    frame.ClassIcon:SetSize(self.db.height, self.db.height);
+    frame.ClassIcon:Show();
 
-    f = frame.Name;
+    local f = frame.Name;
     f:SetJustifyH("LEFT");
     f:SetJustifyV("BOTTOM");
     f:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 0);
@@ -144,7 +149,7 @@ function layout:Initialize(frame)
 
     f = frame.DeathIcon;
     f:ClearAllPoints();
-    f:SetPoint("CENTER", healthBar, "CENTER");
+    f:SetPoint("CENTER", frame.HealthBar, "CENTER");
     f:SetSize(self.db.height * 0.8, self.db.height * 0.8);
 
     frame.AuraText:Show();
@@ -162,6 +167,34 @@ function layout:Initialize(frame)
     underlay:SetPoint("TOPLEFT", frame.HealthBar, "TOPLEFT");
     underlay:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT");
     underlay:Show();
+end
+
+function layout:UpdateOrientation(frame)
+    local healthBar = frame.HealthBar;
+    local powerBar = frame.PowerBar;
+    local classIcon = frame.ClassIcon;
+
+    healthBar:ClearAllPoints();
+    powerBar:ClearAllPoints();
+    classIcon:ClearAllPoints();
+
+    if ( self.db.mirrored ) then
+        healthBar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -2);
+        healthBar:SetPoint("BOTTOMLEFT", powerBar, "TOPLEFT");
+
+        powerBar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 2);
+        powerBar:SetPoint("LEFT", classIcon, "RIGHT", 2, 0);
+
+        classIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
+    else
+        healthBar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -2);
+        healthBar:SetPoint("BOTTOMRIGHT", powerBar, "TOPRIGHT");
+
+        powerBar:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 2);
+        powerBar:SetPoint("RIGHT", classIcon, "LEFT", -2, 0);
+
+        classIcon:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0);
+    end
 end
 
 sArenaMixin.layouts[layoutName] = layout;

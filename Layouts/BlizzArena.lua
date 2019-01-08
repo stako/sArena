@@ -34,10 +34,35 @@ layout.defaultSettings = {
         spacing = 6,
         growthDirection = 4,
     },
+
+    -- custom layout settings
+    mirrored = false,
 };
+
+local function getSetting(info)
+    return layout.db[info[#info]];
+end
+
+local function setSetting(info, val)
+    layout.db[info[#info]] = val;
+
+    for i = 1,3 do
+        local frame = info.handler["arena"..i];
+        layout:UpdateOrientation(frame);
+    end
+end
 
 local function setupOptionsTable(self)
     layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
+
+    layout.optionsTable.arenaFrames.args.positioning.args.mirrored = {
+        order = 5,
+        name = "Mirrored Frames",
+        type = "toggle",
+        width = "full",
+        get = getSetting,
+        set = setSetting,
+    };
 end
 
 function layout:Initialize(frame)
@@ -64,16 +89,14 @@ function layout:Initialize(frame)
 
     local healthBar = frame.HealthBar;
     healthBar:SetSize(69, 7);
-    healthBar:SetPoint("TOPLEFT", 3, -9);
     healthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 
     local powerBar = frame.PowerBar;
-    powerBar:SetSize(69, 7);
+    powerBar:SetSize(69, 8);
     powerBar:SetPoint("TOPLEFT", healthBar, "BOTTOMLEFT", 0, -1);
     powerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Resource-Fill");
 
     local f = frame.ClassIcon;
-    f:SetPoint("TOPRIGHT", -2, -2);
     f:SetSize(26, 26);
     f:Show();
 
@@ -87,15 +110,10 @@ function layout:Initialize(frame)
 
     f = frame.Name;
     f:SetJustifyH("LEFT");
-    f:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, 5);
     f:SetSize(66, 12);
 
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
-
-    --[[f = frame.TrinketIcon;
-    f:SetSize(20, 20);
-    updateTrinketPositioning(frame);]]
 
     f = frame.DeathIcon;
     f:ClearAllPoints();
@@ -119,12 +137,37 @@ function layout:Initialize(frame)
     underlay:SetPoint("BOTTOMRIGHT", powerBar);
     underlay:Show();
 
-    local frameTexture = frame.TexturePool:Acquire();
+    local id = frame:GetID();
+    layout["frameTexture"..id] = frame.TexturePool:Acquire();
+    local frameTexture = layout["frameTexture"..id]
     frameTexture:SetDrawLayer("ARTWORK", 1);
     frameTexture:SetAllPoints(frame);
     frameTexture:SetTexture("Interface\\ArenaEnemyFrame\\UI-ArenaTargetingFrame");
-    frameTexture:SetTexCoord(0, 0.796, 0, 0.5);
     frameTexture:Show();
+
+    self:UpdateOrientation(frame);
+end
+
+function layout:UpdateOrientation(frame)
+    local frameTexture = layout["frameTexture"..frame:GetID()];
+    local healthBar = frame.HealthBar;
+    local classIcon = frame.ClassIcon;
+    local name = frame.Name;
+
+    healthBar:ClearAllPoints();
+    classIcon:ClearAllPoints();
+
+    if ( self.db.mirrored ) then
+        frameTexture:SetTexCoord(0.796, 0, 0, 0.5);
+        healthBar:SetPoint("TOPRIGHT", -3, -9);
+        classIcon:SetPoint("TOPLEFT", 3, -2);
+        name:SetPoint("TOPLEFT", frame, "TOPLEFT", 30, 5);
+    else
+        frameTexture:SetTexCoord(0, 0.796, 0, 0.5);
+        healthBar:SetPoint("TOPLEFT", 3, -9);
+        classIcon:SetPoint("TOPRIGHT", -2, -2);
+        name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, 5);
+    end
 end
 
 sArenaMixin.layouts[layoutName] = layout;

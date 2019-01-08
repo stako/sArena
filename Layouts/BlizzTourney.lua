@@ -34,10 +34,35 @@ layout.defaultSettings = {
         spacing = 6,
         growthDirection = 4;
     },
+
+    -- custom layout settings
+    mirrored = true,
 };
+
+local function getSetting(info)
+    return layout.db[info[#info]];
+end
+
+local function setSetting(info, val)
+    layout.db[info[#info]] = val;
+
+    for i = 1,3 do
+        local frame = info.handler["arena"..i];
+        layout:UpdateOrientation(frame);
+    end
+end
 
 local function setupOptionsTable(self)
     layout.optionsTable = self:GetLayoutOptionsTable(layoutName);
+
+    layout.optionsTable.arenaFrames.args.positioning.args.mirrored = {
+        order = 5,
+        name = "Mirrored Frames",
+        type = "toggle",
+        width = "full",
+        get = getSetting,
+        set = setSetting,
+    };
 end
 
 function layout:Initialize(frame)
@@ -64,16 +89,13 @@ function layout:Initialize(frame)
 
     local hp = frame.HealthBar;
     hp:SetSize(87, 23);
-    hp:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -30);
     hp:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
 
     local pp = frame.PowerBar;
     pp:SetSize(87, 12);
-    pp:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -53);
     pp:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Resource-Fill");
 
     local f = frame.ClassIcon;
-    f:SetPoint("TOPRIGHT", -2, -2);
     f:SetSize(34, 34);
     f:Show();
 
@@ -87,17 +109,8 @@ function layout:Initialize(frame)
     specBorder:SetVertexColor(0.9, 0.9, 0.9, 1);
     specBorder:Show();
 
-    f = frame.Name;
-    f:SetJustifyH("RIGHT");
-    f:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -4, 4);
-    f:SetSize(77, 14);
-
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
-
-    --[[f = frame.TrinketIcon;
-    f:SetSize(25, 25);
-    f:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8, 4);]]
 
     f = frame.DeathIcon;
     f:ClearAllPoints();
@@ -120,13 +133,53 @@ function layout:Initialize(frame)
     underlay:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT");
     underlay:Show();
 
-    local frameTexture = frame.TexturePool:Acquire();
+    local id = frame:GetID();
+    layout["frameTexture"..id] = frame.TexturePool:Acquire();
+    local frameTexture = layout["frameTexture"..id]
     frameTexture:SetDrawLayer("ARTWORK", 1);
     frameTexture:SetSize(160, 80);
-    frameTexture:SetPoint("TOPLEFT", frame, "TOPLEFT", -26, 6);
     frameTexture:SetAtlas("UnitFrame");
-    frameTexture:SetTexCoord(1, 0, 0, 1);
     frameTexture:Show();
+
+    self:UpdateOrientation(frame);
+end
+
+function layout:UpdateOrientation(frame)
+    local frameTexture = layout["frameTexture"..frame:GetID()];
+    local healthBar = frame.HealthBar;
+    local powerBar = frame.PowerBar;
+    local classIcon = frame.ClassIcon;
+    local name = frame.Name;
+
+    healthBar:ClearAllPoints();
+    powerBar:ClearAllPoints();
+    classIcon:ClearAllPoints();
+    name:ClearAllPoints();
+
+    if ( self.db.mirrored ) then
+        frameTexture:SetTexCoord(1, 0, 0, 1);
+        frameTexture:SetPoint("TOPLEFT", frame, "TOPLEFT", -26, 6);
+
+        healthBar:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -30);
+        powerBar:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -53);
+        classIcon:SetPoint("TOPRIGHT", -2, -2);
+
+        name:SetJustifyH("RIGHT");
+    else
+        frameTexture:SetTexCoord(0, 1, 0, 1);
+        frameTexture:SetPoint("TOPLEFT", frame, "TOPLEFT", -7, 6);
+
+        healthBar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -30);
+        powerBar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -53);
+        classIcon:SetPoint("TOPLEFT", 3, -2);
+
+        name:SetJustifyH("LEFT");
+    end
+
+    name:SetJustifyV("BOTTOM");
+    name:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 5, 5);
+    name:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", -5, 5);
+    name:SetHeight(12);
 end
 
 sArenaMixin.layouts[layoutName] = layout;
