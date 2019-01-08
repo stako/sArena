@@ -63,23 +63,25 @@ local emptyLayoutOptionsTable = {
     },
 };
 local blizzFrame;
-
-local CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
-    UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
-    GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, FindAuraByName, AbbreviateLargeNumbers,
-    unpack, CLASS_ICON_TCOORDS, UnitClass, ceil =
-    CombatLogGetCurrentEventInfo, UnitGUID, GetUnitName, GetSpellTexture, UnitHealthMax,
-    UnitHealth, UnitPowerMax, UnitPower, UnitPowerType, GetTime, IsInInstance,
-    GetNumArenaOpponentSpecs, GetArenaOpponentSpec, GetSpecializationInfoByID, select,
-    SetPortraitToTexture, PowerBarColor, UnitAura, AuraUtil.FindAuraByName, AbbreviateLargeNumbers,
-    unpack, CLASS_ICON_TCOORDS, UnitClass, math.ceil;
-
-local GetSpellInfo = GetSpellInfo;
-local InCombatLockdown = InCombatLockdown;
 local FEIGN_DEATH = GetSpellInfo(5384); -- Localized name for Feign Death
-local LibStub = LibStub;
-local C_PvP = C_PvP;
+
+-- make local vars of globals that are used with high frequency
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
+local UnitGUID = UnitGUID;
+local UnitChannelInfo = UnitChannelInfo;
+local GetTime = GetTime;
+local After = C_Timer.After;
+local UnitAura = UnitAura;
+local SetPortraitToTexture = SetPortraitToTexture; -- not called often, but had problems in the past
+local UnitHealthMax = UnitHealthMax;
+local UnitHealth = UnitHealth;
+local UnitPowerMax = UnitPowerMax;
+local UnitPower = UnitPower;
+local UnitPowerType = UnitPowerType;
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost;
+local FindAuraByName = AuraUtil.FindAuraByName;
+local ceil = ceil;
+local AbbreviateLargeNumbers = AbbreviateLargeNumbers;
 
 local function UpdateBlizzVisibility(instanceType)
     -- if blizz arena frames are disabled or hidden, ARENA_CROWD_CONTROL_SPELL_UPDATE will not fire
@@ -395,18 +397,14 @@ function sArenaFrameMixin:OnUpdate()
 
     local unit = self.unit;
 
-    local hp = UnitHealth(unit);
-    local hpMax = UnitHealthMax(unit);
-    local pp = UnitPower(unit);
-    local ppMax = UnitPowerMax(unit);
+    self:SetBarMaxValue(self.HealthBar, UnitHealthMax(unit));
+    self:SetBarValue(self.HealthBar, UnitHealth(unit));
 
-    self:SetBarMaxValue(self.HealthBar, hpMax);
-    self:SetBarValue(self.HealthBar, hp);
+    self:SetBarMaxValue(self.PowerBar, UnitPowerMax(unit));
+    self:SetBarValue(self.PowerBar, UnitPower(unit));
 
-    self:SetBarMaxValue(self.PowerBar, ppMax);
-    self:SetBarValue(self.PowerBar, pp);
-
-    self:SetPowerType(select(2, UnitPowerType(unit)));
+    local _, powerType = UnitPowerType(unit);
+    self:SetPowerType(powerType);
 
     self.unitChanging = false;
 
@@ -414,7 +412,9 @@ function sArenaFrameMixin:OnUpdate()
         local now = GetTime();
         local timeLeft = self.currentAuraExpirationTime - now;
 
-        if ( timeLeft >= 10 ) then
+        if ( timeLeft > 30 ) then
+            self.AuraText:SetText("");
+        elseif ( timeLeft >= 10 ) then
             self.AuraText:SetFormattedText("%i", timeLeft);
         elseif (timeLeft > 0 ) then
             self.AuraText:SetFormattedText("%.1f", timeLeft);
@@ -515,7 +515,7 @@ function sArenaFrameMixin:GetClassAndSpec()
 end
 
 function sArenaFrameMixin:UpdateClassIcon()
-    local texture = self.currentAuraSpellID and GetSpellTexture(self.currentAuraSpellID) or self.class and "class" or 134400;
+    local texture = self.currentAuraSpellID and self.currentAuraTexture or self.class and "class" or 134400;
 
     if ( self.currentClassTexture == texture ) then return end
 
@@ -647,18 +647,19 @@ end
 
 function sArenaFrameMixin:FindAura()
     local unit = self.unit;
-    local currentSpellID, currentExpirationTime = nil, 0;
+    local currentSpellID, currentExpirationTime, currentTexture = nil, 0, nil;
 
     if ( self.currentInterruptSpellID ) then
         currentSpellID = self.currentInterruptSpellID;
         currentExpirationTime = self.currentInterruptExpirationTime;
+        currentTexture = self.currentInterruptTexture;
     end
 
     for i = 1, 2 do
         local filter = (i == 1 and "HELPFUL" or "HARMFUL");
 
         for n = 1, 30 do
-            local _, _, _, _, _, expirationTime, _, _, _, spellID = UnitAura(unit, n, filter);
+            local _, texture, _, _, _, expirationTime, _, _, _, spellID = UnitAura(unit, n, filter);
 
             if ( not spellID ) then break end
 
@@ -666,6 +667,7 @@ function sArenaFrameMixin:FindAura()
                 if ( not currentSpellID or auraList[spellID] < auraList[currentSpellID] ) then
                     currentSpellID = spellID;
                     currentExpirationTime = expirationTime;
+                    currentTexture = texture;
                 end
             end
         end
@@ -674,9 +676,11 @@ function sArenaFrameMixin:FindAura()
     if ( currentSpellID ) then
         self.currentAuraSpellID = currentSpellID;
         self.currentAuraExpirationTime = currentExpirationTime;
+        self.currentAuraTexture = currentTexture;
     else
         self.currentAuraSpellID = nil;
         self.currentAuraExpirationTime = 0;
+        self.currentAuraTexture = nil;
     end
 
     if ( self.currentAuraExpirationTime == 0 ) then
@@ -698,16 +702,21 @@ function sArenaFrameMixin:FindInterrupt(event, spellID)
     if ( event == "SPELL_INTERRUPT" or notInterruptable == false ) then
         self.currentInterruptSpellID = spellID;
         self.currentInterruptExpirationTime = GetTime() + interruptDuration;
+        self.currentInterruptTexture = GetSpellTexture(spellID);
         self:FindAura();
-        C_Timer.After(interruptDuration, function() self.currentInterruptSpellID = nil; self.currentInterruptExpirationTime = 0; self:FindAura(); end);
+        After(interruptDuration, function()
+            self.currentInterruptSpellID = nil;
+            self.currentInterruptExpirationTime = 0;
+            self.currentInterruptTexture = nil;
+            self:FindAura();
+        end);
     end
 end
 
 function sArenaFrameMixin:SetLifeState()
     local unit = self.unit;
-    local isFeigning = FindAuraByName(FEIGN_DEATH, unit, "HELPFUL");
 
-    self.DeathIcon:SetShown(UnitIsDeadOrGhost(unit) and not isFeigning);
+    self.DeathIcon:SetShown(UnitIsDeadOrGhost(unit) and not FindAuraByName(FEIGN_DEATH, unit, "HELPFUL"));
 end
 
 function sArenaFrameMixin:SetStatusText(unit)
