@@ -354,6 +354,9 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:Initialize();
     elseif ( event == "PLAYER_ENTERING_WORLD" ) then
         self.Name:SetText("");
+        self.CastBar:Hide();
+        self.specTexture = nil;
+        self.class = nil;
         self.currentClassTexture = nil;
         self:UpdateVisible();
         self:UpdatePlayer();
