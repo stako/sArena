@@ -56,6 +56,7 @@ sArenaMixin.auraList = tInvert({
 
 
     33786,  -- Cyclone (Disorient)
+    209753, -- Cyclone Balance Talent (Disorient)
     5246,   -- Intimidating Shout (Disorient)
     8122,   -- Psychic Scream (Disorient)
     2094,   -- Blind (Disorient)
