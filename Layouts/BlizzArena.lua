@@ -110,7 +110,9 @@ function layout:Initialize(frame)
 
     f = frame.Name;
     f:SetJustifyH("LEFT");
-    f:SetSize(66, 12);
+    f:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 2, 2);
+    f:SetPoint("BOTTOMRIGHT", healthBar, "TOPRIGHT", 2, 2);
+    f:SetHeight(12);
 
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
@@ -145,6 +147,11 @@ function layout:Initialize(frame)
     frameTexture:SetTexture("Interface\\ArenaEnemyFrame\\UI-ArenaTargetingFrame");
     frameTexture:Show();
 
+    local testbg = frame.TexturePool:Acquire();
+    testbg:SetDrawLayer("BACKGROUND", 1);
+    testbg:SetColorTexture(1, 1, 0, 1);
+    testbg:SetAllPoints(frame.Name);
+
     self:UpdateOrientation(frame);
 end
 
@@ -152,7 +159,6 @@ function layout:UpdateOrientation(frame)
     local frameTexture = layout["frameTexture"..frame:GetID()];
     local healthBar = frame.HealthBar;
     local classIcon = frame.ClassIcon;
-    local name = frame.Name;
 
     healthBar:ClearAllPoints();
     classIcon:ClearAllPoints();
@@ -161,12 +167,10 @@ function layout:UpdateOrientation(frame)
         frameTexture:SetTexCoord(0.796, 0, 0, 0.5);
         healthBar:SetPoint("TOPRIGHT", -3, -9);
         classIcon:SetPoint("TOPLEFT", 3, -2);
-        name:SetPoint("TOPLEFT", frame, "TOPLEFT", 30, 5);
     else
         frameTexture:SetTexCoord(0, 0.796, 0, 0.5);
         healthBar:SetPoint("TOPLEFT", 3, -9);
         classIcon:SetPoint("TOPRIGHT", -2, -2);
-        name:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, 5);
     end
 end
 
