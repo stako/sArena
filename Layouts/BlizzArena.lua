@@ -94,7 +94,7 @@ function layout:Initialize(frame)
     local powerBar = frame.PowerBar;
     powerBar:SetSize(69, 8);
     powerBar:SetPoint("TOPLEFT", healthBar, "BOTTOMLEFT", 0, -1);
-    powerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Resource-Fill");
+    powerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 
     local f = frame.ClassIcon;
     f:SetSize(26, 26);
