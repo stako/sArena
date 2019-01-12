@@ -13,6 +13,7 @@
     <Script file="DRList.lua"/>
     <Script file="Layouts\BlizzArena.lua"/>
     <Script file="Layouts\BlizzTourney.lua"/>
+    <Script file="Layouts\BlizzTarget.lua"/>
     <Script file="Layouts\Xaryu.lua"/>
 
     <Frame name="sArenaDRTrackerTemplate" frameStrata="LOW" hidden="true" virtual="true">
