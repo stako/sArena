@@ -140,6 +140,7 @@ function layout:Initialize(frame)
     local f = frame.Name;
     f:SetJustifyH("LEFT");
     f:SetJustifyV("BOTTOM");
+    f:SetFontObject("SystemFont_Shadow_Med3");
     f:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, 0);
     f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 0);
     f:SetHeight(12);
@@ -161,12 +162,21 @@ function layout:Initialize(frame)
     frame.PowerText:SetPoint("CENTER", frame.PowerBar);
     frame.PowerText:SetShadowOffset(0, 0);
 
-    local underlay = frame.TexturePool:Acquire();
-    underlay:SetDrawLayer("BACKGROUND", 1);
-    underlay:SetColorTexture(0, 0, 0, 0.75);
-    underlay:SetPoint("TOPLEFT", frame.HealthBar, "TOPLEFT");
-    underlay:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT");
-    underlay:Show();
+    local hpUnderlay = frame.TexturePool:Acquire();
+    hpUnderlay:SetDrawLayer("BACKGROUND", 1);
+    hpUnderlay:SetTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    hpUnderlay:SetPoint("TOPLEFT", frame.HealthBar, "TOPLEFT");
+    hpUnderlay:SetPoint("BOTTOMRIGHT", frame.HealthBar, "BOTTOMRIGHT");
+    hpUnderlay:SetVertexColor(0.15, 0.15, 0.15, 0.9);
+    hpUnderlay:Show();
+
+    local ppUnderlay = frame.TexturePool:Acquire();
+    ppUnderlay:SetDrawLayer("BACKGROUND", 1);
+    ppUnderlay:SetTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill");
+    ppUnderlay:SetPoint("TOPLEFT", frame.PowerBar, "TOPLEFT");
+    ppUnderlay:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT");
+    ppUnderlay:SetVertexColor(0.15, 0.15, 0.15, 0.9);
+    ppUnderlay:Show();
 end
 
 function layout:UpdateOrientation(frame)
