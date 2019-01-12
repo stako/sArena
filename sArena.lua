@@ -762,6 +762,7 @@ function sArenaFrameMixin:FindDR(combatEvent, spellID)
         local newDuration = drTime / (1 - ((currTime - startTime) / startDuration));
         local newStartTime = drTime + currTime - newDuration;
 
+        frame:Show();
         frame.Cooldown:SetCooldown(newStartTime, newDuration);
 
         return;
@@ -774,6 +775,7 @@ function sArenaFrameMixin:FindDR(combatEvent, spellID)
             if ( not _spellID ) then break end
 
             if ( duration and spellID == _spellID ) then
+                frame:Show();
                 frame.Cooldown:SetCooldown(currTime, duration + drTime);
                 break;
             end
@@ -791,7 +793,7 @@ end
 
 function sArenaFrameMixin:UpdateDRPositions()
     local layoutdb = self.parent.layoutdb;
-    local active = 0;
+    local numActive = 0;
     local frame, prevFrame;
     local spacing = layoutdb.dr.spacing;
     local growthDirection = layoutdb.dr.growthDirection;
@@ -799,9 +801,9 @@ function sArenaFrameMixin:UpdateDRPositions()
     for i = 1, #drCategories do
         frame = self[drCategories[i]];
 
-        if ( frame:GetAlpha() == 1 ) then
+        if ( frame:IsShown() ) then
             frame:ClearAllPoints();
-            if ( active == 0 ) then
+            if ( numActive == 0 ) then
                 frame:SetPoint("CENTER", self, "CENTER", layoutdb.dr.posX, layoutdb.dr.posY);
             else
                 if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
@@ -810,7 +812,7 @@ function sArenaFrameMixin:UpdateDRPositions()
                 elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
                 end
             end
-            active = active + 1;
+            numActive = numActive + 1;
             prevFrame = frame;
         end
     end
@@ -856,7 +858,8 @@ function sArenaMixin:Test()
             local drFrame = frame[drCategories[n]];
 
             drFrame.Icon:SetTexture(136071);
-            drFrame.Cooldown:SetCooldown(currTime, math.random(20, 60));
+            drFrame:Show();
+            drFrame.Cooldown:SetCooldown(currTime, n == 1 and 60 or math.random(20, 50));
 
             if ( n == 1 ) then
                 drFrame.Border:SetVertexColor(1, 0, 0, 1);

@@ -15,7 +15,7 @@
     <Script file="Layouts\BlizzTourney.lua"/>
     <Script file="Layouts\Xaryu.lua"/>
 
-    <Frame name="sArenaDRTrackerTemplate" frameStrata="LOW" virtual="true">
+    <Frame name="sArenaDRTrackerTemplate" frameStrata="LOW" hidden="true" virtual="true">
         <Size x="40" y="40"/>
         <Layers>
             <Layer level="BORDER">
@@ -45,11 +45,10 @@
                         self.parent = self:GetParent();
                     </OnLoad>
                     <OnShow>
-                        self.parent:SetAlpha(1);
                         self.parent:GetParent():UpdateDRPositions();
                     </OnShow>
                     <OnHide>
-                        self.parent:SetAlpha(0);
+                        self.parent:Hide();
                         self.parent.severity = 1;
                         self.parent:GetParent():UpdateDRPositions();
                     </OnHide>
@@ -60,7 +59,6 @@
         <Scripts>
             <OnLoad>
                 self.severity = 1;
-                self:SetAlpha(0);
             </OnLoad>
         </Scripts>
     </Frame>
