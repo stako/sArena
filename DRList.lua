@@ -68,7 +68,7 @@ sArenaMixin.drList = {
 
     [47476]   = "Silence",         -- Strangulate
     [204490]  = "Silence",         -- Sigil of Silence
-    [78675]   = "Silence",         -- Solar Beam
+    --[78675]   = "Silence",       -- Solar Beam
     [202933]  = "Silence",         -- Spider Sting
     [233022]  = "Silence",         -- Spider Sting 2
     [217824]  = "Silence",         -- Shield of Virtue
