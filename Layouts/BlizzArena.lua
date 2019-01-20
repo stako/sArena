@@ -111,7 +111,7 @@ function layout:Initialize(frame)
     f = frame.Name;
     f:SetJustifyH("LEFT");
     f:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 2, 2);
-    f:SetPoint("BOTTOMRIGHT", healthBar, "TOPRIGHT", 2, 2);
+    f:SetPoint("BOTTOMRIGHT", healthBar, "TOPRIGHT", -2, 2);
     f:SetHeight(12);
 
     f = frame.CastBar;

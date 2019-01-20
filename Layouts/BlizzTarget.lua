@@ -110,8 +110,9 @@ function layout:Initialize(frame)
 
     f = frame.Name;
     f:SetJustifyH("CENTER");
-    f:SetSize(66, 12);
-    f:SetPoint("BOTTOM", healthBar, "TOP", 0, 4);
+    f:SetPoint("BOTTOMLEFT", healthBar, "TOPLEFT", 2, 4);
+    f:SetPoint("BOTTOMRIGHT", healthBar, "TOPRIGHT", -2, 4);
+    f:SetHeight(12);
 
     f = frame.CastBar;
     f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
