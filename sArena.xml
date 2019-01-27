@@ -116,15 +116,30 @@
 
     <Button name="sArenaEnemyFrameTemplate" frameStrata="LOW" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
         <Layers>
-            <Layer level="BORDER">
+            <Layer level="BORDER" textureSubLevel="1">
                 <!-- Health/power bar is in this layer -->
                 <Texture parentKey="ClassIcon"/>
+                <Texture parentKey="myHealPredictionBar" inherits="MyHealPredictionBarTemplate"/>
+                <Texture parentKey="otherHealPredictionBar" inherits="OtherHealPredictionBarTemplate"/>
+                <Texture parentKey="healAbsorbBar" inherits="HealAbsorbBarTemplate"/>
+                <Texture parentKey="healAbsorbBarLeftShadow" inherits="HealAbsorbBarLeftShadowTemplate"/>
+                <Texture parentKey="healAbsorbBarRightShadow" inherits="HealAbsorbBarRightShadowTemplate"/>
+                <Texture parentKey="totalAbsorbBar" inherits="TotalAbsorbBarTemplate"/>
+            </Layer>
+
+            <Layer level="BORDER" textureSubLevel="2">
+                <!-- <Texture parentKey="overAbsorbGlow" inherits="OverAbsorbGlowTemplate"/>
+                <Texture parentKey="overHealAbsorbGlow" inherits="OverHealAbsorbGlowTemplate"/>
+                <Texture parentKey="totalAbsorbBarOverlay" inherits="TotalAbsorbBarOverlayTemplate"/> -->
             </Layer>
 
             <Layer level="ARTWORK" textureSubLevel="2">
                 <FontString parentKey="Name"/>
                 <FontString parentKey="HealthText"/>
                 <FontString parentKey="PowerText"/>
+                <Texture parentKey="overAbsorbGlow" inherits="OverAbsorbGlowTemplate"/>
+                <Texture parentKey="overHealAbsorbGlow" inherits="OverHealAbsorbGlowTemplate"/>
+                <Texture parentKey="totalAbsorbBarOverlay" inherits="TotalAbsorbBarOverlayTemplate"/>
             </Layer>
 
             <Layer level="OVERLAY" textureSubLevel="1">

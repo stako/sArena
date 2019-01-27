@@ -82,6 +82,7 @@ local UnitIsDeadOrGhost = UnitIsDeadOrGhost;
 local FindAuraByName = AuraUtil.FindAuraByName;
 local ceil = ceil;
 local AbbreviateLargeNumbers = AbbreviateLargeNumbers;
+local UnitFrameHealPredictionBars_Update = UnitFrameHealPredictionBars_Update;
 
 local function UpdateBlizzVisibility(instanceType)
     -- if blizz arena frames are disabled or hidden, ARENA_CROWD_CONTROL_SPELL_UPDATE will not fire
@@ -300,17 +301,44 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterEvent("ARENA_COOLDOWNS_UPDATE");
     self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE");
     self:RegisterUnitEvent("UNIT_HEALTH", unit);
-    self:RegisterUnitEvent("UNIT_MANA", unit);
+    self:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
+    self:RegisterUnitEvent("UNIT_POWER_UPDATE", unit);
+    self:RegisterUnitEvent("UNIT_MAXPOWER", unit);
+    self:RegisterUnitEvent("UNIT_DISPLAYPOWER", unit);
     self:RegisterUnitEvent("UNIT_AURA", unit);
+    self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", unit);
+    self:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", unit);
 
     self:RegisterForClicks("AnyUp");
     self:SetAttribute("*type1", "target");
     self:SetAttribute("*type2", "focus");
     self:SetAttribute("unit", unit);
     self.unit = unit;
-    self.unitChanging = true;
 
     CastingBarFrame_SetUnit(self.CastBar, unit, false, true);
+
+    self.healthbar = self.HealthBar;
+
+    self.myHealPredictionBar:ClearAllPoints();
+    self.otherHealPredictionBar:ClearAllPoints();
+    self.totalAbsorbBar:ClearAllPoints();
+    self.overAbsorbGlow:ClearAllPoints();
+    self.healAbsorbBar:ClearAllPoints();
+    self.overHealAbsorbGlow:ClearAllPoints();
+    self.healAbsorbBarLeftShadow:ClearAllPoints();
+    self.healAbsorbBarRightShadow:ClearAllPoints();
+
+    self.totalAbsorbBar.overlay = self.totalAbsorbBarOverlay;
+    self.totalAbsorbBarOverlay:SetAllPoints(self.totalAbsorbBar);
+    self.totalAbsorbBarOverlay.tileSize = 32;
+
+    self.overAbsorbGlow:SetPoint("TOPLEFT", self.healthbar, "TOPRIGHT", -7, 0);
+    self.overAbsorbGlow:SetPoint("BOTTOMLEFT", self.healthbar, "BOTTOMRIGHT", -7, 0);
+
+    self.healAbsorbBar:SetTexture("Interface\\RaidFrame\\Absorb-Fill", true, true);
+
+    self.overHealAbsorbGlow:SetPoint("BOTTOMRIGHT", self.healthbar, "BOTTOMLEFT", 7, 0);
+    self.overHealAbsorbGlow:SetPoint("TOPRIGHT", self.healthbar, "TOPLEFT", 7, 0);
 
     self.AuraText:SetPoint("CENTER", self.ClassIcon, "CENTER");
 
@@ -341,8 +369,23 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         elseif ( event == "UNIT_HEALTH" ) then
             self:SetLifeState();
             self:SetStatusText();
-        elseif ( event == "UNIT_MANA" ) then
+            self.HealthBar:SetValue(UnitHealth(unit));
+            UnitFrameHealPredictionBars_Update(self);
+        elseif ( event == "UNIT_MAXHEALTH" ) then
+            self.HealthBar:SetMinMaxValues(0, UnitHealthMax(unit));
+            UnitFrameHealPredictionBars_Update(self);
+        elseif ( event == "UNIT_POWER_UPDATE" ) then
             self:SetStatusText();
+            self.PowerBar:SetValue(UnitPower(unit));
+        elseif ( event == "UNIT_MAXPOWER" ) then
+            self.PowerBar:SetMinMaxValues(0, UnitPowerMax(unit));
+        elseif ( event == "UNIT_DISPLAYPOWER" ) then
+            local _, powerType = UnitPowerType(unit);
+            self:SetPowerType(powerType);
+        elseif ( event == "UNIT_ABSORB_AMOUNT_CHANGED" ) then
+            UnitFrameHealPredictionBars_Update(self);
+        elseif ( event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" ) then
+            UnitFrameHealPredictionBars_Update(self);
         end
     elseif ( event == "PLAYER_LOGIN" ) then
         self:UnregisterEvent("PLAYER_LOGIN");
@@ -362,6 +405,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:UpdatePlayer();
         self:ResetTrinket();
         self:ResetDR();
+        UnitFrameHealPredictionBars_Update(self);
     elseif ( event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" ) then
         self:UpdateVisible();
         self:UpdatePlayer();
@@ -392,19 +436,6 @@ end
 
 function sArenaFrameMixin:OnUpdate()
     if ( self.hideStatusOnTooltip ) then return end
-
-    local unit = self.unit;
-
-    self:SetBarMaxValue(self.HealthBar, UnitHealthMax(unit));
-    self:SetBarValue(self.HealthBar, UnitHealth(unit));
-
-    self:SetBarMaxValue(self.PowerBar, UnitPowerMax(unit));
-    self:SetBarValue(self.PowerBar, UnitPower(unit));
-
-    local _, powerType = UnitPowerType(unit);
-    self:SetPowerType(powerType);
-
-    self.unitChanging = false;
 
     if ( self.currentAuraSpellID ) then
         local now = GetTime();
@@ -449,11 +480,19 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
     end
 
     self.hideStatusOnTooltip = false;
+    self.hideStatusText = false;
 
     self.Name:SetText(GetUnitName(unit));
     self.Name:SetShown(db.profile.showNames);
 
     self:UpdateStatusTextVisible();
+    self:SetStatusText();
+
+    self:OnEvent("UNIT_MAXHEALTH", unit);
+    self:OnEvent("UNIT_HEALTH", unit);
+    self:OnEvent("UNIT_MAXPOWER", unit);
+    self:OnEvent("UNIT_POWER_UPDATE", unit);
+    self:OnEvent("UNIT_DISPLAYPOWER", unit);
 
     local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))];
 
@@ -466,7 +505,6 @@ end
 
 function sArenaFrameMixin:SetMysteryPlayer()
     self.hideStatusOnTooltip = true;
-    self.unitChanging = true;
 
     local f = self.HealthBar;
     f:SetMinMaxValues(0,100);
@@ -478,8 +516,8 @@ function sArenaFrameMixin:SetMysteryPlayer()
     f:ResetSmoothedValue(100);
     f:SetStatusBarColor(0.5, 0.5, 0.5);
 
-    self.HealthText:SetText("");
-    self.PowerText:SetText("");
+    self.hideStatusText = true;
+    self:SetStatusText();
 
     self.DeathIcon:Hide();
 end
@@ -627,21 +665,6 @@ function sArenaFrameMixin:ResetLayout()
     self.TexturePool:ReleaseAll();
 end
 
-function sArenaFrameMixin:SetBarValue(bar, value)
-    if ( self.unitChanging ) then
-        bar:ResetSmoothedValue(value);
-    else
-        bar:SetSmoothedValue(value);
-    end
-end
-
-function sArenaFrameMixin:SetBarMaxValue(bar, value)
-    bar:SetMinMaxSmoothedValue(0, value);
-    if ( self.unitChanging ) then
-        bar:ResetSmoothedValue();
-    end
-end
-
 function sArenaFrameMixin:SetPowerType(powerType)
     local color = PowerBarColor[powerType];
     if color then
@@ -721,9 +744,16 @@ function sArenaFrameMixin:SetLifeState()
     local unit = self.unit;
 
     self.DeathIcon:SetShown(UnitIsDeadOrGhost(unit) and not FindAuraByName(FEIGN_DEATH, unit, "HELPFUL"));
+    self.hideStatusText = self.DeathIcon:IsShown();
 end
 
 function sArenaFrameMixin:SetStatusText(unit)
+    if ( self.hideStatusText ) then
+        self.HealthText:SetText("");
+        self.PowerText:SetText("");
+        return;
+    end
+
     if ( not unit ) then
         unit = self.unit;
     end
