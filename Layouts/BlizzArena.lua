@@ -147,11 +147,6 @@ function layout:Initialize(frame)
     frameTexture:SetTexture("Interface\\ArenaEnemyFrame\\UI-ArenaTargetingFrame");
     frameTexture:Show();
 
-    local testbg = frame.TexturePool:Acquire();
-    testbg:SetDrawLayer("BACKGROUND", 1);
-    testbg:SetColorTexture(1, 1, 0, 1);
-    testbg:SetAllPoints(frame.Name);
-
     self:UpdateOrientation(frame);
 end
 
