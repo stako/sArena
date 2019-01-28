@@ -216,6 +216,7 @@ sArenaMixin.auraList = tInvert({
     190319, -- Combustion
     194249, -- Voidform
     51271,  -- Pillar of Frost
+    207289, -- Unholy Frenzy
     114051, -- Ascendance (Enhancement)
     114050, -- Ascendance (Elemental)
     107574, -- Avatar
