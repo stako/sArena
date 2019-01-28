@@ -300,7 +300,7 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterEvent("ARENA_OPPONENT_UPDATE");
     self:RegisterEvent("ARENA_COOLDOWNS_UPDATE");
     self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE");
-    self:RegisterUnitEvent("UNIT_HEALTH", unit);
+    self:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit);
     self:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
     self:RegisterUnitEvent("UNIT_POWER_UPDATE", unit);
     self:RegisterUnitEvent("UNIT_MAXPOWER", unit);
@@ -366,7 +366,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             end
         elseif ( event == "UNIT_AURA" ) then
             self:FindAura();
-        elseif ( event == "UNIT_HEALTH" ) then
+        elseif ( event == "UNIT_HEALTH_FREQUENT" ) then
             self:SetLifeState();
             self:SetStatusText();
             self.HealthBar:SetValue(UnitHealth(unit));
@@ -489,7 +489,7 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
     self:SetStatusText();
 
     self:OnEvent("UNIT_MAXHEALTH", unit);
-    self:OnEvent("UNIT_HEALTH", unit);
+    self:OnEvent("UNIT_HEALTH_FREQUENT", unit);
     self:OnEvent("UNIT_MAXPOWER", unit);
     self:OnEvent("UNIT_POWER_UPDATE", unit);
     self:OnEvent("UNIT_DISPLAYPOWER", unit);

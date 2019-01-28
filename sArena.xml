@@ -121,19 +121,16 @@
                 <Texture parentKey="ClassIcon"/>
                 <Texture parentKey="myHealPredictionBar" inherits="MyHealPredictionBarTemplate"/>
                 <Texture parentKey="otherHealPredictionBar" inherits="OtherHealPredictionBarTemplate"/>
-                <Texture parentKey="healAbsorbBar" inherits="HealAbsorbBarTemplate"/>
-                <Texture parentKey="healAbsorbBarLeftShadow" inherits="HealAbsorbBarLeftShadowTemplate"/>
-                <Texture parentKey="healAbsorbBarRightShadow" inherits="HealAbsorbBarRightShadowTemplate"/>
                 <Texture parentKey="totalAbsorbBar" inherits="TotalAbsorbBarTemplate"/>
             </Layer>
 
-            <Layer level="BORDER" textureSubLevel="2">
-                <!-- <Texture parentKey="overAbsorbGlow" inherits="OverAbsorbGlowTemplate"/>
-                <Texture parentKey="overHealAbsorbGlow" inherits="OverHealAbsorbGlowTemplate"/>
-                <Texture parentKey="totalAbsorbBarOverlay" inherits="TotalAbsorbBarOverlayTemplate"/> -->
+            <Layer level="ARTWORK" textureSubLevel="1">
+                <Texture parentKey="healAbsorbBar" inherits="HealAbsorbBarTemplate"/>
+                <Texture parentKey="healAbsorbBarLeftShadow" inherits="HealAbsorbBarLeftShadowTemplate"/>
+                <Texture parentKey="healAbsorbBarRightShadow" inherits="HealAbsorbBarRightShadowTemplate"/>
             </Layer>
 
-            <Layer level="ARTWORK" textureSubLevel="2">
+            <Layer level="ARTWORK" textureSubLevel="3">
                 <FontString parentKey="Name"/>
                 <FontString parentKey="HealthText"/>
                 <FontString parentKey="PowerText"/>

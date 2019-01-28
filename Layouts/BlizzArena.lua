@@ -142,7 +142,7 @@ function layout:Initialize(frame)
     local id = frame:GetID();
     layout["frameTexture"..id] = frame.TexturePool:Acquire();
     local frameTexture = layout["frameTexture"..id]
-    frameTexture:SetDrawLayer("ARTWORK", 1);
+    frameTexture:SetDrawLayer("ARTWORK", 2);
     frameTexture:SetAllPoints(frame);
     frameTexture:SetTexture("Interface\\ArenaEnemyFrame\\UI-ArenaTargetingFrame");
     frameTexture:Show();
