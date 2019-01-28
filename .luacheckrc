@@ -39,6 +39,7 @@ read_globals = {
     'UnitExists',
     'UnitFrame_OnEnter',
     'UnitFrame_OnLeave',
+    'UnitFrameHealPredictionBars_Update',
     'UnitGUID',
     'UnitHealth',
     'UnitHealthMax',
