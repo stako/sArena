@@ -435,8 +435,6 @@ function sArenaFrameMixin:OnLeave()
 end
 
 function sArenaFrameMixin:OnUpdate()
-    if ( self.hideStatusOnTooltip ) then return end
-
     if ( self.currentAuraSpellID ) then
         local now = GetTime();
         local timeLeft = self.currentAuraExpirationTime - now;
@@ -479,7 +477,6 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
         self.parent:SetMouseState(false);
     end
 
-    self.hideStatusOnTooltip = false;
     self.hideStatusText = false;
 
     self.Name:SetText(GetUnitName(unit));
@@ -504,8 +501,6 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
 end
 
 function sArenaFrameMixin:SetMysteryPlayer()
-    self.hideStatusOnTooltip = true;
-
     local f = self.HealthBar;
     f:SetMinMaxValues(0,100);
     f:ResetSmoothedValue(100);
