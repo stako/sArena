@@ -369,8 +369,12 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         elseif ( event == "UNIT_HEALTH_FREQUENT" ) then
             self:SetLifeState();
             self:SetStatusText();
-            self.HealthBar:SetValue(UnitHealth(unit));
-            UnitFrameHealPredictionBars_Update(self);
+            local currHp = UnitHealth(unit);
+            if ( currHp ~= self.currHp ) then
+                self.HealthBar:SetValue(currHp);
+                UnitFrameHealPredictionBars_Update(self);
+                self.currHp = currHp;
+            end
         elseif ( event == "UNIT_MAXHEALTH" ) then
             self.HealthBar:SetMinMaxValues(0, UnitHealthMax(unit));
             UnitFrameHealPredictionBars_Update(self);
