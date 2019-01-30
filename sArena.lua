@@ -377,12 +377,14 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             end
         elseif ( event == "UNIT_MAXHEALTH" ) then
             self.HealthBar:SetMinMaxValues(0, UnitHealthMax(unit));
+            self.HealthBar:SetValue(UnitHealth(unit));
             UnitFrameHealPredictionBars_Update(self);
         elseif ( event == "UNIT_POWER_UPDATE" ) then
             self:SetStatusText();
             self.PowerBar:SetValue(UnitPower(unit));
         elseif ( event == "UNIT_MAXPOWER" ) then
             self.PowerBar:SetMinMaxValues(0, UnitPowerMax(unit));
+            self.PowerBar:SetValue(UnitPower(unit));
         elseif ( event == "UNIT_DISPLAYPOWER" ) then
             local _, powerType = UnitPowerType(unit);
             self:SetPowerType(powerType);
