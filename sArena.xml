@@ -151,8 +151,8 @@
         </Layers>
 
         <Frames>
-            <StatusBar parentKey="HealthBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
-            <StatusBar parentKey="PowerBar" drawLayer="BORDER" useParentLevel="true" mixin="SmoothStatusBarMixin"/>
+            <StatusBar parentKey="HealthBar" drawLayer="BORDER" useParentLevel="true"/>
+            <StatusBar parentKey="PowerBar" drawLayer="BORDER" useParentLevel="true"/>
             <StatusBar parentKey="CastBar" inherits="sArenaCastBarTemplate"/>
             <Frame parentKey="SpecIcon" enablemouse="true" movable="true">
                 <Layers>
