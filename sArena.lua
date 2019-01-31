@@ -509,12 +509,12 @@ end
 function sArenaFrameMixin:SetMysteryPlayer()
     local f = self.HealthBar;
     f:SetMinMaxValues(0,100);
-    f:ResetSmoothedValue(100);
+    f:SetValue(100);
     f:SetStatusBarColor(0.5, 0.5, 0.5);
 
     f = self.PowerBar;
     f:SetMinMaxValues(0,100);
-    f:ResetSmoothedValue(100);
+    f:SetValue(100);
     f:SetStatusBarColor(0.5, 0.5, 0.5);
 
     self.hideStatusText = true;
