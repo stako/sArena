@@ -24,7 +24,11 @@ sArenaMixin.auraList = tInvert({
 
     -- CCs
     5211,   -- Mighty Bash (Stun)
-    108194, -- Asphyxiate (Stun)
+    108194, -- Asphyxiate (Unholy) (Stun)
+    221562, -- Asphyxiate (Blood) (Stun)
+    91797,  -- Monstrous Blow (Mutated Ghoul) (Stun)
+    287254, -- Dead of Winter (Stun)
+    210141, -- Zombie Explosion (Stun)
     199804, -- Between the Eyes (Stun)
     118905, -- Static Charge (Stun)
     1833,   -- Cheap Shot (Stun)
@@ -40,7 +44,9 @@ sArenaMixin.auraList = tInvert({
     211881, -- Fel Eruption (Stun)
     91800,  -- Gnaw (Stun)
     205630, -- Illidan's Grasp (Stun)
+    208618, -- Illidan's Grasp (Stun)
     203123, -- Maim (Stun)
+    202244, -- Overrun
     200200, -- Holy Word: Chastise, Censure Talent (Stun)
     22703,  -- Infernal Awakening (Stun)
     132168, -- Shockwave (Stun)
@@ -52,7 +58,12 @@ sArenaMixin.auraList = tInvert({
     202346, -- Double Barrel (Stun)
     213688, -- Fel Cleave (Stun)
     204399, -- Earthfury (Stun)
-    91717,  -- Monstrous Blow (Stun)
+    118345, -- Pulverize (Stun)
+    171017, -- Meteor Strike (Infernal) (Stun)
+    171018, -- Meteor Strike (Abyssal) (Stun)
+    46968,  -- Shockwave
+    132168, -- Shockwave (Protection)
+    287712, -- Haymaker (Stun)
 
 
     33786,  -- Cyclone (Disorient)
@@ -70,6 +81,7 @@ sArenaMixin.auraList = tInvert({
     118699, -- Fear (Disorient)
     6358,   -- Seduction (Disorient)
     261589, -- Seduction 2 (Disorient)
+    115268, -- Mesmerize (Shivarra) (Disorient)
     87204,  -- Sin and Punishment (Disorient)
     2637,   -- Hibernate (Disorient)
     226943, -- Mind Bomb (Disorient)
@@ -83,6 +95,7 @@ sArenaMixin.auraList = tInvert({
     196942, -- Hex: Voodoo Totem (Incapacitate)
     277784, -- Hex: Wicker Mongrel (Incapacitate)
     277778, -- Hex: Zandalari Tendonripper (Incapacitate)
+    269352, -- Hex: Skeletal Hatchling (Incapacitate)
     118,    -- Polymorph (Incapacitate)
     61305,  -- Polymorph: Black Cat (Incapacitate)
     28272,  -- Polymorph: Pig (Incapacitate)
@@ -111,6 +124,8 @@ sArenaMixin.auraList = tInvert({
     107079, -- Quaking Palm (Incapacitate)
     236025, -- Enraged Maim (Incapacitate)
     197214, -- Sundering (Incapacitate)
+    9484,   -- Shackle Undead (Incapacitate)
+    710,    -- Banish (Incapacitate)
 
     -- Immunities
     642,    -- Divine Shield
