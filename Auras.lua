@@ -252,12 +252,15 @@ sArenaMixin.auraList = tInvert({
     196098, -- Soul Harvest
     16166,  -- Elemental Mastery
     10060,  -- Power Infusion
+    197871, -- Dark Archangel
+    152262, -- Seraphim
 
     -- Defensive Buffs
     210256, -- Blessing of Sanctuary
     6940,   -- Blessing of Sacrifice
     125174, -- Touch of Karma
     236696, -- Thorns
+    184662, -- Shield of Vengeance
     47788,  -- Guardian Spirit
     197268, -- Ray of Hope
     5277,   -- Evasion
@@ -290,6 +293,11 @@ sArenaMixin.auraList = tInvert({
     871,    -- Shield Wall
     53480,  -- Roar of Sacrifice
     197690, -- Defensive Stance
+    47536,  -- Rapture
+
+    -- Refreshments
+    167152, -- Mage Food
+    274914, -- Rockskip Mineral Water
 
     -- Miscellaneous
     199450, -- Ultimate Sacrifice
