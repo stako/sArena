@@ -447,7 +447,7 @@ function sArenaFrameMixin:OnUpdate()
 
         if ( timeLeft > 30 ) then
             self.AuraText:SetText("");
-        elseif ( timeLeft >= 10 ) then
+        elseif ( timeLeft >= 5 ) then
             self.AuraText:SetFormattedText("%i", timeLeft);
         elseif (timeLeft > 0 ) then
             self.AuraText:SetFormattedText("%.1f", timeLeft);
@@ -906,6 +906,7 @@ function sArenaMixin:Test()
         frame.CastBar.Text:SetText("Polymorph");
         frame.CastBar:SetStatusBarColor(1, 0.7, 0, 1);
 
+        frame.hideStatusText = false;
         frame:SetStatusText("player");
         frame:UpdateStatusTextVisible();
     end
