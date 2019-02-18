@@ -126,12 +126,14 @@ sArenaMixin.auraList = tInvert({
     197214, -- Sundering (Incapacitate)
     9484,   -- Shackle Undead (Incapacitate)
     710,    -- Banish (Incapacitate)
+    6789,   -- Mortal Coil (Incapacitate)
 
     -- Immunities
     642,    -- Divine Shield
     186265, -- Aspect of the Turtle
     45438,  -- Ice Block
-    47585,  -- Dispersion
+    196555, -- Demon Hunter: Netherwalk
+    47585,  -- Priest: Dispersion
     1022,   -- Blessing of Protection
     204018, -- Blessing of Spellwarding
     216113, -- Way of the Crane
@@ -140,6 +142,7 @@ sArenaMixin.auraList = tInvert({
     212183, -- Smoke Bomb
     8178,   -- Grounding Totem Effect
     199448, -- Blessing of Sacrifice
+    236321, -- War Banner
 
     -- Interrupts
     1766,   -- Kick (Rogue)
@@ -164,11 +167,11 @@ sArenaMixin.auraList = tInvert({
     -- Anti CCs
     23920,  -- Spell Reflection
     216890, -- Spell Reflection (Honor Talent)
-    213610, -- Holy Ward
-    212295, -- Nether Ward
-    48707,  -- Anti-Magic Shell
-    5384,   -- Feign Death
-    213602, -- Greater Fade
+    213610, -- Priest: Holy Ward
+    213602, -- Priest: Greater Fade
+    212295, -- Warlock: Nether Ward
+    48707,  -- Death Knight: Anti-Magic Shell
+    5384,   -- Hunter: Feign Death
 
     -- Silences
     81261,  -- Solar Beam
@@ -218,82 +221,96 @@ sArenaMixin.auraList = tInvert({
     207171, -- Winter is Coming
 
     -- Offensive Buffs
-    266779, -- Coordinated Assault
-    193526, -- Trueshot
-    19574,  -- Bestial Wrath
-    121471, -- Shadow Blades
-    102560, -- Incarnation: Chosen of Elune
-    279648, -- Lively Spirit
-    194223, -- Celestial Alignment
-    1719,   -- Battle Cry
-    162264, -- Metamorphosis
-    211048, -- Chaos Blades
-    190319, -- Combustion
-    194249, -- Voidform
-    51271,  -- Pillar of Frost
-    207289, -- Unholy Frenzy
-    114051, -- Ascendance (Enhancement)
-    114050, -- Ascendance (Elemental)
-    107574, -- Avatar
-    12292,  -- Bloodbath
-    204945, -- Doom Winds
-    2825,   -- Bloodlust
-    32182,  -- Heroism
-    204361, -- Bloodlust (Honor Talent)
-    204362, -- Heroism (Honor Talent)
-    13750,  -- Adrenaline Rush
-    102543, -- Incarnation: King of the Jungle
-    137639, -- Storm, Earth, and Fire
-    152173, -- Serenity
-    12042,  -- Arcane Power
-    12472,  -- Icy Veins
-    198144, -- Ice Form
-    31884,  -- Avenging Wrath (Retribution)
-    196098, -- Soul Harvest
-    16166,  -- Elemental Mastery
-    10060,  -- Power Infusion
-    197871, -- Dark Archangel
-    152262, -- Seraphim
+    51271,  -- Death Knight: Pillar of Frost
+    47568,  -- Death Knight: Empower Rune Weapon
+    207289, -- Death Knight: Unholy Frenzy
+    211048, -- Demon Hunter: Chaos Blades
+    162264, -- Demon Hunter: Metamorphosis
+    194223, -- Druid: Celestial Alignment
+    102560, -- Druid: Incarnation: Chosen of Elune
+    102543, -- Druid: Incarnation: King of the Jungle
+    19574,  -- Hunter: Bestial Wrath
+    266779, -- Hunter: Coordinated Assault
+    193526, -- Hunter: Trueshot
+    12042,  -- Mage: Arcane Power
+    190319, -- Mage: Combustion
+    198144, -- Mage: Ice Form
+    12472,  -- Mage: Icy Veins
+    80353,  -- Mage: Time Warp
+    152173, -- Monk: Serenity
+    137639, -- Monk: Storm, Earth, and Fire
+    31884,  -- Paladin: Avenging Wrath (Retribution)
+    152262, -- Paladin: Seraphim
+    231895, -- Paladin: Crusade
+    197871, -- Priest: Dark Archangel
+    10060,  -- Priest: Power Infusion
+    194249, -- Priest: Voidform
+    13750,  -- Rogue: Adrenaline Rush
+    121471, -- Rogue: Shadow Blades
+    114050, -- Shaman: Ascendance (Elemental)
+    114051, -- Shaman: Ascendance (Enhancement)
+    2825,   -- Shaman: Bloodlust
+    204361, -- Shaman: Bloodlust (Honor Talent)
+    32182,  -- Shaman: Heroism
+    204362, -- Shaman: Heroism (Honor Talent)
+    191634, -- Shaman: Stormkeeper
+    204366, -- Shaman: Thundercharge
+    113858, -- Warlock: Dark Soul: Instability
+    113860, -- Warlock: Dark Soul: Misery
+    267218, -- Warlock: Nether Portal
+    107574, -- Warrior: Avatar
+    227847, -- Warrior: Bladestorm (Arms)
+    260708, -- Warrior: Sweeping Strikes
+    262228, -- Warrior: Deadly Calm
+    1719,   -- Warrior: Recklessness
 
     -- Defensive Buffs
-    210256, -- Blessing of Sanctuary
-    6940,   -- Blessing of Sacrifice
-    125174, -- Touch of Karma
-    236696, -- Thorns
-    184662, -- Shield of Vengeance
-    47788,  -- Guardian Spirit
-    197268, -- Ray of Hope
-    5277,   -- Evasion
-    199754, -- Riposte
-    212800, -- Blur
-    102342, -- Ironbark
-    22812,  -- Barkskin
-    117679, -- Incarnation: Tree of Life
-    198065, -- Prismatic Cloak
-    198111, -- Temporal Shield
-    108271, -- Astral Shift
-    114052, -- Ascendance (Restoration)
-    207319, -- Corpse Shield
-    104773, -- Unending Resolve
-    48792,  -- Icebound Fortitude
-    55233,  -- Vampiric Blood
-    61336,  -- Survival Instincts
-    116849, -- Life Cocoon
-    33206,  -- Pain Suppression
-    197862, -- Archangel
-    31850,  -- Ardent Defender
-    120954, -- Fortifying Brew
-    108416, -- Dark Pact
-    216331, -- Avenging Crusader
-    31842,  -- Avenging Wrath (Holy)
-    118038, -- Die by the Sword
-    12975,  -- Last Stand
-    205191, -- Eye for an Eye
-    498,    -- Divine Protection
-    871,    -- Shield Wall
-    53480,  -- Roar of Sacrifice
-    197690, -- Defensive Stance
-    47536,  -- Rapture
+    48792,  -- Death Knight: Icebound Fortitude
+    287081, -- Death Knight: Lichborne
+    145629, -- Death Knight: Anti-Magic Zone
+    81256,  -- Death Knight: Dancing Rune Weapon
+    55233,  -- Death Knight: Vampiric Blood
+    212800, -- Demon Hunter: Blur
+    188499, -- Demon Hunter: Blade Dance
+    209426, -- Demon Hunter: Darkness
+    236696, -- Druid: Thorns
+    102342, -- Druid: Ironbark
+    22812,  -- Druid: Barkskin
+    61336,  -- Druid: Survival Instincts
+    117679, -- Druid: Incarnation: Tree of Life
+    53480,  -- Hunter: Roar of Sacrifice
+    198111, -- Mage: Temporal Shield
+    125174, -- Monk: Touch of Karma
+    116849, -- Monk: Life Cocoon
+    120954, -- Monk: Fortifying Brew
+    122783, -- Monk: Diffuse Magic
+    210256, -- Paladin: Blessing of Sanctuary
+    6940,   -- Paladin: Blessing of Sacrifice
+    184662, -- Paladin: Shield of Vengeance
+    31850,  -- Paladin: Ardent Defender
+    216331, -- Paladin: Avenging Crusader
+    31842,  -- Paladin: Avenging Wrath (Holy)
+    205191, -- Paladin: Eye for an Eye
+    498,    -- Paladin: Divine Protection
+    47788,  -- Priest: Guardian Spirit
+    33206,  -- Priest: Pain Suppression
+    232707, -- Priest: Ray of Hope
+    81782,  -- Priest: Power Word: Barrier
+    15286,  -- Priest: Vampiric Embrace
+    19236,  -- Priest: Desperate Prayer
+    197862, -- Priest: Archangel
+    47536,  -- Priest: Rapture
+    271466, -- Priest: Luminous Barrier
+    5277,   -- Rogue: Evasion
+    199754, -- Rogue: Riposte
+    108271, -- Shaman: Astral Shift
+    114052, -- Shaman: Ascendance (Restoration)
+    104773, -- Warlock: Unending Resolve
+    108416, -- Warlock: Dark Pact
+    118038, -- Warrior: Die by the Sword
+    12975,  -- Warrior: Last Stand
+    871,    -- Warrior: Shield Wall
+    197690, -- Warrior: Defensive Stance
 
     -- Refreshments
     167152, -- Mage Food
