@@ -300,7 +300,7 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterEvent("ARENA_OPPONENT_UPDATE");
     self:RegisterEvent("ARENA_COOLDOWNS_UPDATE");
     self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE");
-    self:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit);
+    self:RegisterUnitEvent("UNIT_HEALTH", unit);
     self:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
     self:RegisterUnitEvent("UNIT_POWER_UPDATE", unit);
     self:RegisterUnitEvent("UNIT_MAXPOWER", unit);
