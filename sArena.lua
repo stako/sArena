@@ -366,7 +366,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
             end
         elseif ( event == "UNIT_AURA" ) then
             self:FindAura();
-        elseif ( event == "UNIT_HEALTH_FREQUENT" ) then
+        elseif ( event == "UNIT_HEALTH" ) then
             self:SetLifeState();
             self:SetStatusText();
             local currHp = UnitHealth(unit);
@@ -492,7 +492,7 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
     self:SetStatusText();
 
     self:OnEvent("UNIT_MAXHEALTH", unit);
-    self:OnEvent("UNIT_HEALTH_FREQUENT", unit);
+    self:OnEvent("UNIT_HEALTH", unit);
     self:OnEvent("UNIT_MAXPOWER", unit);
     self:OnEvent("UNIT_POWER_UPDATE", unit);
     self:OnEvent("UNIT_DISPLAYPOWER", unit);
