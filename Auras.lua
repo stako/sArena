@@ -325,4 +325,4 @@ sArenaMixin.auraList = tInvert({
     96243,  -- Invisibility invis effect?
     110960, -- Greater Invisibility
     198158, -- Mass Invisibility
-});
+})

@@ -1,29 +1,29 @@
 local function getLayoutTable()
-    local t = {};
+    local t = {}
 
     for k, _ in pairs(sArenaMixin.layouts) do
-        t[k] = sArenaMixin.layouts[k].name and sArenaMixin.layouts[k].name or k;
+        t[k] = sArenaMixin.layouts[k].name and sArenaMixin.layouts[k].name or k
     end
 
-    return t;
+    return t
 end
 
 local function validateCombat()
     if ( InCombatLockdown() ) then
-        return "Must leave combat first.";
+        return "Must leave combat first."
     end
 
-    return true;
+    return true
 end
 
-local growthValues = { "Down", "Up", "Right", "Left" };
+local growthValues = { "Down", "Up", "Right", "Left" }
 local drCategories = {
     ["Stun"] = "Stuns",
     ["Incapacitate"] = "Incapacitates",
     ["Disorient"] = "Disorients",
     ["Silence"] = "Silences",
     ["Root"] = "Roots",
-};
+}
 
 function sArenaMixin:GetLayoutOptionsTable(layoutName)
     local optionsTable = {
@@ -390,48 +390,48 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
                 },
             },
         },
-    };
+    }
 
-    return optionsTable;
+    return optionsTable
 end
 
 function sArenaMixin:UpdateFrameSettings(db, info, val)
     if ( val ) then
-        db[info[#info]] = val;
+        db[info[#info]] = val
     end
 
-    self:ClearAllPoints();
-    self:SetPoint("CENTER", UIParent, "CENTER", db.posX, db.posY);
-    self:SetScale(db.scale);
+    self:ClearAllPoints()
+    self:SetPoint("CENTER", UIParent, "CENTER", db.posX, db.posY)
+    self:SetScale(db.scale)
 
-    local growthDirection = db.growthDirection;
-    local spacing = db.spacing;
+    local growthDirection = db.growthDirection
+    local spacing = db.spacing
 
     for i = 2, 3 do
-        local frame = self["arena"..i];
-        local prevFrame = self["arena"..i-1];
+        local frame = self["arena"..i]
+        local prevFrame = self["arena"..i-1]
 
-        frame:ClearAllPoints();
-        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing);
-        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing);
-        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0);
-        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0);
+        frame:ClearAllPoints()
+        if ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing)
+        elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing)
+        elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0)
+        elseif ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0)
         end
     end
 end
 
 function sArenaMixin:UpdateCastBarSettings(db, info, val)
     if ( val ) then
-        db[info[#info]] = val;
+        db[info[#info]] = val
     end
 
     for i = 1, 3 do
-        local frame = self["arena"..i];
+        local frame = self["arena"..i]
 
-        frame.CastBar:ClearAllPoints();
-        frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
-        frame.CastBar:SetScale(db.scale);
-        frame.CastBar:SetWidth(db.width);
+        frame.CastBar:ClearAllPoints()
+        frame.CastBar:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY)
+        frame.CastBar:SetScale(db.scale)
+        frame.CastBar:SetWidth(db.width)
     end
 end
 
@@ -442,57 +442,57 @@ function sArenaMixin:UpdateDRSettings(db, info, val)
         "Disorient",
         "Silence",
         "Root",
-    };
+    }
 
     if ( val ) then
-        db[info[#info]] = val;
+        db[info[#info]] = val
     end
 
     for i = 1, 3 do
-        local frame = self["arena"..i];
-        frame:UpdateDRPositions();
+        local frame = self["arena"..i]
+        frame:UpdateDRPositions()
 
         for n = 1, #categories do
-            local dr = frame[categories[n]];
+            local dr = frame[categories[n]]
 
-            dr:SetSize(db.size, db.size);
-            dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize);
-            dr.Border:SetPoint("BOTTOMRIGHT", dr, "BOTTOMRIGHT", db.borderSize, -db.borderSize);
+            dr:SetSize(db.size, db.size)
+            dr.Border:SetPoint("TOPLEFT", dr, "TOPLEFT", -db.borderSize, db.borderSize)
+            dr.Border:SetPoint("BOTTOMRIGHT", dr, "BOTTOMRIGHT", db.borderSize, -db.borderSize)
 
-            local text = dr.Cooldown.Text;
-            text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
+            local text = dr.Cooldown.Text
+            text:SetFont(text.fontFile, db.fontSize, "OUTLINE")
         end
     end
 end
 
 function sArenaMixin:UpdateSpecIconSettings(db, info, val)
     if ( val ) then
-        db[info[#info]] = val;
+        db[info[#info]] = val
     end
 
     for i = 1, 3 do
-        local frame = self["arena"..i];
+        local frame = self["arena"..i]
 
-        frame.SpecIcon:ClearAllPoints();
-        frame.SpecIcon:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
-        frame.SpecIcon:SetScale(db.scale);
+        frame.SpecIcon:ClearAllPoints()
+        frame.SpecIcon:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY)
+        frame.SpecIcon:SetScale(db.scale)
     end
 end
 
 function sArenaMixin:UpdateTrinketSettings(db, info, val)
     if ( val ) then
-        db[info[#info]] = val;
+        db[info[#info]] = val
     end
 
     for i = 1, 3 do
-        local frame = self["arena"..i];
+        local frame = self["arena"..i]
 
-        frame.Trinket:ClearAllPoints();
-        frame.Trinket:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY);
-        frame.Trinket:SetScale(db.scale);
+        frame.Trinket:ClearAllPoints()
+        frame.Trinket:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY)
+        frame.Trinket:SetScale(db.scale)
 
-        local text = self["arena"..i].Trinket.Cooldown.Text;
-        text:SetFont(text.fontFile, db.fontSize, "OUTLINE");
+        local text = self["arena"..i].Trinket.Cooldown.Text
+        text:SetFont(text.fontFile, db.fontSize, "OUTLINE")
     end
 end
 
@@ -521,7 +521,7 @@ sArenaMixin.optionsTable = {
             order = 3,
             name = "Hide",
             type = "execute",
-            func = function(info) for i = 1, 3 do info.handler["arena"..i]:OnEvent("PLAYER_ENTERING_WORLD"); end end,
+            func = function(info) for i = 1, 3 do info.handler["arena"..i]:OnEvent("PLAYER_ENTERING_WORLD") end end,
             width = "half",
         },
         dragNotice = {
@@ -563,8 +563,8 @@ sArenaMixin.optionsTable = {
                                     type = "toggle",
                                     get = function(info) return info.handler.db.profile.statusText.alwaysShow end,
                                     set = function(info, val)
-                                        info.handler.db.profile.statusText.alwaysShow = val;
-                                        for i = 1, 3 do info.handler["arena"..i]:UpdateStatusTextVisible();
+                                        info.handler.db.profile.statusText.alwaysShow = val
+                                        for i = 1, 3 do info.handler["arena"..i]:UpdateStatusTextVisible()
                                         end
                                     end,
                                 },
@@ -574,11 +574,11 @@ sArenaMixin.optionsTable = {
                                     type = "toggle",
                                     get = function(info) return info.handler.db.profile.statusText.usePercentage end,
                                     set =   function(info, val)
-                                                info.handler.db.profile.statusText.usePercentage = val;
+                                                info.handler.db.profile.statusText.usePercentage = val
 
-                                                local _, instanceType = IsInInstance();
+                                                local _, instanceType = IsInInstance()
                                                 if ( instanceType ~= "arena" and info.handler.arena1:IsShown() ) then
-                                                    info.handler:Test();
+                                                    info.handler:Test()
                                                 end
                                             end,
                                 },
@@ -596,14 +596,14 @@ sArenaMixin.optionsTable = {
                                     desc = "When disabled, health bars will be green",
                                     type = "toggle",
                                     get = function(info) return info.handler.db.profile.classColors end,
-                                    set = function(info, val) info.handler.db.profile.classColors = val; end,
+                                    set = function(info, val) info.handler.db.profile.classColors = val end,
                                 },
                                 showNames = {
                                     order = 2,
                                     name = "Show Names",
                                     type = "toggle",
                                     get = function(info) return info.handler.db.profile.showNames end,
-                                    set = function(info, val) info.handler.db.profile.showNames = val; for i = 1, 3 do info.handler["arena"..i].Name:SetShown(val); end end,
+                                    set = function(info, val) info.handler.db.profile.showNames = val for i = 1, 3 do info.handler["arena"..i].Name:SetShown(val) end end,
                                 },
                             },
                         },
@@ -618,8 +618,8 @@ sArenaMixin.optionsTable = {
                             order = 1,
                             name = "Categories",
                             type = "multiselect",
-                            get = function(info, key) return info.handler.db.profile.drCategories[key]; end,
-                            set = function(info, key, val) info.handler.db.profile.drCategories[key] = val; end,
+                            get = function(info, key) return info.handler.db.profile.drCategories[key] end,
+                            set = function(info, key, val) info.handler.db.profile.drCategories[key] = val end,
                             values = drCategories,
                         },
                     },
@@ -627,4 +627,4 @@ sArenaMixin.optionsTable = {
             },
         },
     },
-};
+}
