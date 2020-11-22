@@ -72,9 +72,6 @@ function layout:Initialize(frame)
         setupOptionsTable(frame.parent);
     end
 
-    frame.parent.portraitClassIcon = true;
-    frame.parent.portraitSpecIcon = true;
-
     if ( frame:GetID() == 3 ) then
         frame.parent:UpdateCastBarSettings(self.db.castBar);
         frame.parent:UpdateDRSettings(self.db.dr);
@@ -85,6 +82,7 @@ function layout:Initialize(frame)
 
     frame:SetSize(192, 76.8);
     frame.SpecIcon:SetSize(22, 22);
+    frame.SpecIcon.Texture:AddMaskTexture(frame.SpecIcon.Mask);
     frame.Trinket:SetSize(22, 22);
 
     local healthBar = frame.HealthBar;
@@ -99,6 +97,9 @@ function layout:Initialize(frame)
     local f = frame.ClassIcon;
     f:SetSize(64, 64);
     f:Show();
+    f:AddMaskTexture(frame.ClassIconMask)
+
+    frame.ClassIconMask:SetSize(64, 64);
 
     local specBorder = frame.TexturePool:Acquire();
     specBorder:SetParent(frame.SpecIcon);
@@ -150,18 +151,22 @@ function layout:UpdateOrientation(frame)
     local frameTexture = layout["frameTexture"..frame:GetID()];
     local healthBar = frame.HealthBar;
     local classIcon = frame.ClassIcon;
+    local classIconMask = frame.ClassIconMask;
 
     healthBar:ClearAllPoints();
     classIcon:ClearAllPoints();
+    classIconMask:ClearAllPoints();
 
     if ( self.db.mirrored ) then
         frameTexture:SetTexCoord(0.85, 0.1, 0.05, 0.65);
         healthBar:SetPoint("RIGHT", -5, -2);
         classIcon:SetPoint("LEFT", 5, 0);
+        classIconMask:SetPoint("LEFT", 5, 0);
     else
         frameTexture:SetTexCoord(0.1, 0.85, 0.05, 0.65);
         healthBar:SetPoint("LEFT", 5, -2);
         classIcon:SetPoint("RIGHT", -5, 0);
+        classIconMask:SetPoint("RIGHT", -5, 0);
     end
 end
 

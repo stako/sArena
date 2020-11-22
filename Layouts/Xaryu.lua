@@ -112,9 +112,6 @@ function layout:Initialize(frame)
         setupOptionsTable(frame.parent);
     end
 
-    frame.parent.portraitClassIcon = false;
-    frame.parent.portraitSpecIcon = false;
-
     if ( frame:GetID() == 3 ) then
         frame.parent:UpdateCastBarSettings(self.db.castBar);
         frame.parent:UpdateDRSettings(self.db.dr);

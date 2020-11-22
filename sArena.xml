@@ -119,6 +119,7 @@
             <Layer level="BORDER" textureSubLevel="1">
                 <!-- Health/power bar is in this layer -->
                 <Texture parentKey="ClassIcon"/>
+                <MaskTexture parentKey="ClassIconMask" file="Interface\CharacterFrame\TempPortraitAlphaMask"/>
                 <Texture parentKey="myHealPredictionBar" inherits="MyHealPredictionBarTemplate"/>
                 <Texture parentKey="otherHealPredictionBar" inherits="OtherHealPredictionBarTemplate"/>
                 <Texture parentKey="totalAbsorbBar" inherits="TotalAbsorbBarTemplate"/>
@@ -154,6 +155,7 @@
                 <Layers>
                     <Layer level="ARTWORK" textureSubLevel="2">
                         <Texture parentKey="Texture" setAllPoints="true"/>
+                        <MaskTexture parentKey="Mask" setAllPoints="true" file="Interface\CharacterFrame\TempPortraitAlphaMask"/>
                     </Layer>
                 </Layers>
             </Frame>

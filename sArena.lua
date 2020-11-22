@@ -2,8 +2,6 @@ sArenaMixin = {};
 sArenaFrameMixin = {};
 
 sArenaMixin.layouts = {};
-sArenaMixin.portraitClassIcon = true;
-sArenaMixin.portraitSpecIcon = true;
 
 sArenaMixin.defaultSettings = {
     profile = {
@@ -72,7 +70,6 @@ local UnitChannelInfo = UnitChannelInfo;
 local GetTime = GetTime;
 local After = C_Timer.After;
 local UnitAura = UnitAura;
-local SetPortraitToTexture = SetPortraitToTexture; -- not called often, but had problems in the past
 local UnitHealthMax = UnitHealthMax;
 local UnitHealth = UnitHealth;
 local UnitPowerMax = UnitPowerMax;
@@ -522,11 +519,7 @@ function sArenaFrameMixin:GetClassAndSpec()
             if ( specID > 0 ) then
                 self.SpecIcon:Show();
                 self.specTexture = select(4, GetSpecializationInfoByID(specID));
-                if ( self.parent.portraitSpecIcon ) then
-                    SetPortraitToTexture(self.SpecIcon.Texture, self.specTexture);
-                else
-                    self.SpecIcon.Texture:SetTexture(self.specTexture);
-                end
+                self.SpecIcon.Texture:SetTexture(self.specTexture);
 
                 self.class = select(6, GetSpecializationInfoByID(specID));
             end
@@ -551,19 +544,10 @@ function sArenaFrameMixin:UpdateClassIcon()
 
     self.ClassIcon:SetTexCoord(0, 1, 0, 1);
 
-    if ( self.parent.portraitClassIcon ) then
-        if ( texture == "class" ) then
-            self.ClassIcon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles");
-            self.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.class]));
-        else
-            SetPortraitToTexture(self.ClassIcon, texture);
-        end
-    else
-        if ( texture == "class" ) then
-            texture = classIcons[self.class];
-        end
-        self.ClassIcon:SetTexture(texture);
+    if ( texture == "class" ) then
+        texture = classIcons[self.class];
     end
+    self.ClassIcon:SetTexture(texture);
 end
 
 function sArenaFrameMixin:UpdateTrinket()
@@ -615,6 +599,7 @@ function sArenaFrameMixin:ResetLayout()
     ResetStatusBar(self.PowerBar);
     ResetStatusBar(self.CastBar);
     self.CastBar:SetHeight(16);
+    self.ClassIcon:RemoveMaskTexture(self.ClassIconMask)
 
     local f = self.Trinket;
     f:ClearAllPoints();
@@ -625,6 +610,7 @@ function sArenaFrameMixin:ResetLayout()
     f:ClearAllPoints();
     f:SetSize(0, 0);
     f:SetScale(1);
+    f.Texture:RemoveMaskTexture(f.Mask)
 
     f = self.Name;
     ResetFontString(f);
@@ -840,19 +826,11 @@ function sArenaMixin:Test()
         local frame = self["arena"..i];
         frame:Show();
 
-        if ( frame.parent.portraitClassIcon ) then
-            SetPortraitToTexture(frame.ClassIcon, 626001);
-        else
-            frame.ClassIcon:SetTexture(626001);
-        end
+        frame.ClassIcon:SetTexture(626001);
 
         frame.SpecIcon:Show();
 
-        if ( frame.parent.portraitSpecIcon ) then
-            SetPortraitToTexture(frame.SpecIcon.Texture, 135846);
-        else
-            frame.SpecIcon.Texture:SetTexture(135846);
-        end
+        frame.SpecIcon.Texture:SetTexture(135846);
 
         frame.Name:SetText("arena"..i);
         frame.Name:SetShown(db.profile.showNames)
