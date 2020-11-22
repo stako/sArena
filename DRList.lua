@@ -1,7 +1,6 @@
 sArenaMixin.drList = {
     [207167]  = "Disorient",       -- Blinding Sleet
     [207685]  = "Disorient",       -- Sigil of Misery
-    [2637]    = "Disorient",       -- Hibernate
     [33786]   = "Disorient",       -- Cyclone
     [209753]  = "Disorient",       -- Cyclone (Honor talent)
     [31661]   = "Disorient",       -- Dragon's Breath
@@ -58,6 +57,7 @@ sArenaMixin.drList = {
     [710]     = "Incapacitate",    -- Banish
     [6789]    = "Incapacitate",    -- Mortal Coil
     [107079]  = "Incapacitate",    -- Quaking Palm (Pandaren)
+    [2637]    = "Incapacitate",       -- Hibernate
 
     [47476]   = "Silence",         -- Strangulate
     [204490]  = "Silence",         -- Sigil of Silence
