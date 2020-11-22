@@ -19,11 +19,11 @@
     <Frame name="sArenaDRTrackerTemplate" frameStrata="LOW" hidden="true" virtual="true">
         <Size x="40" y="40"/>
         <Layers>
-            <Layer level="BORDER">
+            <Layer level="OVERLAY">
                 <Texture parentKey="Border" file="Interface\Buttons\UI-Quickslot-Depress"/>
             </Layer>
             
-            <Layer level="OVERLAY">
+            <Layer level="ARTWORK">
                 <Texture parentKey="Icon">
                     <TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
                 </Texture>
