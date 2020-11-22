@@ -847,6 +847,8 @@ function sArenaMixin:Test()
 
         frame.SpecIcon.Texture:SetTexture(135846)
 
+        frame.AuraCooldown:SetCooldown(GetTime(), math.random(20, 60))
+
         frame.Name:SetText("arena"..i)
         frame.Name:SetShown(db.profile.showNames)
 
