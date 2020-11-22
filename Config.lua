@@ -94,6 +94,17 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
                             bigStep = 0.1,
                             isPercent = true,
                         },
+                        classIconFontSize = {
+                            order = 2,
+                            name = "Class Icon CD Font Size",
+                            desc = "Only works with Blizzard cooldown count (not OmniCC)",
+                            type = "range",
+                            min = 2,
+                            max = 48,
+                            softMin = 4,
+                            softMax = 32,
+                            step = 1,
+                        },
                     },
                 },
             },
@@ -406,6 +417,11 @@ function sArenaMixin:UpdateFrameSettings(db, info, val)
 
     local growthDirection = db.growthDirection
     local spacing = db.spacing
+
+    for i = 1, 3 do
+        local text = self["arena"..i].AuraCooldown.Text
+        text:SetFont(text.fontFile, db.classIconFontSize, "OUTLINE")
+    end
 
     for i = 2, 3 do
         local frame = self["arena"..i]

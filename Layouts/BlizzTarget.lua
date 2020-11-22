@@ -6,6 +6,7 @@ layout.defaultSettings = {
     posX = 300,
     posY = 100,
     scale = 1,
+    classIconFontSize = 20,
     spacing = 14,
     growthDirection = 1,
     specIcon = {
