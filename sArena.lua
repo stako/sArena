@@ -548,6 +548,12 @@ function sArenaFrameMixin:UpdateClassIcon()
         texture = classIcons[self.class];
     end
     self.ClassIcon:SetTexture(texture);
+
+    if self.currentAuraSpellID then
+        self.AuraCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration);
+    else
+        self.AuraCooldown:Clear();
+    end
 end
 
 function sArenaFrameMixin:UpdateTrinket()
@@ -599,7 +605,10 @@ function sArenaFrameMixin:ResetLayout()
     ResetStatusBar(self.PowerBar);
     ResetStatusBar(self.CastBar);
     self.CastBar:SetHeight(16);
-    self.ClassIcon:RemoveMaskTexture(self.ClassIconMask)
+    self.ClassIcon:RemoveMaskTexture(self.ClassIconMask);
+
+    self.AuraCooldown:SetSwipeTexture(1);
+    self.AuraCooldown:SetUseCircularEdge(false);
 
     local f = self.Trinket;
     f:ClearAllPoints();
@@ -610,7 +619,7 @@ function sArenaFrameMixin:ResetLayout()
     f:ClearAllPoints();
     f:SetSize(0, 0);
     f:SetScale(1);
-    f.Texture:RemoveMaskTexture(f.Mask)
+    f.Texture:RemoveMaskTexture(f.Mask);
 
     f = self.Name;
     ResetFontString(f);
@@ -641,10 +650,11 @@ end
 
 function sArenaFrameMixin:FindAura()
     local unit = self.unit;
-    local currentSpellID, currentExpirationTime, currentTexture = nil, 0, nil;
+    local currentSpellID, currentDuration, currentExpirationTime, currentTexture = nil, 0, 0, nil;
 
     if ( self.currentInterruptSpellID ) then
         currentSpellID = self.currentInterruptSpellID;
+        currentDuration = self.currentInterruptDuration;
         currentExpirationTime = self.currentInterruptExpirationTime;
         currentTexture = self.currentInterruptTexture;
     end
@@ -653,13 +663,14 @@ function sArenaFrameMixin:FindAura()
         local filter = (i == 1 and "HELPFUL" or "HARMFUL");
 
         for n = 1, 30 do
-            local _, texture, _, _, _, expirationTime, _, _, _, spellID = UnitAura(unit, n, filter);
+            local _, texture, _, _, duration, expirationTime, _, _, _, spellID = UnitAura(unit, n, filter);
 
             if ( not spellID ) then break end
 
             if ( auraList[spellID] ) then
                 if ( not currentSpellID or auraList[spellID] < auraList[currentSpellID] ) then
                     currentSpellID = spellID;
+                    currentDuration = duration;
                     currentExpirationTime = expirationTime;
                     currentTexture = texture;
                 end
@@ -669,11 +680,13 @@ function sArenaFrameMixin:FindAura()
 
     if ( currentSpellID ) then
         self.currentAuraSpellID = currentSpellID;
-        self.currentAuraExpirationTime = currentExpirationTime;
+        self.currentAuraStartTime = currentExpirationTime - currentDuration;
+        self.currentAuraDuration = currentDuration;
         self.currentAuraTexture = currentTexture;
     else
         self.currentAuraSpellID = nil;
-        self.currentAuraExpirationTime = 0;
+        self.currentAuraStartTime = 0;
+        self.currentAuraDuration = 0;
         self.currentAuraTexture = nil;
     end
 
@@ -691,11 +704,13 @@ function sArenaFrameMixin:FindInterrupt(event, spellID)
 
     if ( event == "SPELL_INTERRUPT" or notInterruptable == false ) then
         self.currentInterruptSpellID = spellID;
+        self.currentInterruptDuration = interruptDuration;
         self.currentInterruptExpirationTime = GetTime() + interruptDuration;
         self.currentInterruptTexture = GetSpellTexture(spellID);
         self:FindAura();
         After(interruptDuration, function()
             self.currentInterruptSpellID = nil;
+            self.currentInterruptDuration = 0;
             self.currentInterruptExpirationTime = 0;
             self.currentInterruptTexture = nil;
             self:FindAura();

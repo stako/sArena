@@ -80,6 +80,9 @@ function layout:Initialize(frame)
         frame.parent:UpdateTrinketSettings(self.db.trinket);
     end
 
+    frame.AuraCooldown:SetSwipeTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask");
+    frame.AuraCooldown:SetUseCircularEdge(true);
+
     frame:SetSize(192, 76.8);
     frame.SpecIcon:SetSize(22, 22);
     frame.SpecIcon.Texture:AddMaskTexture(frame.SpecIcon.Mask);

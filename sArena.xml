@@ -151,6 +151,21 @@
             <StatusBar parentKey="HealthBar" drawLayer="BORDER" useParentLevel="true"/>
             <StatusBar parentKey="PowerBar" drawLayer="BORDER" useParentLevel="true"/>
             <StatusBar parentKey="CastBar" inherits="sArenaCastBarTemplate"/>
+            <Cooldown parentKey="AuraCooldown" drawLayer="BORDER" useParentLevel="true" reverse="true" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
+                <Scripts>
+                    <OnLoad>
+                        for _, region in next, { self:GetRegions() } do
+                            if region:GetObjectType() == "FontString" then
+                                self.Text = region;
+                                self.Text.fontFile = region:GetFont();
+                            end
+                        end
+                        self:SetAllPoints(self:GetParent().ClassIcon)
+                        self:SetSwipeTexture(1)
+                        self:SetSwipeColor(0, 0, 0, 0.6)
+                    </OnLoad>
+                </Scripts>
+            </Cooldown>
             <Frame parentKey="SpecIcon" enablemouse="true" movable="true">
                 <Layers>
                     <Layer level="ARTWORK" textureSubLevel="2">
