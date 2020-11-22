@@ -340,8 +340,6 @@ function sArenaFrameMixin:OnLoad()
     self.overHealAbsorbGlow:SetPoint("BOTTOMRIGHT", self.healthbar, "BOTTOMLEFT", 7, 0);
     self.overHealAbsorbGlow:SetPoint("TOPRIGHT", self.healthbar, "TOPLEFT", 7, 0);
 
-    self.AuraText:SetPoint("CENTER", self.ClassIcon, "CENTER");
-
     self.TexturePool = CreateTexturePool(self, "ARTWORK", nil, nil, ResetTexture);
 end
 
@@ -440,21 +438,6 @@ function sArenaFrameMixin:OnLeave()
     UnitFrame_OnLeave(self);
 
     self:UpdateStatusTextVisible();
-end
-
-function sArenaFrameMixin:OnUpdate()
-    if ( self.currentAuraSpellID ) then
-        local now = GetTime();
-        local timeLeft = self.currentAuraExpirationTime - now;
-
-        if ( timeLeft > 30 ) then
-            self.AuraText:SetText("");
-        elseif ( timeLeft >= 5 ) then
-            self.AuraText:SetFormattedText("%i", timeLeft);
-        elseif (timeLeft > 0 ) then
-            self.AuraText:SetFormattedText("%.1f", timeLeft);
-        end
-    end
 end
 
 function sArenaFrameMixin:UpdateVisible()
@@ -648,11 +631,6 @@ function sArenaFrameMixin:ResetLayout()
     f:SetDrawLayer("ARTWORK", 2);
     f:SetFontObject("SystemFont_Shadow_Small2");
 
-    f = self.AuraText;
-    ResetFontString(f);
-    f:SetFontObject("SystemFont_Shadow_Large_Outline");
-    f:SetTextColor(1, 1, 1, 1);
-
     f = self.HealthText;
     ResetFontString(f);
     f:SetDrawLayer("ARTWORK", 2);
@@ -711,10 +689,6 @@ function sArenaFrameMixin:FindAura()
         self.currentAuraSpellID = nil;
         self.currentAuraExpirationTime = 0;
         self.currentAuraTexture = nil;
-    end
-
-    if ( self.currentAuraExpirationTime == 0 ) then
-        self.AuraText:SetText("");
     end
 
     self:UpdateClassIcon();
@@ -880,7 +854,6 @@ function sArenaMixin:Test()
             frame.SpecIcon.Texture:SetTexture(135846);
         end
 
-        frame.AuraText:SetText("5.3");
         frame.Name:SetText("arena"..i);
         frame.Name:SetShown(db.profile.showNames)
 

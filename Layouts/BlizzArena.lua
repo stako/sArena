@@ -122,10 +122,6 @@ function layout:Initialize(frame)
     f:SetPoint("CENTER", frame.HealthBar, "CENTER");
     f:SetSize(26, 26);
 
-    frame.AuraText:SetFontObject("SystemFont_Shadow_Med1_Outline");
-    frame.AuraText:Show();
-    frame.AuraText:SetPoint("CENTER", frame.ClassIcon);
-
     frame.HealthText:SetPoint("CENTER", frame.HealthBar);
     frame.HealthText:SetShadowOffset(0, 0);
 

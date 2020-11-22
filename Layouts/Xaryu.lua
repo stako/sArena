@@ -153,9 +153,6 @@ function layout:Initialize(frame)
     f:SetPoint("CENTER", frame.HealthBar, "CENTER");
     f:SetSize(self.db.height * 0.8, self.db.height * 0.8);
 
-    frame.AuraText:Show();
-    frame.AuraText:SetPoint("CENTER", frame.ClassIcon);
-
     frame.HealthText:SetPoint("CENTER", frame.HealthBar);
     frame.HealthText:SetShadowOffset(0, 0);
 
