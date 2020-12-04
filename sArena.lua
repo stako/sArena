@@ -542,8 +542,6 @@ function sArenaFrameMixin:UpdateClassIcon()
 
     self.currentClassTexture = texture
 
-    self.ClassIcon:SetTexCoord(0, 1, 0, 1)
-
     if ( texture == "class" ) then
         texture = classIcons[self.class]
     end
@@ -620,6 +618,7 @@ function sArenaFrameMixin:ResetLayout()
     f:SetSize(0, 0)
     f:SetScale(1)
     f.Texture:RemoveMaskTexture(f.Mask)
+    f.Texture:SetTexCoord(0, 1, 0, 1)
 
     f = self.Name
     ResetFontString(f)
@@ -637,6 +636,9 @@ function sArenaFrameMixin:ResetLayout()
     f:SetDrawLayer("ARTWORK", 2)
     f:SetFontObject("Game10Font_o1")
     f:SetTextColor(1, 1, 1, 1)
+
+    f = self.CastBar
+    f.Icon:SetTexCoord(0, 1, 0, 1)
 
     self.TexturePool:ReleaseAll()
 end
@@ -854,6 +856,14 @@ function sArenaMixin:Test()
 
         frame.Trinket.Texture:SetTexture(1322720)
         frame.Trinket.Cooldown:SetCooldown(currTime, math.random(20, 60))
+
+        local color = RAID_CLASS_COLORS["MAGE"]
+        if ( db.profile.classColors ) then
+            frame.HealthBar:SetStatusBarColor(color.r, color.g, color.b, 1)
+        else
+            frame.HealthBar:SetStatusBarColor(0, 1, 0, 1)
+        end
+        frame.PowerBar:SetStatusBarColor(0, 0, 1, 1)
 
         for n = 1, #drCategories do
             local drFrame = frame[drCategories[n]]
