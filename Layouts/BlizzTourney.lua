@@ -5,7 +5,7 @@ layout.name = "|cff00b4ffBlizz|r Tourney"
 layout.defaultSettings = {
     posX = 300,
     posY = 100,
-    scale = 1,
+    scale = 1.2,
     classIconFontSize = 12,
     spacing = 20,
     growthDirection = 1,
@@ -110,8 +110,8 @@ function layout:Initialize(frame)
     specBorder:SetTexture("Interface\\CHARACTERFRAME\\TotemBorder")
     specBorder:SetPoint("TOPLEFT", frame.SpecIcon, "TOPLEFT", -5, 5)
     specBorder:SetPoint("BOTTOMRIGHT", frame.SpecIcon, "BOTTOMRIGHT", 5, -5)
-    specBorder:SetDesaturated(1)
-    specBorder:SetVertexColor(0.9, 0.9, 0.9, 1)
+    -- specBorder:SetDesaturated(1)
+    -- specBorder:SetVertexColor(0.9, 0.9, 0.9, 1)
     specBorder:Show()
 
     f = frame.CastBar
