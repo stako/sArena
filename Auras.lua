@@ -165,7 +165,7 @@ sArenaMixin.auraList = tInvert({
 
     -- Anti CCs
     23920,  -- Spell Reflection
-    216890, -- Spell Reflection (Honor Talent)
+    330279, -- Overwatch
     213610, -- Priest: Holy Ward
     213602, -- Priest: Greater Fade
     212295, -- Warlock: Nether Ward
@@ -300,6 +300,7 @@ sArenaMixin.auraList = tInvert({
     197862, -- Priest: Archangel
     47536,  -- Priest: Rapture
     271466, -- Priest: Luminous Barrier
+    207736, -- Rogue: Shadowy Duel
     5277,   -- Rogue: Evasion
     199754, -- Rogue: Riposte
     108271, -- Shaman: Astral Shift
