@@ -547,7 +547,7 @@ function sArenaFrameMixin:UpdateClassIcon()
     end
     self.ClassIcon:SetTexture(texture)
 
-    if self.currentAuraSpellID then
+    if self.currentAuraSpellID and self.currentAuraDuration > 0 then
         self.AuraCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration)
     else
         self.AuraCooldown:Clear()
