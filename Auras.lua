@@ -234,7 +234,7 @@ sArenaMixin.auraList = tInvert({
     12042,  -- Mage: Arcane Power
     190319, -- Mage: Combustion
     198144, -- Mage: Ice Form
-    12472,  -- Mage: Icy Veins
+    -- 12472,  -- Mage: Icy Veins
     80353,  -- Mage: Time Warp
     152173, -- Monk: Serenity
     137639, -- Monk: Storm, Earth, and Fire
@@ -242,7 +242,7 @@ sArenaMixin.auraList = tInvert({
     152262, -- Paladin: Seraphim
     231895, -- Paladin: Crusade
     197871, -- Priest: Dark Archangel
-    10060,  -- Priest: Power Infusion
+    -- 10060,  -- Priest: Power Infusion
     194249, -- Priest: Voidform
     13750,  -- Rogue: Adrenaline Rush
     121471, -- Rogue: Shadow Blades
@@ -271,11 +271,11 @@ sArenaMixin.auraList = tInvert({
     212800, -- Demon Hunter: Blur
     188499, -- Demon Hunter: Blade Dance
     209426, -- Demon Hunter: Darkness
-    236696, -- Druid: Thorns
     102342, -- Druid: Ironbark
     22812,  -- Druid: Barkskin
     61336,  -- Druid: Survival Instincts
     117679, -- Druid: Incarnation: Tree of Life
+    236696, -- Druid: Thorns
     53480,  -- Hunter: Roar of Sacrifice
     198111, -- Mage: Temporal Shield
     342246, -- Mage: Alter Time
