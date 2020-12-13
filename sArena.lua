@@ -537,10 +537,10 @@ function sArenaFrameMixin:GetClassAndSpec()
 end
 
 function sArenaFrameMixin:UpdateClassIcon()
-    if self.currentAuraSpellID and self.currentAuraDuration > 0 and self.currentClassIconStartTime ~= self.currentAuraStartTime then
+    if ( self.currentAuraSpellID and self.currentAuraDuration > 0 and self.currentClassIconStartTime ~= self.currentAuraStartTime ) then
         self.AuraCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration)
         self.currentClassIconStartTime = self.currentAuraStartTime
-    else
+    elseif ( self.currentAuraDuration == 0 ) then
         self.AuraCooldown:Clear()
         self.currentClassIconStartTime = 0
     end
