@@ -403,7 +403,8 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self.CastBar:Hide()
         self.specTexture = nil
         self.class = nil
-        self.currentClassTexture = nil
+        self.currentClassIconTexture = nil
+        self.currentClassIconStartTime = 0
         self:UpdateVisible()
         self:UpdatePlayer()
         self:ResetTrinket()
@@ -536,22 +537,24 @@ function sArenaFrameMixin:GetClassAndSpec()
 end
 
 function sArenaFrameMixin:UpdateClassIcon()
+    if self.currentAuraSpellID and self.currentAuraDuration > 0 and self.currentClassIconStartTime ~= self.currentAuraStartTime then
+        self.AuraCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration)
+        self.currentClassIconStartTime = self.currentAuraStartTime
+    else
+        self.AuraCooldown:Clear()
+        self.currentClassIconStartTime = 0
+    end
+
     local texture = self.currentAuraSpellID and self.currentAuraTexture or self.class and "class" or 134400
 
-    if ( self.currentClassTexture == texture ) then return end
+    if ( self.currentClassIconTexture == texture ) then return end
 
-    self.currentClassTexture = texture
+    self.currentClassIconTexture = texture
 
     if ( texture == "class" ) then
         texture = classIcons[self.class]
     end
     self.ClassIcon:SetTexture(texture)
-
-    if self.currentAuraSpellID and self.currentAuraDuration > 0 then
-        self.AuraCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration)
-    else
-        self.AuraCooldown:Clear()
-    end
 end
 
 function sArenaFrameMixin:UpdateTrinket()
@@ -596,7 +599,8 @@ local function ResetFontString(f)
 end
 
 function sArenaFrameMixin:ResetLayout()
-    self.currentClassTexture = nil
+    self.currentClassIconTexture = nil
+    self.currentClassIconStartTime = 0
 
     ResetTexture(nil, self.ClassIcon)
     ResetStatusBar(self.HealthBar)
