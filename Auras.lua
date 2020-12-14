@@ -186,6 +186,8 @@ sArenaMixin.auraList = tInvert({
     43523,  -- Unstable Affliction Silence 1
     196364, -- Unstable Affliction Silence 2
 
+    323673, -- Mindgames
+
     -- Disarms
     236077, -- Disarm
     236236, -- Disarm (Protection)
@@ -318,6 +320,7 @@ sArenaMixin.auraList = tInvert({
 
     -- Miscellaneous
     199450, -- Ultimate Sacrifice
+    320224, -- Podtender
     188501, -- Spectral Sight
     1044,   -- Blessing of Freedom
     41425,  -- Hypothermia
