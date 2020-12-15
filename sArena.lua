@@ -538,10 +538,10 @@ end
 
 function sArenaFrameMixin:UpdateClassIcon()
     if ( self.currentAuraSpellID and self.currentAuraDuration > 0 and self.currentClassIconStartTime ~= self.currentAuraStartTime ) then
-        self.AuraCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration)
+        self.ClassIconCooldown:SetCooldown(self.currentAuraStartTime, self.currentAuraDuration)
         self.currentClassIconStartTime = self.currentAuraStartTime
     elseif ( self.currentAuraDuration == 0 ) then
-        self.AuraCooldown:Clear()
+        self.ClassIconCooldown:Clear()
         self.currentClassIconStartTime = 0
     end
 
@@ -609,8 +609,8 @@ function sArenaFrameMixin:ResetLayout()
     self.CastBar:SetHeight(16)
     self.ClassIcon:RemoveMaskTexture(self.ClassIconMask)
 
-    self.AuraCooldown:SetSwipeTexture(1)
-    self.AuraCooldown:SetUseCircularEdge(false)
+    self.ClassIconCooldown:SetSwipeTexture(1)
+    self.ClassIconCooldown:SetUseCircularEdge(false)
 
     local f = self.Trinket
     f:ClearAllPoints()
@@ -853,7 +853,7 @@ function sArenaMixin:Test()
 
         frame.SpecIcon.Texture:SetTexture(135846)
 
-        frame.AuraCooldown:SetCooldown(GetTime(), math.random(20, 60))
+        frame.ClassIconCooldown:SetCooldown(GetTime(), math.random(20, 60))
 
         frame.Name:SetText("arena"..i)
         frame.Name:SetShown(db.profile.showNames)

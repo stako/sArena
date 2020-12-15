@@ -81,8 +81,8 @@ function layout:Initialize(frame)
         frame.parent:UpdateTrinketSettings(self.db.trinket)
     end
 
-    frame.AuraCooldown:SetSwipeTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask")
-    frame.AuraCooldown:SetUseCircularEdge(true)
+    frame.ClassIconCooldown:SetSwipeTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask")
+    frame.ClassIconCooldown:SetUseCircularEdge(true)
 
     frame:SetSize(102, 32)
     frame.SpecIcon:SetSize(14, 14)

@@ -419,7 +419,7 @@ function sArenaMixin:UpdateFrameSettings(db, info, val)
     local spacing = db.spacing
 
     for i = 1, 3 do
-        local text = self["arena"..i].AuraCooldown.Text
+        local text = self["arena"..i].ClassIconCooldown.Text
         text:SetFont(text.fontFile, db.classIconFontSize, "OUTLINE")
     end
 
