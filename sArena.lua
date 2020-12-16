@@ -699,7 +699,7 @@ function sArenaFrameMixin:ResetLayout()
     f:SetSize(0, 0)
     f.Texture:SetTexCoord(0, 1, 0, 1)
 
-    local f = self.Racial
+    f = self.Racial
     f:ClearAllPoints()
     f:SetSize(0, 0)
     f.Texture:SetTexCoord(0, 1, 0, 1)

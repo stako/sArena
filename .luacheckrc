@@ -47,5 +47,6 @@ read_globals = {
     'UnitPower',
     'UnitPowerMax',
     'UnitPowerType',
+    'UnitRace',
 }
 max_line_length = 175
