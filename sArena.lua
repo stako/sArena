@@ -19,6 +19,10 @@ sArenaMixin.defaultSettings = {
             Silence = true,
             Root = true,
         },
+        racialCategories = {
+            ["Human"] = true,
+            ["Scourge"] = false,
+        },
         layoutSettings = {},
     },
 }
@@ -148,14 +152,22 @@ function sArenaMixin:OnEvent(event)
             self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
         end
     elseif ( event == "COMBAT_LOG_EVENT_UNFILTERED" ) then
-        local _, combatEvent, _, _, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo()
+        local _, combatEvent, _, sourceGUID, _, _, _, destGUID, _, _, _, spellID, _, _, auraType = CombatLogGetCurrentEventInfo()
 
         for i = 1, 3 do
-            if destGUID == UnitGUID("arena"..i) then
-                self["arena"..i]:FindInterrupt(combatEvent, spellID)
+            local ArenaFrame = self["arena"..i]
+
+            if ( sourceGUID == UnitGUID("arena"..i) ) then
+                ArenaFrame:FindRacial(combatEvent, spellID)
+            end
+
+            if ( destGUID == UnitGUID("arena"..i) ) then
+                ArenaFrame:FindInterrupt(combatEvent, spellID)
+
                 if ( auraType == "DEBUFF" ) then
-                    self["arena"..i]:FindDR(combatEvent, spellID)
+                    ArenaFrame:FindDR(combatEvent, spellID)
                 end
+
                 return
             end
         end
@@ -266,6 +278,7 @@ function sArenaMixin:SetMouseState(state)
         frame.Stun:EnableMouse(state)
         frame.SpecIcon:EnableMouse(state)
         frame.Trinket:EnableMouse(state)
+        frame.Racial:EnableMouse(state)
     end
 end
 
@@ -408,6 +421,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:UpdateVisible()
         self:UpdatePlayer()
         self:ResetTrinket()
+        self:ResetRacial()
         self:ResetDR()
         UnitFrameHealPredictionBars_Update(self)
     elseif ( event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" ) then
@@ -423,6 +437,7 @@ function sArenaFrameMixin:Initialize()
     self.parent:SetupDrag(self.Stun, self.Stun, "dr", "UpdateDRSettings")
     self.parent:SetupDrag(self.SpecIcon, self.SpecIcon, "specIcon", "UpdateSpecIconSettings")
     self.parent:SetupDrag(self.Trinket, self.Trinket, "trinket", "UpdateTrinketSettings")
+    self.parent:SetupDrag(self.Racial, self.Racial, "racial", "UpdateRacialSettings")
 end
 
 function sArenaFrameMixin:OnEnter()
@@ -455,6 +470,7 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
 
     self:GetClassAndSpec()
     self:FindAura()
+    self:UpdateRacial()
 
     if ( ( unitEvent and unitEvent ~= "seen" ) or not UnitExists(unit) ) then
             self:SetMysteryPlayer()
@@ -567,6 +583,7 @@ function sArenaFrameMixin:UpdateTrinket()
         end
         if ( startTime ~= 0 and duration ~= 0 ) then
             self.Trinket.Cooldown:SetCooldown(startTime/1000.0, duration/1000.0)
+            self:UpdateRacial(nil, spellID, startTime/1000)
         else
             self.Trinket.Cooldown:Clear()
         end
@@ -575,9 +592,74 @@ end
 
 function sArenaFrameMixin:ResetTrinket()
     self.Trinket.spellID = nil
-    self.Trinket.Texture:SetTexture(134400)
+    self.Trinket.Texture:SetTexture(nil)
     self.Trinket.Cooldown:Clear()
     self:UpdateTrinket()
+end
+
+function sArenaFrameMixin:FindRacial(event, spellID)
+    if ( event ~= "SPELL_CAST_SUCCESS" ) then return end
+
+    local duration
+    if ( spellID == 59752 ) then
+        -- Will to Survive
+        duration = 180
+    elseif ( spellID == 7744 ) then
+        -- Will of the Forsaken
+        duration = 120
+    end
+
+    if ( duration ) then
+        self:UpdateRacial(duration)
+    end
+end
+
+function sArenaFrameMixin:UpdateRacial(duration, spellID, trinketStartTime)
+    local Racial = self.Racial
+
+    if ( not Racial.race ) then
+        local race = select(2, UnitRace(self.unit))
+
+        if ( race == "Human" ) then
+            Racial.Texture:SetTexture(136129)
+            Racial.sharedCD = 90
+        elseif ( race == "Scourge" ) then
+            Racial.Texture:SetTexture(136187)
+            Racial.sharedCD = 30
+        end
+
+        Racial.race = race
+    end
+
+    if ( not db.profile.racialCategories[Racial.race] ) then
+        Racial.Texture:SetTexture(nil)
+    end
+
+    if ( Racial.Texture:GetTexture() ) then
+        local startTime = GetTime()
+
+        -- medallion or adaptation used
+        if ( spellID == 336126 or spellID == 336135 ) then
+            local trinketElapsed = startTime - trinketStartTime
+
+            if ( trinketElapsed <= Racial.sharedCD ) then
+                duration = Racial.sharedCD
+                startTime = trinketStartTime
+            end
+        end
+
+        if ( duration ) then
+            Racial.Cooldown:SetCooldown(startTime, duration)
+        end
+    end
+end
+
+function sArenaFrameMixin:ResetRacial()
+    self.Racial.race = nil
+    self.Racial.sharedCD = 0
+    self.Racial.Texture:SetTexture(nil)
+    self.Racial.Cooldown:Clear()
+    self:UpdateRacial()
 end
 
 local function ResetStatusBar(f)
@@ -613,6 +695,11 @@ function sArenaFrameMixin:ResetLayout()
     self.ClassIconCooldown:SetUseCircularEdge(false)
 
     local f = self.Trinket
+    f:ClearAllPoints()
+    f:SetSize(0, 0)
+    f.Texture:SetTexCoord(0, 1, 0, 1)
+
+    local f = self.Racial
     f:ClearAllPoints()
     f:SetSize(0, 0)
     f.Texture:SetTexCoord(0, 1, 0, 1)
@@ -860,6 +947,9 @@ function sArenaMixin:Test()
 
         frame.Trinket.Texture:SetTexture(1322720)
         frame.Trinket.Cooldown:SetCooldown(currTime, math.random(20, 60))
+
+        frame.Racial.Texture:SetTexture(136129)
+        frame.Racial.Cooldown:SetCooldown(currTime, math.random(20, 60))
 
         local color = RAID_CLASS_COLORS["MAGE"]
         if ( db.profile.classColors ) then

@@ -19,6 +19,12 @@ layout.defaultSettings = {
         scale = 1,
         fontSize = 14,
     },
+    racial = {
+        posX = 200,
+        posY = 0,
+        scale = 0.7,
+        fontSize = 14,
+    },
     castBar = {
         posX = 12,
         posY = -27,
@@ -72,7 +78,7 @@ local function setupOptionsTable(self)
     }
 
     layout.optionsTable.special = {
-        order = 6,
+        order = 7,
         name = "Special",
         type = "group",
         get = getSetting,
@@ -119,6 +125,7 @@ function layout:Initialize(frame)
         frame.parent:UpdateFrameSettings(self.db)
         frame.parent:UpdateSpecIconSettings(self.db.specIcon)
         frame.parent:UpdateTrinketSettings(self.db.trinket)
+        frame.parent:UpdateRacialSettings(self.db.racial)
     end
 
     self:UpdateOrientation(frame)
@@ -126,6 +133,7 @@ function layout:Initialize(frame)
     frame:SetSize(self.db.width, self.db.height)
     frame.SpecIcon:SetSize(18, 18)
     frame.Trinket:SetSize(44, 44)
+    frame.Racial:SetSize(44, 44)
 
     frame.HealthBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
 

@@ -24,6 +24,10 @@ local drCategories = {
     ["Silence"] = "Silences",
     ["Root"] = "Roots",
 }
+local racialCategories = {
+    ["Human"] = "Human",
+    ["Scourge"] = "Undead",
+}
 
 function sArenaMixin:GetLayoutOptionsTable(layoutName)
     local optionsTable = {
@@ -238,8 +242,78 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
                 },
             },
         },
-        castBar = {
+        racial = {
             order = 4,
+            name = "Racials",
+            type = "group",
+            get = function(info) return info.handler.db.profile.layoutSettings[layoutName].racial[info[#info]] end,
+            set = function(info, val) self:UpdateRacialSettings(info.handler.db.profile.layoutSettings[layoutName].racial, info, val) end,
+            args = {
+                positioning = {
+                    order = 1,
+                    name = "Positioning",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        posX = {
+                            order = 1,
+                            name = "Horizontal",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                        posY = {
+                            order = 2,
+                            name = "Vertical",
+                            type = "range",
+                            min = -500,
+                            max = 500,
+                            softMin = -200,
+                            softMax = 200,
+                            step = 0.1,
+                            bigStep = 1,
+                        },
+                    },
+                },
+                sizing = {
+                    order = 2,
+                    name = "Sizing",
+                    type = "group",
+                    inline = true,
+                    args = {
+                        scale = {
+                            order = 1,
+                            name = "Scale",
+                            type = "range",
+                            min = 0.1,
+                            max = 5.0,
+                            softMin = 0.5,
+                            softMax = 3.0,
+                            step = 0.01,
+                            bigStep = 0.1,
+                            isPercent = true,
+                        },
+                        fontSize = {
+                            order = 3,
+                            name = "Font Size",
+                            desc = "Only works with Blizzard cooldown count (not OmniCC)",
+                            type = "range",
+                            min = 2,
+                            max = 48,
+                            softMin = 4,
+                            softMax = 32,
+                            step = 1,
+                        },
+                    },
+                },
+            },
+        },
+        castBar = {
+            order = 5,
             name = "Cast Bars",
             type = "group",
             get = function(info) return info.handler.db.profile.layoutSettings[layoutName].castBar[info[#info]] end,
@@ -306,7 +380,7 @@ function sArenaMixin:GetLayoutOptionsTable(layoutName)
             },
         },
         dr = {
-            order = 5,
+            order = 6,
             name = "Diminishing Returns",
             type = "group",
             get = function(info) return info.handler.db.profile.layoutSettings[layoutName].dr[info[#info]] end,
@@ -512,6 +586,23 @@ function sArenaMixin:UpdateTrinketSettings(db, info, val)
     end
 end
 
+function sArenaMixin:UpdateRacialSettings(db, info, val)
+    if ( val ) then
+        db[info[#info]] = val
+    end
+
+    for i = 1, 3 do
+        local frame = self["arena"..i]
+
+        frame.Racial:ClearAllPoints()
+        frame.Racial:SetPoint("CENTER", frame, "CENTER", db.posX, db.posY)
+        frame.Racial:SetScale(db.scale)
+
+        local text = self["arena"..i].Racial.Cooldown.Text
+        text:SetFont(text.fontFile, db.fontSize, "OUTLINE")
+    end
+end
+
 sArenaMixin.optionsTable = {
     type = "group",
     childGroups = "tab",
@@ -637,6 +728,21 @@ sArenaMixin.optionsTable = {
                             get = function(info, key) return info.handler.db.profile.drCategories[key] end,
                             set = function(info, key, val) info.handler.db.profile.drCategories[key] = val end,
                             values = drCategories,
+                        },
+                    },
+                },
+                racialGroup = {
+                    order = 3,
+                    name = "Racials",
+                    type = "group",
+                    args = {
+                        categories = {
+                            order = 1,
+                            name = "Categories",
+                            type = "multiselect",
+                            get = function(info, key) return info.handler.db.profile.racialCategories[key] end,
+                            set = function(info, key, val) info.handler.db.profile.racialCategories[key] = val end,
+                            values = racialCategories,
                         },
                     },
                 },

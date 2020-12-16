@@ -19,6 +19,12 @@ layout.defaultSettings = {
         scale = 1,
         fontSize = 14,
     },
+    racial = {
+        posX = 154,
+        posY = 0,
+        scale = 1,
+        fontSize = 14,
+    },
     castBar = {
         posX = -126,
         posY = 0,
@@ -26,7 +32,7 @@ layout.defaultSettings = {
         width = 90,
     },
     dr = {
-        posX = 156,
+        posX = 190,
         posY = 0,
         size = 28,
         borderSize = 2.5,
@@ -72,7 +78,7 @@ local function setupOptionsTable(self)
     }
 
     layout.optionsTable.special = {
-        order = 6,
+        order = 7,
         name = "Special",
         type = "group",
         get = getSetting,
@@ -119,6 +125,7 @@ function layout:Initialize(frame)
         frame.parent:UpdateFrameSettings(self.db)
         frame.parent:UpdateSpecIconSettings(self.db.specIcon)
         frame.parent:UpdateTrinketSettings(self.db.trinket)
+        frame.parent:UpdateRacialSettings(self.db.racial)
     end
 
     self:UpdateOrientation(frame)
@@ -126,6 +133,7 @@ function layout:Initialize(frame)
     frame:SetSize(self.db.width, self.db.height)
     frame.SpecIcon:SetSize(18, 18)
     frame.Trinket:SetSize(32, 32)
+    frame.Racial:SetSize(32, 32)
 
     frame.HealthBar:SetStatusBarTexture("Interface\\AddOns\\sArena\\Media\\Flat")
 
@@ -138,6 +146,7 @@ function layout:Initialize(frame)
 
     frame.SpecIcon.Texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
     frame.Trinket.Texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+    frame.Racial.Texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
     frame.CastBar.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 
     local f = frame.Name

@@ -196,6 +196,27 @@
                     </Cooldown>
                 </Frames>
             </Frame>
+            <Frame parentKey="Racial" enablemouse="true" movable="true">
+                <Layers>
+                    <Layer level="OVERLAY" textureSubLevel="1">
+                        <Texture parentKey="Texture" setAllPoints="true"/>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Cooldown parentKey="Cooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
+                        <Scripts>
+                            <OnLoad>
+                                for _, region in next, { self:GetRegions() } do
+                                    if region:GetObjectType() == "FontString" then
+                                        self.Text = region;
+                                        self.Text.fontFile = region:GetFont();
+                                    end
+                                end
+                            </OnLoad>
+                        </Scripts>
+                    </Cooldown>
+                </Frames>
+            </Frame>
             <Frame parentKey="Incapacitate" inherits="sArenaDRTrackerTemplate"/>
             <Frame parentKey="Silence" inherits="sArenaDRTrackerTemplate"/>
             <Frame parentKey="Disorient" inherits="sArenaDRTrackerTemplate"/>
