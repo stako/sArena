@@ -38,6 +38,7 @@
                 </SwipeTexture>
                 <Scripts>
                     <OnLoad>
+                        self:SetDrawBling(false)
                         for _, region in next, { self:GetRegions() } do
                             if region:GetObjectType() == "FontString" then
                                 self.Text = region;
@@ -164,6 +165,7 @@
                         self:SetAllPoints(self:GetParent().ClassIcon)
                         self:SetSwipeTexture(1)
                         self:SetSwipeColor(0, 0, 0, 0.6)
+                        self:SetDrawBling(false)
                     </OnLoad>
                 </Scripts>
             </Cooldown>
@@ -185,6 +187,7 @@
                     <Cooldown parentKey="Cooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
                         <Scripts>
                             <OnLoad>
+                                self:SetDrawBling(false)
                                 for _, region in next, { self:GetRegions() } do
                                     if region:GetObjectType() == "FontString" then
                                         self.Text = region;
@@ -206,6 +209,7 @@
                     <Cooldown parentKey="Cooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
                         <Scripts>
                             <OnLoad>
+                                self:SetDrawBling(false)
                                 for _, region in next, { self:GetRegions() } do
                                     if region:GetObjectType() == "FontString" then
                                         self.Text = region;
