@@ -116,6 +116,29 @@
         <BarColor r="1.0" g="0.7" b="0.0"/>
     </StatusBar>
 
+    <Frame name="sArenaIconTemplate" enablemouse="true" movable="true" virtual="true">
+        <Layers>
+            <Layer level="OVERLAY" textureSubLevel="1">
+                <Texture parentKey="Texture" setAllPoints="true"/>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Cooldown parentKey="Cooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
+                <Scripts>
+                    <OnLoad>
+                        self:SetDrawBling(false)
+                        for _, region in next, { self:GetRegions() } do
+                            if region:GetObjectType() == "FontString" then
+                                self.Text = region;
+                                self.Text.fontFile = region:GetFont();
+                            end
+                        end
+                    </OnLoad>
+                </Scripts>
+            </Cooldown>
+        </Frames>
+    </Frame>
+
     <Button name="sArenaEnemyFrameTemplate" frameStrata="LOW" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
         <Layers>
             <Layer level="BORDER" textureSubLevel="1">
@@ -177,50 +200,9 @@
                     </Layer>
                 </Layers>
             </Frame>
-            <Frame parentKey="Trinket" enablemouse="true" movable="true">
-                <Layers>
-                    <Layer level="OVERLAY" textureSubLevel="1">
-                        <Texture parentKey="Texture" setAllPoints="true"/>
-                    </Layer>
-                </Layers>
-                <Frames>
-                    <Cooldown parentKey="Cooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
-                        <Scripts>
-                            <OnLoad>
-                                self:SetDrawBling(false)
-                                for _, region in next, { self:GetRegions() } do
-                                    if region:GetObjectType() == "FontString" then
-                                        self.Text = region;
-                                        self.Text.fontFile = region:GetFont();
-                                    end
-                                end
-                            </OnLoad>
-                        </Scripts>
-                    </Cooldown>
-                </Frames>
-            </Frame>
-            <Frame parentKey="Racial" enablemouse="true" movable="true">
-                <Layers>
-                    <Layer level="OVERLAY" textureSubLevel="1">
-                        <Texture parentKey="Texture" setAllPoints="true"/>
-                    </Layer>
-                </Layers>
-                <Frames>
-                    <Cooldown parentKey="Cooldown" hideCountdownNumbers="false" inherits="CooldownFrameTemplate">
-                        <Scripts>
-                            <OnLoad>
-                                self:SetDrawBling(false)
-                                for _, region in next, { self:GetRegions() } do
-                                    if region:GetObjectType() == "FontString" then
-                                        self.Text = region;
-                                        self.Text.fontFile = region:GetFont();
-                                    end
-                                end
-                            </OnLoad>
-                        </Scripts>
-                    </Cooldown>
-                </Frames>
-            </Frame>
+            <Frame parentKey="Trinket" inherits="sArenaIconTemplate"/>
+            <Frame parentKey="Racial" inherits="sArenaIconTemplate"/>
+
             <Frame parentKey="Incapacitate" inherits="sArenaDRTrackerTemplate"/>
             <Frame parentKey="Silence" inherits="sArenaDRTrackerTemplate"/>
             <Frame parentKey="Disorient" inherits="sArenaDRTrackerTemplate"/>
