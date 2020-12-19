@@ -86,16 +86,14 @@ local AbbreviateLargeNumbers = AbbreviateLargeNumbers
 local UnitFrameHealPredictionBars_Update = UnitFrameHealPredictionBars_Update
 
 local function UpdateBlizzVisibility(instanceType)
-    -- if blizz arena frames are disabled or hidden, ARENA_CROWD_CONTROL_SPELL_UPDATE will not fire
-    -- just move the frames off screen
-
+    -- hide blizz arena frames while in arena
     if ( InCombatLockdown() ) then return end
 
     if ( not blizzFrame ) then
         blizzFrame = CreateFrame("Frame", nil, UIParent)
         blizzFrame:SetSize(1, 1)
         blizzFrame:SetPoint("RIGHT", UIParent, "RIGHT", 500, 0)
-        blizzFrame:Show()
+        blizzFrame:Hide()
     end
 
     for i = 1, 5 do
@@ -105,7 +103,6 @@ local function UpdateBlizzVisibility(instanceType)
         arenaFrame:ClearAllPoints()
         prepFrame:ClearAllPoints()
 
-        -- frames should be visible in battlegrounds
         if ( instanceType == "arena" ) then
             arenaFrame:SetParent(blizzFrame)
             arenaFrame:SetPoint("CENTER", blizzFrame, "CENTER")
@@ -198,8 +195,6 @@ function sArenaMixin:Initialize()
     LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand)
 
     self:SetLayout(nil, db.profile.currentLayout)
-
-    SetCVar("showArenaEnemyFrames", 1)
 end
 
 function sArenaMixin:RefreshConfig()
@@ -476,6 +471,8 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
             self:SetMysteryPlayer()
             return
     end
+
+    C_PvP.RequestCrowdControlSpell(unit)
 
     -- prevent castbar and other frames from intercepting mouse clicks during a match
     if ( unitEvent == "seen" ) then
