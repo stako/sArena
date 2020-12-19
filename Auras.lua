@@ -78,6 +78,8 @@ sArenaMixin.auraList = tInvert({
     198909, -- Song of Chi-ji (Disorient)
     202274, -- Incendiary Brew (Disorient)
     118699, -- Fear (Disorient)
+    1513,   -- Scare Beast (Disorient)
+    10326,  -- Turn Evil (Disorient)
     6358,   -- Seduction (Disorient)
     261589, -- Seduction 2 (Disorient)
     115268, -- Mesmerize (Shivarra) (Disorient)
