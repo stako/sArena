@@ -12,17 +12,6 @@ sArenaMixin.defaultSettings = {
             usePercentage = false,
             alwaysShow = true,
         },
-        drCategories = {
-            Stun = true,
-            Incapacitate = true,
-            Disorient = true,
-            Silence = true,
-            Root = true,
-        },
-        racialCategories = {
-            ["Human"] = true,
-            ["Scourge"] = false,
-        },
         layoutSettings = {},
     },
 }
@@ -30,34 +19,6 @@ sArenaMixin.defaultSettings = {
 local db
 local auraList
 local interruptList
-local drList
-local drTime = 18.5
-local severityColor = {
-    [1] = { 0, 1, 0, 1},
-    [2] = { 1, 1, 0, 1},
-    [3] = { 1, 0, 0, 1},
-}
-local drCategories = {
-    "Stun",
-    "Incapacitate",
-    "Disorient",
-    "Silence",
-    "Root",
-}
-local classIcons = {
-    ["DRUID"] = 625999,
-    ["HUNTER"] = 626000,
-    ["MAGE"] = 626001,
-    ["MONK"] = 626002,
-    ["PALADIN"] = 626003,
-    ["PRIEST"] = 626004,
-    ["ROGUE"] = 626005,
-    ["SHAMAN"] = 626006,
-    ["WARLOCK"] = 626007,
-    ["WARRIOR"] = 626008,
-    ["DEATHKNIGHT"] = 135771,
-    ["DEMONHUNTER"] = 1260827,
-}
 local emptyLayoutOptionsTable = {
     notice = {
         name = "The selected layout doesn't appear to have any settings.",
@@ -84,6 +45,8 @@ local FindAuraByName = AuraUtil.FindAuraByName
 local ceil = ceil
 local AbbreviateLargeNumbers = AbbreviateLargeNumbers
 local UnitFrameHealPredictionBars_Update = UnitFrameHealPredictionBars_Update
+local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
+local unpack = unpack
 
 local function UpdateBlizzVisibility(instanceType)
     -- hide blizz arena frames while in arena
@@ -128,7 +91,6 @@ end
 function sArenaMixin:OnLoad()
     auraList = self.auraList
     interruptList = self.interruptList
-    drList = self.drList
 
     self:RegisterEvent("PLAYER_LOGIN")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -465,7 +427,6 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
 
     self:GetClassAndSpec()
     self:FindAura()
-    self:UpdateRacial()
 
     if ( ( unitEvent and unitEvent ~= "seen" ) or not UnitExists(unit) ) then
             self:SetMysteryPlayer()
@@ -473,6 +434,8 @@ function sArenaFrameMixin:UpdatePlayer(unitEvent)
     end
 
     C_PvP.RequestCrowdControlSpell(unit)
+
+    self:UpdateRacial()
 
     -- prevent castbar and other frames from intercepting mouse clicks during a match
     if ( unitEvent == "seen" ) then
@@ -565,7 +528,10 @@ function sArenaFrameMixin:UpdateClassIcon()
     self.currentClassIconTexture = texture
 
     if ( texture == "class" ) then
-        texture = classIcons[self.class]
+        texture = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
+        self.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.class]))
+    else
+        self.ClassIcon:SetTexCoord(0, 1, 0, 1)
     end
     self.ClassIcon:SetTexture(texture)
 end
@@ -578,9 +544,8 @@ function sArenaFrameMixin:UpdateTrinket()
             self.Trinket.spellID = spellID
             self.Trinket.Texture:SetTexture(spellTextureNoOverride)
         end
-        if ( startTime ~= 0 and duration ~= 0 ) then
+        if ( startTime ~= 0 and duration ~= 0 and self.Trinket.Texture:GetTexture() ) then
             self.Trinket.Cooldown:SetCooldown(startTime/1000.0, duration/1000.0)
-            self:UpdateRacial(nil, spellID, startTime/1000)
         else
             self.Trinket.Cooldown:Clear()
         end
@@ -592,71 +557,6 @@ function sArenaFrameMixin:ResetTrinket()
     self.Trinket.Texture:SetTexture(nil)
     self.Trinket.Cooldown:Clear()
     self:UpdateTrinket()
-end
-
-function sArenaFrameMixin:FindRacial(event, spellID)
-    if ( event ~= "SPELL_CAST_SUCCESS" ) then return end
-
-    local duration
-    if ( spellID == 59752 ) then
-        -- Will to Survive
-        duration = 180
-    elseif ( spellID == 7744 ) then
-        -- Will of the Forsaken
-        duration = 120
-    end
-
-    if ( duration ) then
-        self:UpdateRacial(duration)
-    end
-end
-
-function sArenaFrameMixin:UpdateRacial(duration, spellID, trinketStartTime)
-    local Racial = self.Racial
-
-    if ( not Racial.race ) then
-        local race = select(2, UnitRace(self.unit))
-
-        if ( race == "Human" ) then
-            Racial.Texture:SetTexture(136129)
-            Racial.sharedCD = 90
-        elseif ( race == "Scourge" ) then
-            Racial.Texture:SetTexture(136187)
-            Racial.sharedCD = 30
-        end
-
-        Racial.race = race
-    end
-
-    if ( not db.profile.racialCategories[Racial.race] ) then
-        Racial.Texture:SetTexture(nil)
-    end
-
-    if ( Racial.Texture:GetTexture() ) then
-        local startTime = GetTime()
-
-        -- medallion or adaptation used
-        if ( spellID == 336126 or spellID == 336135 ) then
-            local trinketElapsed = startTime - trinketStartTime
-
-            if ( trinketElapsed <= Racial.sharedCD ) then
-                duration = Racial.sharedCD
-                startTime = trinketStartTime
-            end
-        end
-
-        if ( duration ) then
-            Racial.Cooldown:SetCooldown(startTime, duration)
-        end
-    end
-end
-
-function sArenaFrameMixin:ResetRacial()
-    self.Racial.race = nil
-    self.Racial.sharedCD = 0
-    self.Racial.Texture:SetTexture(nil)
-    self.Racial.Cooldown:Clear()
-    self:UpdateRacial()
 end
 
 local function ResetStatusBar(f)
@@ -845,83 +745,6 @@ function sArenaFrameMixin:UpdateStatusTextVisible()
     self.PowerText:SetShown(db.profile.statusText.alwaysShow)
 end
 
-function sArenaFrameMixin:FindDR(combatEvent, spellID)
-    local category = drList[spellID]
-    if ( not category ) then return end
-    if ( not db.profile.drCategories[category] ) then return end
-
-    local frame = self[category]
-    local currTime = GetTime()
-
-    if ( combatEvent == "SPELL_AURA_REMOVED" or combatEvent == "SPELL_AURA_BROKEN" ) then
-        local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
-        startTime, startDuration = startTime/1000, startDuration/1000
-
-        local newDuration = drTime / (1 - ((currTime - startTime) / startDuration))
-        local newStartTime = drTime + currTime - newDuration
-
-        frame:Show()
-        frame.Cooldown:SetCooldown(newStartTime, newDuration)
-
-        return
-    elseif ( combatEvent == "SPELL_AURA_APPLIED" or combatEvent == "SPELL_AURA_REFRESH" ) then
-        local unit = self.unit
-
-        for i = 1, 30 do
-            local _, _, _, _, duration, _, _, _, _, _spellID = UnitAura(unit, i, "HARMFUL")
-
-            if ( not _spellID ) then break end
-
-            if ( duration and spellID == _spellID ) then
-                frame:Show()
-                frame.Cooldown:SetCooldown(currTime, duration + drTime)
-                break
-            end
-        end
-    end
-
-    frame.Icon:SetTexture(GetSpellTexture(spellID))
-    frame.Border:SetVertexColor(unpack(severityColor[frame.severity]))
-
-    frame.severity = frame.severity + 1
-    if frame.severity > 3 then
-        frame.severity = 3
-    end
-end
-
-function sArenaFrameMixin:UpdateDRPositions()
-    local layoutdb = self.parent.layoutdb
-    local numActive = 0
-    local frame, prevFrame
-    local spacing = layoutdb.dr.spacing
-    local growthDirection = layoutdb.dr.growthDirection
-
-    for i = 1, #drCategories do
-        frame = self[drCategories[i]]
-
-        if ( frame:IsShown() ) then
-            frame:ClearAllPoints()
-            if ( numActive == 0 ) then
-                frame:SetPoint("CENTER", self, "CENTER", layoutdb.dr.posX, layoutdb.dr.posY)
-            else
-                if ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0)
-                elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0)
-                elseif ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing)
-                elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing)
-                end
-            end
-            numActive = numActive + 1
-            prevFrame = frame
-        end
-    end
-end
-
-function sArenaFrameMixin:ResetDR()
-    for i = 1, #drCategories do
-        self[drCategories[i]].Cooldown:SetCooldown(0, 0)
-    end
-end
-
 function sArenaMixin:Test()
     if ( InCombatLockdown() ) then return end
 
@@ -931,7 +754,8 @@ function sArenaMixin:Test()
         local frame = self["arena"..i]
         frame:Show()
 
-        frame.ClassIcon:SetTexture(626001)
+        frame.ClassIcon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
+        frame.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS["MAGE"]))
 
         frame.SpecIcon:Show()
 
@@ -956,8 +780,8 @@ function sArenaMixin:Test()
         end
         frame.PowerBar:SetStatusBarColor(0, 0, 1, 1)
 
-        for n = 1, #drCategories do
-            local drFrame = frame[drCategories[n]]
+        for n = 1, #self.drCategories do
+            local drFrame = frame[self.drCategories[n]]
 
             drFrame.Icon:SetTexture(136071)
             drFrame:Show()

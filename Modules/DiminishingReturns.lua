@@ -1,4 +1,107 @@
-sArenaMixin.drList = {
+sArenaMixin.drCategories = {
+    "Stun",
+    "Incapacitate",
+    "Disorient",
+    "Silence",
+    "Root",
+}
+sArenaMixin.defaultSettings.profile.drCategories = {
+    Stun = true,
+    Incapacitate = true,
+    Disorient = true,
+    Silence = true,
+    Root = true,
+}
+
+local drCategories = sArenaMixin.drCategories
+local drList
+local drTime = 18.5
+local severityColor = {
+    [1] = { 0, 1, 0, 1},
+    [2] = { 1, 1, 0, 1},
+    [3] = { 1, 0, 0, 1},
+}
+
+local GetTime = GetTime
+
+function sArenaFrameMixin:FindDR(combatEvent, spellID)
+    local category = drList[spellID]
+    if ( not category ) then return end
+    if ( not self.parent.db.profile.drCategories[category] ) then return end
+
+    local frame = self[category]
+    local currTime = GetTime()
+
+    if ( combatEvent == "SPELL_AURA_REMOVED" or combatEvent == "SPELL_AURA_BROKEN" ) then
+        local startTime, startDuration = frame.Cooldown:GetCooldownTimes()
+        startTime, startDuration = startTime/1000, startDuration/1000
+
+        local newDuration = drTime / (1 - ((currTime - startTime) / startDuration))
+        local newStartTime = drTime + currTime - newDuration
+
+        frame:Show()
+        frame.Cooldown:SetCooldown(newStartTime, newDuration)
+
+        return
+    elseif ( combatEvent == "SPELL_AURA_APPLIED" or combatEvent == "SPELL_AURA_REFRESH" ) then
+        local unit = self.unit
+
+        for i = 1, 30 do
+            local _, _, _, _, duration, _, _, _, _, _spellID = UnitAura(unit, i, "HARMFUL")
+
+            if ( not _spellID ) then break end
+
+            if ( duration and spellID == _spellID ) then
+                frame:Show()
+                frame.Cooldown:SetCooldown(currTime, duration + drTime)
+                break
+            end
+        end
+    end
+
+    frame.Icon:SetTexture(GetSpellTexture(spellID))
+    frame.Border:SetVertexColor(unpack(severityColor[frame.severity]))
+
+    frame.severity = frame.severity + 1
+    if frame.severity > 3 then
+        frame.severity = 3
+    end
+end
+
+function sArenaFrameMixin:UpdateDRPositions()
+    local layoutdb = self.parent.layoutdb
+    local numActive = 0
+    local frame, prevFrame
+    local spacing = layoutdb.dr.spacing
+    local growthDirection = layoutdb.dr.growthDirection
+
+    for i = 1, #drCategories do
+        frame = self[drCategories[i]]
+
+        if ( frame:IsShown() ) then
+            frame:ClearAllPoints()
+            if ( numActive == 0 ) then
+                frame:SetPoint("CENTER", self, "CENTER", layoutdb.dr.posX, layoutdb.dr.posY)
+            else
+                if ( growthDirection == 4 ) then frame:SetPoint("RIGHT", prevFrame, "LEFT", -spacing, 0)
+                elseif ( growthDirection == 3 ) then frame:SetPoint("LEFT", prevFrame, "RIGHT", spacing, 0)
+                elseif ( growthDirection == 1 ) then frame:SetPoint("TOP", prevFrame, "BOTTOM", 0, -spacing)
+                elseif ( growthDirection == 2 ) then frame:SetPoint("BOTTOM", prevFrame, "TOP", 0, spacing)
+                end
+            end
+            numActive = numActive + 1
+            prevFrame = frame
+        end
+    end
+end
+
+function sArenaFrameMixin:ResetDR()
+    for i = 1, #drCategories do
+        self[drCategories[i]].Cooldown:Clear()
+    end
+end
+
+drList = {
     [207167]  = "Disorient",       -- Blinding Sleet
     [207685]  = "Disorient",       -- Sigil of Misery
     [33786]   = "Disorient",       -- Cyclone

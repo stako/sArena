@@ -107,11 +107,10 @@ function layout:Initialize(frame)
     powerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 
     local f = frame.ClassIcon
-    f:SetSize(26, 26)
+    f:SetSize(24, 24)
     f:Show()
     f:AddMaskTexture(frame.ClassIconMask)
-
-    frame.ClassIconMask:SetSize(26, 26)
+    frame.ClassIconMask:SetAllPoints(f)
 
     local specBorder = frame.TexturePool:Acquire()
     specBorder:SetParent(frame.SpecIcon)
@@ -163,22 +162,18 @@ function layout:UpdateOrientation(frame)
     local frameTexture = layout["frameTexture"..frame:GetID()]
     local healthBar = frame.HealthBar
     local classIcon = frame.ClassIcon
-    local classIconMask = frame.ClassIconMask
 
     healthBar:ClearAllPoints()
     classIcon:ClearAllPoints()
-    classIconMask:ClearAllPoints()
 
     if ( self.db.mirrored ) then
         frameTexture:SetTexCoord(0.796, 0, 0, 0.5)
         healthBar:SetPoint("TOPRIGHT", -3, -9)
-        classIcon:SetPoint("TOPLEFT", 3, -2)
-        classIconMask:SetPoint("TOPLEFT", 3, -2)
+        classIcon:SetPoint("TOPLEFT", 4, -4)
     else
         frameTexture:SetTexCoord(0, 0.796, 0, 0.5)
         healthBar:SetPoint("TOPLEFT", 3, -9)
-        classIcon:SetPoint("TOPRIGHT", -2, -2)
-        classIconMask:SetPoint("TOPRIGHT", -2, -2)
+        classIcon:SetPoint("TOPRIGHT", -4, -4)
     end
 end
 
