@@ -15,6 +15,8 @@ sArenaMixin.drList = {
     [6358]    = "Disorient",       -- Seduction (Succubus)
     [115268]  = "Disorient",       -- Mesmerize (Shivarra)
     [5246]    = "Disorient",       -- Intimidating Shout
+    [1513]    = "Disorient",       -- Scare Beast
+    [10326]   = "Disorient",       -- Turn Evil
 
     [217832]  = "Incapacitate",    -- Imprison
     [221527]  = "Incapacitate",    -- Imprison (Honor talent)
