@@ -51,6 +51,8 @@ local unpack = unpack
 local function UpdateBlizzVisibility(instanceType)
     -- hide blizz arena frames while in arena
     if ( InCombatLockdown() ) then return end
+    if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then return end
+    if ( IsAddOnLoaded("ElvUI") ) then return end
 
     if ( not blizzFrame ) then
         blizzFrame = CreateFrame("Frame", nil, UIParent)
