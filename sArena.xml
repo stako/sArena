@@ -17,7 +17,7 @@
     <Script file="Layouts\BlizzTarget.lua"/>
     <Script file="Layouts\Xaryu.lua"/>
 
-    <Frame name="sArenaDRTrackerTemplate" frameStrata="LOW" hidden="true" virtual="true">
+    <Frame name="sArenaDRTrackerTemplate" hidden="true" virtual="true">
         <Size x="40" y="40"/>
         <Layers>
             <Layer level="OVERLAY">
@@ -139,7 +139,7 @@
         </Frames>
     </Frame>
 
-    <Button name="sArenaEnemyFrameTemplate" frameStrata="LOW" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
+    <Button name="sArenaEnemyFrameTemplate" frameStrata="MEDIUM" frameLevel="3" mixin="sArenaFrameMixin" hidden="true" virtual="true" inherits="SecureActionButtonTemplate">
         <Layers>
             <Layer level="BORDER" textureSubLevel="1">
                 <!-- Health/power bar is in this layer -->
