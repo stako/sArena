@@ -324,6 +324,7 @@ sArenaMixin.auraList = tInvert({
     199450, -- Ultimate Sacrifice
     320224, -- Podtender
     188501, -- Spectral Sight
+    305395, -- Blessing of Freedom (Unbound Freedom)
     1044,   -- Blessing of Freedom
     41425,  -- Hypothermia
     66,     -- Invisibility fade effect
