@@ -52,7 +52,7 @@ sArenaMixin.auraList = tInvert({
     132168, -- Shockwave (Stun)
     20549,  -- War Stomp (Stun)
     199085, -- Warpath (Stun)
-    204437, -- Lightning Lasso (Stun)
+    305485, -- Lightning Lasso (Stun)
     64044,  -- Psychic Horror (Stun)
     255723, -- Bull Rush (Stun)
     202346, -- Double Barrel (Stun)
