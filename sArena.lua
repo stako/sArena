@@ -386,6 +386,10 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
     elseif ( event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" ) then
         self:UpdateVisible()
         self:UpdatePlayer()
+    elseif ( event == "PLAYER_REGEN_ENABLED" ) then
+        self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+
+        self:UpdateVisible()
     end
 end
 
@@ -413,7 +417,10 @@ function sArenaFrameMixin:OnLeave()
 end
 
 function sArenaFrameMixin:UpdateVisible()
-    if ( InCombatLockdown() ) then return end
+    if ( InCombatLockdown() ) then
+        self:RegisterEvent("PLAYER_REGEN_ENABLED")
+        return
+    end
 
     local _, instanceType = IsInInstance()
     local id = self:GetID()
