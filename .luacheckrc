@@ -22,6 +22,7 @@ read_globals = {
     'GetSpellTexture',
     'GetTime',
     'GetUnitName',
+    'IsAddOnLoaded',
     'InCombatLockdown',
     'IsControlKeyDown',
     'IsInInstance',
