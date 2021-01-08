@@ -46,6 +46,7 @@ layout.defaultSettings = {
     height = 44,
     powerBarHeight = 9,
     mirrored = true,
+    classicBars = false,
 }
 
 local function getSetting(info)
@@ -62,6 +63,8 @@ local function setSetting(info, val)
         frame.DeathIcon:SetSize(layout.db.height * 0.8, layout.db.height * 0.8)
         frame.PowerBar:SetHeight(layout.db.powerBarHeight)
         layout:UpdateOrientation(frame)
+        layout:UpdateTextures(frame)
+        layout:UpdateTextures(frame)
     end
 end
 
@@ -71,6 +74,15 @@ local function setupOptionsTable(self)
     layout.optionsTable.arenaFrames.args.positioning.args.mirrored = {
         order = 5,
         name = "Mirrored Frames",
+        type = "toggle",
+        width = "full",
+        get = getSetting,
+        set = setSetting,
+    }
+
+    layout.optionsTable.arenaFrames.args.positioning.args.classicBars = {
+        order = 6,
+        name = "Classic Bar Textures",
         type = "toggle",
         width = "full",
         get = getSetting,
@@ -112,6 +124,9 @@ local function setupOptionsTable(self)
     }
 end
 
+local hpUnderlay
+local ppUnderlay
+
 function layout:Initialize(frame)
     self.db = frame.parent.db.profile.layoutSettings[layoutName]
 
@@ -135,9 +150,6 @@ function layout:Initialize(frame)
     frame.Trinket:SetSize(44, 44)
     frame.Racial:SetSize(44, 44)
 
-    frame.HealthBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
-
-    frame.PowerBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
     frame.PowerBar:SetHeight(self.db.powerBarHeight)
 
     frame.ClassIcon:SetSize(self.db.height, self.db.height)
@@ -151,9 +163,6 @@ function layout:Initialize(frame)
     f:SetPoint("BOTTOMRIGHT", frame.HealthBar, "TOPRIGHT", 0, 0)
     f:SetHeight(12)
 
-    f = frame.CastBar
-    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
-
     f = frame.DeathIcon
     f:ClearAllPoints()
     f:SetPoint("CENTER", frame.HealthBar, "CENTER")
@@ -165,21 +174,21 @@ function layout:Initialize(frame)
     frame.PowerText:SetPoint("CENTER", frame.PowerBar)
     frame.PowerText:SetShadowOffset(0, 0)
 
-    local hpUnderlay = frame.TexturePool:Acquire()
+    hpUnderlay = frame.TexturePool:Acquire()
     hpUnderlay:SetDrawLayer("BACKGROUND", 1)
-    hpUnderlay:SetTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
     hpUnderlay:SetPoint("TOPLEFT", frame.HealthBar, "TOPLEFT")
     hpUnderlay:SetPoint("BOTTOMRIGHT", frame.HealthBar, "BOTTOMRIGHT")
     hpUnderlay:SetVertexColor(0.15, 0.15, 0.15, 0.9)
     hpUnderlay:Show()
 
-    local ppUnderlay = frame.TexturePool:Acquire()
+    ppUnderlay = frame.TexturePool:Acquire()
     ppUnderlay:SetDrawLayer("BACKGROUND", 1)
-    ppUnderlay:SetTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
     ppUnderlay:SetPoint("TOPLEFT", frame.PowerBar, "TOPLEFT")
     ppUnderlay:SetPoint("BOTTOMRIGHT", frame.PowerBar, "BOTTOMRIGHT")
     ppUnderlay:SetVertexColor(0.15, 0.15, 0.15, 0.9)
     ppUnderlay:Show()
+
+    self:UpdateTextures(frame)
 end
 
 function layout:UpdateOrientation(frame)
@@ -207,6 +216,22 @@ function layout:UpdateOrientation(frame)
         powerBar:SetPoint("RIGHT", classIcon, "LEFT", -2, 0)
 
         classIcon:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
+    end
+end
+
+function layout:UpdateTextures(frame)
+    local texture = self.db.classicBars and "Interface\\TargetingFrame\\UI-StatusBar" or "Interface\\RaidFrame\\Raid-Bar-Hp-Fill"
+
+    frame.CastBar:SetStatusBarTexture(texture)
+    frame.HealthBar:SetStatusBarTexture(texture)
+    frame.PowerBar:SetStatusBarTexture(texture)
+
+    if self.db.classicBars then
+        hpUnderlay:SetColorTexture(0, 0, 0, 0.5)
+        ppUnderlay:SetColorTexture(0, 0, 0, 0.5)
+    else
+        hpUnderlay:SetTexture(texture)
+        ppUnderlay:SetTexture(texture)
     end
 end
 
