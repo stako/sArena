@@ -19,6 +19,20 @@ sArenaMixin.defaultSettings = {
 local db
 local auraList
 local interruptList
+local classIcons = {
+    ["DRUID"] = 625999,
+    ["HUNTER"] = 135495, -- 626000
+    ["MAGE"] = 135150, -- 626001
+    ["MONK"] = 626002,
+    ["PALADIN"] = 626003,
+    ["PRIEST"] = 626004,
+    ["ROGUE"] = 626005,
+    ["SHAMAN"] = 626006,
+    ["WARLOCK"] = 626007,
+    ["WARRIOR"] = 135328, -- 626008
+    ["DEATHKNIGHT"] = 135771,
+    ["DEMONHUNTER"] = 1260827,
+}
 local emptyLayoutOptionsTable = {
     notice = {
         name = "The selected layout doesn't appear to have any settings.",
@@ -537,10 +551,7 @@ function sArenaFrameMixin:UpdateClassIcon()
     self.currentClassIconTexture = texture
 
     if ( texture == "class" ) then
-        texture = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
-        self.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.class]))
-    else
-        self.ClassIcon:SetTexCoord(0, 1, 0, 1)
+        texture = classIcons[self.class]
     end
     self.ClassIcon:SetTexture(texture)
 end
@@ -763,8 +774,7 @@ function sArenaMixin:Test()
         local frame = self["arena"..i]
         frame:Show()
 
-        frame.ClassIcon:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
-        frame.ClassIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS["MAGE"]))
+        frame.ClassIcon:SetTexture(classIcons["MAGE"])
 
         frame.SpecIcon:Show()
 
