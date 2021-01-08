@@ -21,7 +21,7 @@ local function GetRemainingCD(frame)
 
     local currTime = GetTime()
 
-    return startTime + duration - currTime
+    return (startTime + duration) / 1000 - currTime
 end
 
 function sArenaFrameMixin:FindRacial(event, spellID)
