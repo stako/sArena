@@ -170,6 +170,7 @@ function sArenaMixin:Initialize()
     self.optionsTable.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("sArena", self.optionsTable)
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("sArena")
+    LibStub("AceConfigDialog-3.0"):SetDefaultSize("sArena", 700, 620)
     LibStub("AceConsole-3.0"):RegisterChatCommand("sarena", ChatCommand)
 
     self:SetLayout(nil, db.profile.currentLayout)
