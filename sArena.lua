@@ -774,6 +774,12 @@ function sArenaMixin:Test()
         local frame = self["arena"..i]
         frame:Show()
 
+        frame.HealthBar:SetMinMaxValues(0, 100)
+        frame.HealthBar:SetValue(100)
+
+        frame.PowerBar:SetMinMaxValues(0, 100)
+        frame.PowerBar:SetValue(100)
+
         frame.ClassIcon:SetTexture(classIcons["MAGE"])
 
         frame.SpecIcon:Show()
