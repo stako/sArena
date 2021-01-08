@@ -80,47 +80,54 @@ local function setupOptionsTable(self)
         set = setSetting,
     }
 
-    layout.optionsTable.arenaFrames.args.positioning.args.classicBars = {
-        order = 6,
-        name = "Classic Bar Textures",
-        type = "toggle",
-        width = "full",
+    layout.optionsTable.arenaFrames.args.sizing.args.width = {
+        order = 3,
+        name = "Width",
+        type = "range",
+        min = 40,
+        max = 400,
+        step = 1,
         get = getSetting,
         set = setSetting,
     }
 
-    layout.optionsTable.special = {
-        order = 7,
-        name = "Special",
-        type = "group",
+    layout.optionsTable.arenaFrames.args.sizing.args.height = {
+        order = 4,
+        name = "Height",
+        type = "range",
+        min = 2,
+        max = 100,
+        step = 1,
         get = getSetting,
         set = setSetting,
+    }
+
+    layout.optionsTable.arenaFrames.args.sizing.args.powerBarHeight = {
+        order = 5,
+        name = "Power Bar Height",
+        type = "range",
+        min = 1,
+        max = 50,
+        step = 1,
+        get = getSetting,
+        set = setSetting,
+    }
+
+    layout.optionsTable.arenaFrames.args.other = {
+        order = 3,
+        name = "Other",
+        type = "group",
+        inline = true,
         args = {
-            width = {
+            classicBars = {
                 order = 1,
-                name = "Width",
-                type = "range",
-                min = 40,
-                max = 400,
-                step = 1,
-            },
-            height = {
-                order = 2,
-                name = "Height",
-                type = "range",
-                min = 2,
-                max = 100,
-                step = 1,
-            },
-            powerBarHeight = {
-                order = 2,
-                name = "Power Bar Height",
-                type = "range",
-                min = 1,
-                max = 50,
-                step = 1,
-            },
-        },
+                name = "Classic Bar Textures",
+                type = "toggle",
+                width = "full",
+                get = getSetting,
+                set = setSetting,
+            }
+        }
     }
 end
 
