@@ -59,8 +59,6 @@ local FindAuraByName = AuraUtil.FindAuraByName
 local ceil = ceil
 local AbbreviateLargeNumbers = AbbreviateLargeNumbers
 local UnitFrameHealPredictionBars_Update = UnitFrameHealPredictionBars_Update
-local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
-local unpack = unpack
 
 local function UpdateBlizzVisibility(instanceType)
     -- hide blizz arena frames while in arena
