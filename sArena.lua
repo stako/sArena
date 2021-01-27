@@ -729,9 +729,13 @@ end
 
 function sArenaFrameMixin:SetLifeState()
     local unit = self.unit
+    local isDead = UnitIsDeadOrGhost(unit) and not FindAuraByName(FEIGN_DEATH, unit, "HELPFUL")
 
-    self.DeathIcon:SetShown(UnitIsDeadOrGhost(unit) and not FindAuraByName(FEIGN_DEATH, unit, "HELPFUL"))
-    self.hideStatusText = self.DeathIcon:IsShown()
+    self.DeathIcon:SetShown(isDead)
+    self.hideStatusText = isDead
+    if ( isDead ) then
+        self:ResetDR()
+    end
 end
 
 function sArenaFrameMixin:SetStatusText(unit)
