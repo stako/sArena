@@ -282,7 +282,8 @@ sArenaMixin.auraList = tInvert({
     236696, -- Druid: Thorns
     53480,  -- Hunter: Roar of Sacrifice
     198111, -- Mage: Temporal Shield
-    342246, -- Mage: Alter Time
+    342246, -- Mage: Alter Time (Arcane)
+    110909, -- Mage: Alter Time (Fire, Frost)
     125174, -- Monk: Touch of Karma
     116849, -- Monk: Life Cocoon
     120954, -- Monk: Fortifying Brew
@@ -323,6 +324,7 @@ sArenaMixin.auraList = tInvert({
     -- Miscellaneous
     199450, -- Ultimate Sacrifice
     320224, -- Podtender
+    327140, -- Forgeborne
     188501, -- Spectral Sight
     305395, -- Blessing of Freedom (Unbound Freedom)
     1044,   -- Blessing of Freedom
