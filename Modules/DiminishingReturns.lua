@@ -120,6 +120,7 @@ drList = {
     [5246]    = "Disorient",       -- Intimidating Shout
     [1513]    = "Disorient",       -- Scare Beast
     [10326]   = "Disorient",       -- Turn Evil
+    [331866]   = "Disorient",      -- Agent of Chaos
 
     [217832]  = "Incapacitate",    -- Imprison
     [221527]  = "Incapacitate",    -- Imprison (Honor talent)

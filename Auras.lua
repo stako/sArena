@@ -87,6 +87,7 @@ sArenaMixin.auraList = tInvert({
     2637,   -- Hibernate (Disorient)
     226943, -- Mind Bomb (Disorient)
     236748, -- Intimidating Roar (Disorient)
+    331866, -- Agent of Chaos (Disorient)
 
     51514,  -- Hex (Incapacitate)
     211004, -- Hex: Spider (Incapacitate)
@@ -268,7 +269,7 @@ sArenaMixin.auraList = tInvert({
 
     -- Defensive Buffs
     48792,  -- Death Knight: Icebound Fortitude
-    287081, -- Death Knight: Lichborne
+    49039,  -- Death Knight: Lichborne
     145629, -- Death Knight: Anti-Magic Zone
     81256,  -- Death Knight: Dancing Rune Weapon
     55233,  -- Death Knight: Vampiric Blood
