@@ -26,6 +26,7 @@ sArenaMixin.auraList = tInvert({
     5211,   -- Mighty Bash (Stun)
     108194, -- Asphyxiate (Unholy) (Stun)
     221562, -- Asphyxiate (Blood) (Stun)
+    334693, -- Absolute Zero (Frost) (Stun)
     91797,  -- Monstrous Blow (Mutated Ghoul) (Stun)
     287254, -- Dead of Winter (Stun)
     210141, -- Zombie Explosion (Stun)
