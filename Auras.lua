@@ -89,6 +89,7 @@ sArenaMixin.auraList = tInvert({
     226943, -- Mind Bomb (Disorient)
     236748, -- Intimidating Roar (Disorient)
     331866, -- Agent of Chaos (Disorient)
+    324263, -- Sulfuric Emission (Disorient)
 
     51514,  -- Hex (Incapacitate)
     211004, -- Hex: Spider (Incapacitate)
@@ -139,6 +140,7 @@ sArenaMixin.auraList = tInvert({
     47585,  -- Priest: Dispersion
     1022,   -- Blessing of Protection
     204018, -- Blessing of Spellwarding
+    323524, -- Ultimate Form
     216113, -- Way of the Crane
     31224,  -- Cloak of Shadows
     212182, -- Smoke Bomb
@@ -189,6 +191,7 @@ sArenaMixin.auraList = tInvert({
     217824, -- Shield of Virtue
     43523,  -- Unstable Affliction Silence 1
     196364, -- Unstable Affliction Silence 2
+    317589, -- Tormenting Backlash
 
     323673, -- Mindgames
 
@@ -227,8 +230,8 @@ sArenaMixin.auraList = tInvert({
 
     -- Offensive Buffs
     51271,  -- Death Knight: Pillar of Frost
-    47568,  -- Death Knight: Empower Rune Weapon
-    207289, -- Death Knight: Unholy Frenzy
+    -- 47568,  -- Death Knight: Empower Rune Weapon
+    207289, -- Death Knight: Unholy Assault
     162264, -- Demon Hunter: Metamorphosis
     194223, -- Druid: Celestial Alignment
     102560, -- Druid: Incarnation: Chosen of Elune
@@ -236,7 +239,7 @@ sArenaMixin.auraList = tInvert({
     19574,  -- Hunter: Bestial Wrath
     266779, -- Hunter: Coordinated Assault
     288613, -- Hunter: Trueshot
-    260402, -- Hunter: Double Tap
+    -- 260402, -- Hunter: Double Tap
     12042,  -- Mage: Arcane Power
     190319, -- Mage: Combustion
     198144, -- Mage: Ice Form
@@ -264,7 +267,7 @@ sArenaMixin.auraList = tInvert({
     113860, -- Warlock: Dark Soul: Misery
     107574, -- Warrior: Avatar
     227847, -- Warrior: Bladestorm (Arms)
-    260708, -- Warrior: Sweeping Strikes
+    -- 260708, -- Warrior: Sweeping Strikes
     262228, -- Warrior: Deadly Calm
     1719,   -- Warrior: Recklessness
 
@@ -282,6 +285,7 @@ sArenaMixin.auraList = tInvert({
     61336,  -- Druid: Survival Instincts
     117679, -- Druid: Incarnation: Tree of Life
     236696, -- Druid: Thorns
+    305497, -- Druid: Thorns
     53480,  -- Hunter: Roar of Sacrifice
     198111, -- Mage: Temporal Shield
     342246, -- Mage: Alter Time (Arcane)
@@ -294,6 +298,7 @@ sArenaMixin.auraList = tInvert({
     6940,   -- Paladin: Blessing of Sacrifice
     184662, -- Paladin: Shield of Vengeance
     31850,  -- Paladin: Ardent Defender
+    210294, -- Paladin: Divine Favor
     216331, -- Paladin: Avenging Crusader
     31842,  -- Paladin: Avenging Wrath (Holy)
     205191, -- Paladin: Eye for an Eye
@@ -317,6 +322,7 @@ sArenaMixin.auraList = tInvert({
     118038, -- Warrior: Die by the Sword
     12975,  -- Warrior: Last Stand
     871,    -- Warrior: Shield Wall
+    213871, -- Warrior: Bodyguard
     197690, -- Warrior: Defensive Stance
 
     -- Refreshments
@@ -335,4 +341,14 @@ sArenaMixin.auraList = tInvert({
     96243,  -- Invisibility invis effect?
     110960, -- Greater Invisibility
     198158, -- Mass Invisibility
+
+    322459, -- Thoughtstolen (Shaman)
+    322464, -- Thoughtstolen (Mage)
+    322442, -- Thoughtstolen (Druid)
+    322462, -- Thoughtstolen (Priest - Holy)
+    322457, -- Thoughtstolen (Paladin)
+    322463, -- Thoughtstolen (Warlock)
+    322461, -- Thoughtstolen (Priest - Discipline)
+    322458, -- Thoughtstolen (Monk)
+    322460, -- Thoughtstolen (Priest - Shadow) 
 })
