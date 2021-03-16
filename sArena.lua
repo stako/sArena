@@ -557,16 +557,18 @@ end
 
 function sArenaFrameMixin:UpdateTrinket()
     local spellID, startTime, duration = C_PvP.GetArenaCrowdControlInfo(self.unit)
+    local trinket = self.Trinket
+
     if ( spellID ) then
-        if ( spellID ~= self.Trinket.spellID ) then
+        if ( spellID ~= trinket.spellID ) then
             local _, spellTextureNoOverride = GetSpellTexture(spellID)
-            self.Trinket.spellID = spellID
-            self.Trinket.Texture:SetTexture(spellTextureNoOverride)
+            trinket.spellID = spellID
+            trinket.Texture:SetTexture(spellTextureNoOverride)
         end
-        if ( startTime ~= 0 and duration ~= 0 and self.Trinket.Texture:GetTexture() ) then
-            self.Trinket.Cooldown:SetCooldown(startTime/1000.0, duration/1000.0)
+        if ( startTime ~= 0 and duration ~= 0 and trinket.Texture:GetTexture() ) then
+            trinket.Cooldown:SetCooldown(startTime/1000.0, duration/1000.0)
         else
-            self.Trinket.Cooldown:Clear()
+            trinket.Cooldown:Clear()
         end
     end
 end
