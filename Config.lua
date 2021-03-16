@@ -16,6 +16,8 @@ local function validateCombat()
     return true
 end
 
+local exclamation = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"
+
 local growthValues = { "Down", "Up", "Right", "Left" }
 local drCategories = {
     ["Stun"] = "Stuns",
@@ -633,7 +635,7 @@ sArenaMixin.optionsTable = {
         },
         dragNotice = {
             order = 4,
-            name = "|cffff3300     |T840662:16|t Ctrl+shift+click to drag stuff|r",
+            name = "     " .. exclamation .. " Ctrl+shift+click to drag stuff",
             type = "description",
             fontSize = "medium",
             width = 1.5,
