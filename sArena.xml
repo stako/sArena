@@ -9,7 +9,7 @@
 
     <Script file="sArena.lua"/>
     <Script file="Config.lua"/>
-    <Script file="Auras.lua"/>
+    <Script file="Modules\Auras.lua"/>
     <Script file="Modules\DiminishingReturns.lua"/>
     <Script file="Modules\Racials.lua"/>
     <Script file="Layouts\BlizzArena.lua"/>
