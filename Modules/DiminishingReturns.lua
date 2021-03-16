@@ -22,6 +22,14 @@ local severityColor = {
     [3] = { 1, 0, 0, 1},
 }
 
+local drIcons = {
+    Stun = 135860,
+    Incapacitate = 136071,
+    Disorient = 136184,
+    Silence = 458230,
+    Root = 136100,
+}
+
 local GetTime = GetTime
 
 function sArenaFrameMixin:FindDR(combatEvent, spellID)
@@ -59,7 +67,7 @@ function sArenaFrameMixin:FindDR(combatEvent, spellID)
         end
     end
 
-    frame.Icon:SetTexture(GetSpellTexture(spellID))
+    frame.Icon:SetTexture(drIcons[category])
     frame.Border:SetVertexColor(unpack(severityColor[frame.severity]))
 
     frame.severity = frame.severity + 1
