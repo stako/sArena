@@ -17,7 +17,7 @@ sArenaMixin.interruptList = {
     [187707] = 3,   -- Muzzle (Hunter)
     [212619] = 6,   -- Call Felhunter (Warlock)
     [231665] = 3,   -- Avengers Shield (Paladin)
-};
+}
 
 sArenaMixin.auraList = tInvert({
     -- Higher up = higher priority
@@ -350,5 +350,5 @@ sArenaMixin.auraList = tInvert({
     322463, -- Thoughtstolen (Warlock)
     322461, -- Thoughtstolen (Priest - Discipline)
     322458, -- Thoughtstolen (Monk)
-    322460, -- Thoughtstolen (Priest - Shadow) 
+    322460, -- Thoughtstolen (Priest - Shadow)
 })
