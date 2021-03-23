@@ -294,6 +294,8 @@ sArenaMixin.auraList = tInvert({
     116849, -- Monk: Life Cocoon
     120954, -- Monk: Fortifying Brew
     122783, -- Monk: Diffuse Magic
+    228050, -- Paladin: Guardian of the Forgotten Queen
+    86659,  -- Paladin: Guardian of Ancient Kings
     210256, -- Paladin: Blessing of Sanctuary
     6940,   -- Paladin: Blessing of Sacrifice
     184662, -- Paladin: Shield of Vengeance
