@@ -23,9 +23,9 @@ local severityColor = {
 }
 
 local drIcons = {
-    Stun = 135860,
+    Stun = 132298,
     Incapacitate = 136071,
-    Disorient = 136184,
+    Disorient = 136183,
     Silence = 458230,
     Root = 136100,
 }
