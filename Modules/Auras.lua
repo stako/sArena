@@ -325,6 +325,7 @@ sArenaMixin.auraList = tInvert({
     12975,  -- Warrior: Last Stand
     871,    -- Warrior: Shield Wall
     213871, -- Warrior: Bodyguard
+    345231, -- Trinket: Gladiator's Emblem
     197690, -- Warrior: Defensive Stance
 
     -- Refreshments
