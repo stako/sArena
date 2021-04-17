@@ -731,6 +731,14 @@ sArenaMixin.optionsTable = {
                             set = function(info, key, val) info.handler.db.profile.drCategories[key] = val end,
                             values = drCategories,
                         },
+                        dynamicIcons = {
+                            order = 2,
+                            name = "Dynamic Icons",
+                            desc = "DR icons will show which spell triggered the DR",
+                            type = "toggle",
+                            get = function(info) return info.handler.db.profile.drDynamicIcons end,
+                            set = function(info, val) info.handler.db.profile.drDynamicIcons = val end,
+                        },
                     },
                 },
                 racialGroup = {

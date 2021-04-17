@@ -5,6 +5,7 @@ sArenaMixin.drCategories = {
     "Silence",
     "Root",
 }
+
 sArenaMixin.defaultSettings.profile.drCategories = {
     Stun = true,
     Incapacitate = true,
@@ -12,6 +13,7 @@ sArenaMixin.defaultSettings.profile.drCategories = {
     Silence = true,
     Root = true,
 }
+sArenaMixin.defaultSettings.profile.drDynamicIcons = false
 
 local drCategories = sArenaMixin.drCategories
 local drList
@@ -67,7 +69,7 @@ function sArenaFrameMixin:FindDR(combatEvent, spellID)
         end
     end
 
-    frame.Icon:SetTexture(drIcons[category])
+    frame.Icon:SetTexture(self.parent.db.profile.drDynamicIcons and GetSpellTexture(spellID) or drIcons[category])
     frame.Border:SetVertexColor(unpack(severityColor[frame.severity]))
 
     frame.severity = frame.severity + 1
