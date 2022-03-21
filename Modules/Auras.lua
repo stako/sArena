@@ -354,4 +354,9 @@ sArenaMixin.auraList = tInvert({
     322461, -- Thoughtstolen (Priest - Discipline)
     322458, -- Thoughtstolen (Monk)
     322460, -- Thoughtstolen (Priest - Shadow)
+
+    -- Druid Forms
+    768,    -- Cat form
+    783,    -- Travel form
+    5487,   -- Bear form
 })
