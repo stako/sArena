@@ -100,6 +100,7 @@ sArenaMixin.auraList = tInvert({
     277784, -- Hex: Wicker Mongrel (Incapacitate)
     277778, -- Hex: Zandalari Tendonripper (Incapacitate)
     269352, -- Hex: Skeletal Hatchling (Incapacitate)
+    309328, -- Hex: Living Honey (Incapacitate)
     118,    -- Polymorph (Incapacitate)
     61305,  -- Polymorph: Black Cat (Incapacitate)
     28272,  -- Polymorph: Pig (Incapacitate)
