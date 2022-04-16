@@ -243,6 +243,7 @@ sArenaMixin.auraList = tInvert({
     -- 260402, -- Hunter: Double Tap
     12042,  -- Mage: Arcane Power
     190319, -- Mage: Combustion
+    324220, -- Mage: Deathborne
     198144, -- Mage: Ice Form
     -- 12472,  -- Mage: Icy Veins
     80353,  -- Mage: Time Warp
