@@ -383,7 +383,7 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         end
 
         self:Initialize()
-    elseif ( event == "PLAYER_ENTERING_WORLD" ) then
+    elseif ( event == "PLAYER_ENTERING_WORLD" ) or ( event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" ) then
         self.Name:SetText("")
         self.CastBar:Hide()
         self.specTexture = nil
@@ -396,9 +396,6 @@ function sArenaFrameMixin:OnEvent(event, eventUnit, arg1)
         self:ResetRacial()
         self:ResetDR()
         UnitFrameHealPredictionBars_Update(self)
-    elseif ( event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" ) then
-        self:UpdateVisible()
-        self:UpdatePlayer()
     elseif ( event == "PLAYER_REGEN_ENABLED" ) then
         self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 

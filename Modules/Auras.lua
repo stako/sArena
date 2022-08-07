@@ -178,6 +178,7 @@ sArenaMixin.auraList = tInvert({
     212295, -- Warlock: Nether Ward
     48707,  -- Death Knight: Anti-Magic Shell
     5384,   -- Hunter: Feign Death
+    353319, -- Monk: Peaceweaver
 
     -- Silences
     81261,  -- Solar Beam
