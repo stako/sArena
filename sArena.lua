@@ -63,7 +63,7 @@ local UnitFrameHealPredictionBars_Update = UnitFrameHealPredictionBars_Update
 local function UpdateBlizzVisibility(instanceType)
     -- hide blizz arena frames while in arena
     if ( InCombatLockdown() ) then return end
-    if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then return end
+    --if ( not IsAddOnLoaded("Blizzard_ArenaUI") ) then return end
     if ( IsAddOnLoaded("ElvUI") ) then return end
 
     if ( not blizzFrame ) then
@@ -86,15 +86,15 @@ local function UpdateBlizzVisibility(instanceType)
             prepFrame:SetParent(blizzFrame)
             prepFrame:SetPoint("CENTER", blizzFrame, "CENTER")
         else
-            arenaFrame:SetParent("ArenaEnemyFrames")
-            prepFrame:SetParent("ArenaPrepFrames")
+            arenaFrame:SetParent("ArenaEnemyFramesContainer")
+            prepFrame:SetParent("ArenaEnemyPrepFramesContainer")
 
             if ( i == 1 ) then
                 arenaFrame:SetPoint("TOP", arenaFrame:GetParent(), "TOP")
                 prepFrame:SetPoint("TOP", prepFrame:GetParent(), "TOP")
             else
-                arenaFrame:SetPoint("TOP", "ArenaEnemyFrame"..i-1, "BOTTOM", 0, -20)
-                prepFrame:SetPoint("TOP", "ArenaPrepFrame"..i-1, "BOTTOM", 0, -20)
+                arenaFrame:SetPoint("TOP", "ArenaEnemyMatchFrame"..i-1, "BOTTOM", 0, -20)
+                prepFrame:SetPoint("TOP", "ArenaEnemyPrepFrame"..i-1, "BOTTOM", 0, -20)
             end
         end
     end
