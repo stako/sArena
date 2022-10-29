@@ -128,7 +128,13 @@ function layout:Initialize(frame)
     f:SetHeight(12)
 
     f = frame.CastBar
-    f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	local typeInfoTexture = "Interface\\TargetingFrame\\UI-StatusBar";
+    f:SetStatusBarTexture(typeInfoTexture)
+	f.typeInfo = {
+		filling = typeInfoTexture,
+		full = typeInfoTexture,
+		glow = typeInfoTexture
+	}
 
     f = frame.DeathIcon
     f:ClearAllPoints()

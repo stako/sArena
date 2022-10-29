@@ -1,6 +1,6 @@
 sArenaMixin = {}
 sArenaFrameMixin = {}
-
+sArenaCastingBarExtensionMixin = {}
 sArenaMixin.layouts = {}
 
 sArenaMixin.defaultSettings = {
@@ -297,7 +297,7 @@ function sArenaFrameMixin:OnLoad()
     self:SetAttribute("unit", unit)
     self.unit = unit
 
-    CastingBarFrame_SetUnit(self.CastBar, unit, false, true)
+	self.CastBar:SetUnit(unit, false, true)
 
     self.healthbar = self.HealthBar
 
@@ -578,7 +578,7 @@ function sArenaFrameMixin:ResetTrinket()
 end
 
 local function ResetStatusBar(f)
-    f:SetStatusBarTexture(nil)
+    --f:SetStatusBarTexture(nil)
     f:ClearAllPoints()
     f:SetSize(0, 0)
     f:SetScale(1)
@@ -832,4 +832,32 @@ function sArenaMixin:Test()
         frame:SetStatusText("player")
         frame:UpdateStatusTextVisible()
     end
+end
+
+-- default bars, will get overwritten from layouts
+local typeInfoTexture = "Interface\\RaidFrame\\Raid-Bar-Hp-Fill";
+sArenaCastingBarExtensionMixin.typeInfo = {
+	filling = typeInfoTexture,
+	full = typeInfoTexture,
+	glow = typeInfoTexture
+}
+
+local actionColors = {
+	applyingcrafting={ 1.0, 0.7, 0.0, 1},
+	applyingtalents={ 1.0, 0.7, 0.0, 1},
+	filling={ 1.0, 0.7, 0.0, 1},
+	full={ 0.0, 1.0, 0.0, 1},
+	standard={ 1.0, 0.7, 0.0, 1},
+	empowered={ 1.0, 0.7, 0.0, 1},
+	channel={ 0.0, 1.0, 0.0, 1},
+	uninterruptable={0.7, 0.7, 0.7, 1},
+	interrupted={1.0, 0.0, 0.0, 1}
+}
+
+	
+
+function sArenaCastingBarExtensionMixin:GetTypeInfo(barType)
+	barType = barType or "standard";
+	self:SetStatusBarColor(unpack(actionColors[barType]));
+	return self.typeInfo
 end

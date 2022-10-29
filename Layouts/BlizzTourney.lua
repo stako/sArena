@@ -123,7 +123,13 @@ function layout:Initialize(frame)
     specBorder:Show()
 
     f = frame.CastBar
-    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
+	local typeInfoTexture = "Interface\\RaidFrame\\Raid-Bar-Hp-Fill";
+    f:SetStatusBarTexture(typeInfoTexture)
+	f.typeInfo = {
+		filling = typeInfoTexture,
+		full = typeInfoTexture,
+		glow = typeInfoTexture
+	}
 
     f = frame.DeathIcon
     f:ClearAllPoints()

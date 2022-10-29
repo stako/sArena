@@ -229,6 +229,11 @@ end
 function layout:UpdateTextures(frame)
     local texture = self.db.classicBars and "Interface\\TargetingFrame\\UI-StatusBar" or "Interface\\RaidFrame\\Raid-Bar-Hp-Fill"
 
+	frame.CastBar.typeInfo = {
+		filling = texture,
+		full = texture,
+		glow = texture
+	}
     frame.CastBar:SetStatusBarTexture(texture)
     frame.HealthBar:SetStatusBarTexture(texture)
     frame.PowerBar:SetStatusBarTexture(texture)
