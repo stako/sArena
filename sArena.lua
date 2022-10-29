@@ -86,8 +86,8 @@ local function UpdateBlizzVisibility(instanceType)
             prepFrame:SetParent(blizzFrame)
             prepFrame:SetPoint("CENTER", blizzFrame, "CENTER")
         else
-            arenaFrame:SetParent("ArenaEnemyFramesContainer")
-            prepFrame:SetParent("ArenaEnemyPrepFramesContainer")
+            arenaFrame:SetParent(ArenaEnemyFramesContainer)
+            prepFrame:SetParent(ArenaEnemyPrepFramesContainer)
 
             if ( i == 1 ) then
                 arenaFrame:SetPoint("TOP", arenaFrame:GetParent(), "TOP")
