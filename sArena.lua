@@ -294,6 +294,8 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterForClicks("AnyUp")
     self:SetAttribute("*type1", "target")
     self:SetAttribute("*type2", "focus")
+    self:SetAttribute("*typerelease1", "target") -- I do not know why this is treated as a typerelease, don't know how to remove it.
+    self:SetAttribute("*typerelease2", "focus")
     self:SetAttribute("unit", unit)
     self.unit = unit
 
