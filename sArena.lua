@@ -74,8 +74,8 @@ local function UpdateBlizzVisibility(instanceType)
     end
 
     for i = 1, 5 do
-        local arenaFrame = _G["ArenaEnemyFrame"..i]
-        local prepFrame = _G["ArenaPrepFrame"..i]
+        local arenaFrame = _G["ArenaEnemyMatchFrame"..i]
+        local prepFrame = _G["ArenaEnemyPrepFrame"..i]
 
         arenaFrame:ClearAllPoints()
         prepFrame:ClearAllPoints()
