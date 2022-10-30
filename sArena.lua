@@ -580,7 +580,6 @@ function sArenaFrameMixin:ResetTrinket()
 end
 
 local function ResetStatusBar(f)
-    --f:SetStatusBarTexture(nil)
     f:ClearAllPoints()
     f:SetSize(0, 0)
     f:SetScale(1)
