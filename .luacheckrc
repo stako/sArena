@@ -4,6 +4,8 @@ exclude_files = {
 }
 read_globals = {
     'AbbreviateLargeNumbers',
+    'ArenaEnemyFramesContainer',
+    'ArenaEnemyPrepFramesContainer',
     'AuraUtil',
     'C_PvP',
     'C_Timer',
@@ -49,7 +51,5 @@ read_globals = {
     'UnitPowerMax',
     'UnitPowerType',
     'UnitRace',
-    'ArenaEnemyFramesContainer',
-    'ArenaEnemyPrepFramesContainer',
 }
 max_line_length = 175
