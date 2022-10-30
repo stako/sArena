@@ -1,6 +1,0 @@
-language: c
-
-script:
-  - sudo apt-get install luarocks
-  - sudo luarocks install luacheck
-  - luacheck -t Layouts Modules *.lua

@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  luacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: install luacheck
+        run: sudo apt install luarocks
+
+      - name: install luacheck
+        run: luarocks install luacheck
+
+      - name: run luacheck
+        run: luacheck -t Layouts Modules *.lua
