@@ -66,7 +66,7 @@
         </Scripts>
     </Frame>
 
-	<!--inherits="CastingBarFrameTemplate" -->
+    <!--inherits="CastingBarFrameTemplate" -->
     <StatusBar name="sArenaCastBarTemplate" mixin="CastingBarMixin,sArenaCastingBarExtensionMixin" inherits="CastingBarFrameAnimsTemplate" enablemouse="true" movable="true" virtual="true" hidden="true">
         <Layers>
             <Layer level="BACKGROUND">
@@ -109,14 +109,14 @@
         </Layers>
         <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
         <BarColor r="1.0" g="0.7" b="0.0"/>
-		<Scripts>
-			<OnLoad>
-				self:OnLoad(nil, true, false);
-			</OnLoad>
-			<OnEvent method="OnEvent" />
-			<OnUpdate method="OnUpdate" />
-			<OnShow method="OnShow" />
-		</Scripts>
+        <Scripts>
+            <OnLoad>
+                self:OnLoad(nil, true, false);
+            </OnLoad>
+            <OnEvent method="OnEvent" />
+            <OnUpdate method="OnUpdate" />
+            <OnShow method="OnShow" />
+        </Scripts>
     </StatusBar>
 
     <Frame name="sArenaIconTemplate" enablemouse="true" movable="true" virtual="true">
