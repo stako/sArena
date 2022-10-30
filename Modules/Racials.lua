@@ -44,12 +44,12 @@ local racialSpells = {
     [255654] = 120, -- Bull Rush
     [260364] = 180, -- Arcane Pulse
     [274738] = 120, -- Ancestral Call
-    [265221] = 120, -- Fireblood	
-    [291944] = 160, -- Regeneratin'	
-    [256948] = 180, -- Spatial Rift	
-    [287712] = 160, -- Haymaker	
-    [312924] = 180, -- Hyper Organic Light Originator	
-    [312411] = 90   -- Bag of Tricks	
+    [265221] = 120, -- Fireblood
+    [291944] = 160, -- Regeneratin'
+    [256948] = 180, -- Spatial Rift
+    [287712] = 160, -- Haymaker
+    [312924] = 180, -- Hyper Organic Light Originator
+    [312411] = 90   -- Bag of Tricks
 }
 
 local racialData = {
