@@ -49,5 +49,7 @@ read_globals = {
     'UnitPowerMax',
     'UnitPowerType',
     'UnitRace',
+    'ArenaEnemyFramesContainer',
+    'ArenaEnemyPrepFramesContainer',
 }
 max_line_length = 175
