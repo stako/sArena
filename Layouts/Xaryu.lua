@@ -56,8 +56,8 @@ end
 local function setSetting(info, val)
     layout.db[info[#info]] = val
 
-    for i = 1,3 do
-        local frame = info.handler["arena"..i]
+    for i = 1, 3 do
+        local frame = info.handler["arena" .. i]
         frame:SetSize(layout.db.width, layout.db.height)
         frame.ClassIcon:SetSize(layout.db.height, layout.db.height)
         frame.DeathIcon:SetSize(layout.db.height * 0.8, layout.db.height * 0.8)
@@ -137,11 +137,11 @@ local ppUnderlay
 function layout:Initialize(frame)
     self.db = frame.parent.db.profile.layoutSettings[layoutName]
 
-    if ( not self.optionsTable ) then
+    if (not self.optionsTable) then
         setupOptionsTable(frame.parent)
     end
 
-    if ( frame:GetID() == 3 ) then
+    if (frame:GetID() == 3) then
         frame.parent:UpdateCastBarSettings(self.db.castBar)
         frame.parent:UpdateDRSettings(self.db.dr)
         frame.parent:UpdateFrameSettings(self.db)
@@ -207,7 +207,7 @@ function layout:UpdateOrientation(frame)
     powerBar:ClearAllPoints()
     classIcon:ClearAllPoints()
 
-    if ( self.db.mirrored ) then
+    if (self.db.mirrored) then
         healthBar:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -2)
         healthBar:SetPoint("BOTTOMLEFT", powerBar, "TOPLEFT")
 
@@ -227,13 +227,14 @@ function layout:UpdateOrientation(frame)
 end
 
 function layout:UpdateTextures(frame)
-    local texture = self.db.classicBars and "Interface\\TargetingFrame\\UI-StatusBar" or "Interface\\RaidFrame\\Raid-Bar-Hp-Fill"
+    local texture = self.db.classicBars and "Interface\\TargetingFrame\\UI-StatusBar" or
+        "Interface\\RaidFrame\\Raid-Bar-Hp-Fill"
 
-	frame.CastBar.typeInfo = {
-		filling = texture,
-		full = texture,
-		glow = texture
-	}
+    frame.CastBar.typeInfo = {
+        filling = texture,
+        full = texture,
+        glow = texture
+    }
     frame.CastBar:SetStatusBarTexture(texture)
     frame.HealthBar:SetStatusBarTexture(texture)
     frame.PowerBar:SetStatusBarTexture(texture)
