@@ -53,8 +53,8 @@ end
 local function setSetting(info, val)
     layout.db[info[#info]] = val
 
-    for i = 1,3 do
-        local frame = info.handler["arena"..i]
+    for i = 1, 3 do
+        local frame = info.handler["arena" .. i]
         layout:UpdateOrientation(frame)
     end
 end
@@ -75,11 +75,11 @@ end
 function layout:Initialize(frame)
     self.db = frame.parent.db.profile.layoutSettings[layoutName]
 
-    if ( not self.optionsTable ) then
+    if (not self.optionsTable) then
         setupOptionsTable(frame.parent)
     end
 
-    if ( frame:GetID() == 3 ) then
+    if (frame:GetID() == 3) then
         frame.parent:UpdateCastBarSettings(self.db.castBar)
         frame.parent:UpdateDRSettings(self.db.dr)
         frame.parent:UpdateFrameSettings(self.db)
@@ -127,7 +127,13 @@ function layout:Initialize(frame)
     f:SetHeight(12)
 
     f = frame.CastBar
-    f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+    local typeInfoTexture = "Interface\\TargetingFrame\\UI-StatusBar";
+    f:SetStatusBarTexture(typeInfoTexture)
+    f.typeInfo = {
+        filling = typeInfoTexture,
+        full = typeInfoTexture,
+        glow = typeInfoTexture
+    }
 
     f = frame.DeathIcon
     f:ClearAllPoints()
@@ -148,8 +154,8 @@ function layout:Initialize(frame)
     underlay:Show()
 
     local id = frame:GetID()
-    layout["frameTexture"..id] = frame.TexturePool:Acquire()
-    local frameTexture = layout["frameTexture"..id]
+    layout["frameTexture" .. id] = frame.TexturePool:Acquire()
+    local frameTexture = layout["frameTexture" .. id]
     frameTexture:SetDrawLayer("ARTWORK", 2)
     frameTexture:SetAllPoints(frame)
     frameTexture:SetTexture("Interface\\ArenaEnemyFrame\\UI-ArenaTargetingFrame")
@@ -159,14 +165,14 @@ function layout:Initialize(frame)
 end
 
 function layout:UpdateOrientation(frame)
-    local frameTexture = layout["frameTexture"..frame:GetID()]
+    local frameTexture = layout["frameTexture" .. frame:GetID()]
     local healthBar = frame.HealthBar
     local classIcon = frame.ClassIcon
 
     healthBar:ClearAllPoints()
     classIcon:ClearAllPoints()
 
-    if ( self.db.mirrored ) then
+    if (self.db.mirrored) then
         frameTexture:SetTexCoord(0.796, 0, 0, 0.5)
         healthBar:SetPoint("TOPRIGHT", -3, -9)
         classIcon:SetPoint("TOPLEFT", 4, -4)

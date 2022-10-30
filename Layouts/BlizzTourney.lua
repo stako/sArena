@@ -53,8 +53,8 @@ end
 local function setSetting(info, val)
     layout.db[info[#info]] = val
 
-    for i = 1,3 do
-        local frame = info.handler["arena"..i]
+    for i = 1, 3 do
+        local frame = info.handler["arena" .. i]
         layout:UpdateOrientation(frame)
     end
 end
@@ -75,11 +75,11 @@ end
 function layout:Initialize(frame)
     self.db = frame.parent.db.profile.layoutSettings[layoutName]
 
-    if ( not self.optionsTable ) then
+    if (not self.optionsTable) then
         setupOptionsTable(frame.parent)
     end
 
-    if ( frame:GetID() == 3 ) then
+    if (frame:GetID() == 3) then
         frame.parent:UpdateCastBarSettings(self.db.castBar)
         frame.parent:UpdateDRSettings(self.db.dr)
         frame.parent:UpdateFrameSettings(self.db)
@@ -123,7 +123,13 @@ function layout:Initialize(frame)
     specBorder:Show()
 
     f = frame.CastBar
-    f:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
+    local typeInfoTexture = "Interface\\RaidFrame\\Raid-Bar-Hp-Fill";
+    f:SetStatusBarTexture(typeInfoTexture)
+    f.typeInfo = {
+        filling = typeInfoTexture,
+        full = typeInfoTexture,
+        glow = typeInfoTexture
+    }
 
     f = frame.DeathIcon
     f:ClearAllPoints()
@@ -144,8 +150,8 @@ function layout:Initialize(frame)
     underlay:Show()
 
     local id = frame:GetID()
-    layout["frameTexture"..id] = frame.TexturePool:Acquire()
-    local frameTexture = layout["frameTexture"..id]
+    layout["frameTexture" .. id] = frame.TexturePool:Acquire()
+    local frameTexture = layout["frameTexture" .. id]
     frameTexture:SetDrawLayer("ARTWORK", 2)
     frameTexture:SetSize(160, 80)
     frameTexture:SetAtlas("UnitFrame")
@@ -155,7 +161,7 @@ function layout:Initialize(frame)
 end
 
 function layout:UpdateOrientation(frame)
-    local frameTexture = layout["frameTexture"..frame:GetID()]
+    local frameTexture = layout["frameTexture" .. frame:GetID()]
     local healthBar = frame.HealthBar
     local powerBar = frame.PowerBar
     local classIcon = frame.ClassIcon
@@ -168,7 +174,7 @@ function layout:UpdateOrientation(frame)
     classIconMask:ClearAllPoints()
     name:ClearAllPoints()
 
-    if ( self.db.mirrored ) then
+    if (self.db.mirrored) then
         frameTexture:SetTexCoord(1, 0, 0, 1)
         frameTexture:SetPoint("TOPLEFT", frame, "TOPLEFT", -26, 6)
 

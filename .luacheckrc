@@ -4,6 +4,8 @@ exclude_files = {
 }
 read_globals = {
     'AbbreviateLargeNumbers',
+    'ArenaEnemyFramesContainer',
+    'ArenaEnemyPrepFramesContainer',
     'AuraUtil',
     'C_PvP',
     'C_Timer',
