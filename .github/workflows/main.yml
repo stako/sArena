@@ -17,7 +17,7 @@ jobs:
         run: sudo apt install luarocks
 
       - name: install luacheck
-        run: luarocks install luacheck
+        run: sudo luarocks install luacheck
 
       - name: run luacheck
         run: luacheck -t Layouts Modules *.lua
