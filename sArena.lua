@@ -291,7 +291,7 @@ function sArenaFrameMixin:OnLoad()
     self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", unit)
     self:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", unit)
 
-    self:RegisterForClicks("AnyUp")
+    self:RegisterForClicks("AnyDown", "AnyUp") -- this is for WOW10, if sArena to support previous versions there would need to be a check to still catch only AnyUp
     self:SetAttribute("*type1", "target")
     self:SetAttribute("*type2", "focus")
     self:SetAttribute("*typerelease1", "target") -- I do not know why this is treated as a typerelease, don't know how to remove it.
