@@ -179,6 +179,7 @@ sArenaMixin.auraList = tInvert({
     48707,  -- Death Knight: Anti-Magic Shell
     5384,   -- Hunter: Feign Death
     353319, -- Monk: Peaceweaver
+    378464, -- Evoker: Nullifying Shroud
 
     -- Silences
     81261,  -- Solar Beam
