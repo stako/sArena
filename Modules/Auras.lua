@@ -276,6 +276,7 @@ sArenaMixin.auraList = tInvert({
     -- 260708, -- Warrior: Sweeping Strikes
     262228, -- Warrior: Deadly Calm
     1719,   -- Warrior: Recklessness
+    375087, -- Dragonrage
 
     -- Defensive Buffs
     48792,  -- Death Knight: Icebound Fortitude
