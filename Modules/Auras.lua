@@ -331,6 +331,7 @@ sArenaMixin.auraList = tInvert({
     213871, -- Warrior: Bodyguard
     345231, -- Trinket: Gladiator's Emblem
     197690, -- Warrior: Defensive Stance
+    363916, -- Evoker: Obsidian Scales
 
     -- Refreshments
     167152, -- Mage Food
