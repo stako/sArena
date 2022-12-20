@@ -90,6 +90,7 @@ sArenaMixin.auraList = tInvert({
     236748, -- Intimidating Roar (Disorient)
     331866, -- Agent of Chaos (Disorient)
     324263, -- Sulfuric Emission (Disorient)
+    360806, -- Sleep Walk (Disorient)
 
     51514,  -- Hex (Incapacitate)
     211004, -- Hex: Spider (Incapacitate)
@@ -230,6 +231,7 @@ sArenaMixin.auraList = tInvert({
     198121, -- Frostbite
     117526, -- Binding Shot
     207171, -- Winter is Coming
+    355689, -- Landslide
 
     -- Offensive Buffs
     51271,  -- Death Knight: Pillar of Frost
