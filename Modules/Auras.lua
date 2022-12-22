@@ -17,6 +17,7 @@ sArenaMixin.interruptList = {
     [187707] = 3,   -- Muzzle (Hunter)
     [212619] = 6,   -- Call Felhunter (Warlock)
     [231665] = 3,   -- Avengers Shield (Paladin)
+    [351338] = 4,   -- Quell (Evoker)
 }
 
 sArenaMixin.auraList = tInvert({
@@ -90,6 +91,7 @@ sArenaMixin.auraList = tInvert({
     236748, -- Intimidating Roar (Disorient)
     331866, -- Agent of Chaos (Disorient)
     324263, -- Sulfuric Emission (Disorient)
+    360806, -- Sleep Walk (Disorient)
 
     51514,  -- Hex (Incapacitate)
     211004, -- Hex: Spider (Incapacitate)

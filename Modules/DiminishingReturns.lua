@@ -132,6 +132,7 @@ drList = {
     [10326]   = "Disorient",       -- Turn Evil
     [331866]   = "Disorient",      -- Agent of Chaos
     [324263]   = "Disorient",      -- Sulfuric Emission
+    [360806]  = "Disorient",       -- Sleep Walk
 
     [217832]  = "Incapacitate",    -- Imprison
     [221527]  = "Incapacitate",    -- Imprison (Honor talent)
