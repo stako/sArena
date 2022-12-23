@@ -132,7 +132,7 @@ drList = {
     [10326]   = "Disorient",       -- Turn Evil
     [331866]   = "Disorient",      -- Agent of Chaos
     [324263]   = "Disorient",      -- Sulfuric Emission
-    [360806]  = "Disorient",       -- Sleep Walk
+    [360806]   = "Disorient",      -- Sleep Walk 
 
     [217832]  = "Incapacitate",    -- Imprison
     [221527]  = "Incapacitate",    -- Imprison (Honor talent)
@@ -227,6 +227,7 @@ drList = {
     [20549]   = "Stun",            -- War Stomp (Tauren)
     [255723]  = "Stun",            -- Bull Rush (Highmountain Tauren)
     [287712]  = "Stun",            -- Haymaker (Kul Tiran)
+    [372245]  = "Stun",            -- Terror of the Skies 
 
     [204085]  = "Root",            -- Deathchill (Chains of Ice)
     [233395]  = "Root",            -- Deathchill (Remorseless Winter)
@@ -246,6 +247,7 @@ drList = {
     [233582]  = "Root",            -- Entrenched in Flame
     [116706]  = "Root",            -- Disable
     [64695]   = "Root",            -- Earthgrab (Totem effect)
+    [241887]  = "Root",            -- LandSlide
 
     --[[
     [207777]  = "Disarm",          -- Dismantle
