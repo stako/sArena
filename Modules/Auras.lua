@@ -197,7 +197,7 @@ sArenaMixin.auraList = tInvert({
     196364, -- Unstable Affliction Silence 2
     317589, -- Tormenting Backlash
 
-    323673, -- Mindgames
+    375901, -- Mindgames
 
     -- Disarms
     236077, -- Disarm
