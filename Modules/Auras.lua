@@ -17,6 +17,7 @@ sArenaMixin.interruptList = {
     [187707] = 3,   -- Muzzle (Hunter)
     [212619] = 6,   -- Call Felhunter (Warlock)
     [231665] = 3,   -- Avengers Shield (Paladin)
+    [351338] = 4,   -- Quell (Evoker)
 }
 
 sArenaMixin.auraList = tInvert({
@@ -65,6 +66,7 @@ sArenaMixin.auraList = tInvert({
     46968,  -- Shockwave
     132168, -- Shockwave (Protection)
     287712, -- Haymaker (Stun)
+    372245, -- Terror of the Skies (stun)   
 
 
     33786,  -- Cyclone (Disorient)
@@ -90,6 +92,7 @@ sArenaMixin.auraList = tInvert({
     236748, -- Intimidating Roar (Disorient)
     331866, -- Agent of Chaos (Disorient)
     324263, -- Sulfuric Emission (Disorient)
+    360806, -- Sleep Walk (Disorient)
 
     51514,  -- Hex (Incapacitate)
     211004, -- Hex: Spider (Incapacitate)
@@ -149,6 +152,7 @@ sArenaMixin.auraList = tInvert({
     8178,   -- Grounding Totem Effect
     199448, -- Blessing of Sacrifice
     236321, -- War Banner
+    378441, -- Time Stop
 
     -- Interrupts
     1766,   -- Kick (Rogue)
@@ -169,6 +173,7 @@ sArenaMixin.auraList = tInvert({
     187707, -- Muzzle (Hunter)
     212619, -- Call Felhunter (Warlock)
     231665, -- Avengers Shield (Paladin)
+    351338, -- Quell (Evoker)
 
     -- Anti CCs
     23920,  -- Spell Reflection
@@ -179,6 +184,7 @@ sArenaMixin.auraList = tInvert({
     48707,  -- Death Knight: Anti-Magic Shell
     5384,   -- Hunter: Feign Death
     353319, -- Monk: Peaceweaver
+    378464, -- Evoker: Nullifying Shroud
 
     -- Silences
     81261,  -- Solar Beam
@@ -195,7 +201,7 @@ sArenaMixin.auraList = tInvert({
     196364, -- Unstable Affliction Silence 2
     317589, -- Tormenting Backlash
 
-    323673, -- Mindgames
+    375901, -- Mindgames
 
     -- Disarms
     236077, -- Disarm
@@ -229,6 +235,7 @@ sArenaMixin.auraList = tInvert({
     198121, -- Frostbite
     117526, -- Binding Shot
     207171, -- Winter is Coming
+    241887, -- LandSlide
 
     -- Offensive Buffs
     51271,  -- Death Knight: Pillar of Frost
@@ -273,6 +280,8 @@ sArenaMixin.auraList = tInvert({
     -- 260708, -- Warrior: Sweeping Strikes
     262228, -- Warrior: Deadly Calm
     1719,   -- Warrior: Recklessness
+    375087, -- Evoker: Dragonrage
+    370553, -- Evoker: Tip the Scales
 
     -- Defensive Buffs
     48792,  -- Death Knight: Icebound Fortitude
@@ -330,6 +339,10 @@ sArenaMixin.auraList = tInvert({
     213871, -- Warrior: Bodyguard
     345231, -- Trinket: Gladiator's Emblem
     197690, -- Warrior: Defensive Stance
+    374348, -- Evoker: Renewing Blaze
+    370960, -- Evoker: Emerald Communion
+    363916, -- Evoker: Obsidian Scales
+    357170, -- Evoker: Time Dilation
 
     -- Refreshments
     167152, -- Mage Food

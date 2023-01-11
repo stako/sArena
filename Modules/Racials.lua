@@ -23,7 +23,8 @@ sArenaMixin.defaultSettings.profile.racialCategories = {
     ["VoidElf"] = true,
     ["KulTiran"] = true,
     ["Mechagnome"] = true,
-    ["Vulpera"] = true
+    ["Vulpera"] = true,
+	["Dracthyr"] = true
 }
 
 local racialSpells = {
@@ -49,7 +50,9 @@ local racialSpells = {
     [256948] = 180, -- Spatial Rift
     [287712] = 160, -- Haymaker
     [312924] = 180, -- Hyper Organic Light Originator
-    [312411] = 90   -- Bag of Tricks
+    [312411] = 90,  -- Bag of Tricks
+	[368970] = 90,  -- Tail Swipe
+	[357214] = 90   -- Wing Buffet
 }
 
 local racialData = {
@@ -76,6 +79,7 @@ local racialData = {
     ["KulTiran"] = { texture = GetSpellTexture(287712), sharedCD = 0 },
     ["Mechagnome"] = { texture = GetSpellTexture(312924), sharedCD = 0 },
     ["Vulpera"] = { texture = GetSpellTexture(312411), sharedCD = 0 },
+	["Dracthyr"] = { texture = GetSpellTexture(368970), sharedCD = 0 }
 }
 
 local function GetRemainingCD(frame)

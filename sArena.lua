@@ -32,6 +32,7 @@ local classIcons = {
     ["WARRIOR"] = 135328, -- 626008
     ["DEATHKNIGHT"] = 135771,
     ["DEMONHUNTER"] = 1260827,
+	["EVOKER"] = 4574311,
 }
 local emptyLayoutOptionsTable = {
     notice = {
@@ -549,7 +550,6 @@ function sArenaFrameMixin:UpdateClassIcon()
     if (self.currentClassIconTexture == texture) then return end
 
     self.currentClassIconTexture = texture
-
     if (texture == "class") then
         texture = classIcons[self.class]
     end
