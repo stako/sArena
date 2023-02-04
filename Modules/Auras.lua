@@ -317,6 +317,7 @@ sArenaMixin.auraList = tInvert({
     31842,  -- Paladin: Avenging Wrath (Holy)
     205191, -- Paladin: Eye for an Eye
     498,    -- Paladin: Divine Protection
+    211336, -- Priest: Restitution (Buff)
     47788,  -- Priest: Guardian Spirit
     33206,  -- Priest: Pain Suppression
     232707, -- Priest: Ray of Hope
