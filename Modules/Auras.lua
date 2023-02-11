@@ -27,11 +27,10 @@ sArenaMixin.auraList = tInvert({
     5211,   -- Mighty Bash (Stun)
     108194, -- Asphyxiate (Unholy) (Stun)
     221562, -- Asphyxiate (Blood) (Stun)
-    334693, -- Absolute Zero (Frost) (Stun)
+    377048, -- Absolute Zero (Frost) (Stun)
     91797,  -- Monstrous Blow (Mutated Ghoul) (Stun)
     287254, -- Dead of Winter (Stun)
     210141, -- Zombie Explosion (Stun)
-    199804, -- Between the Eyes (Stun)
     118905, -- Static Charge (Stun)
     1833,   -- Cheap Shot (Stun)
     853,    -- Hammer of Justice (Stun)
@@ -43,6 +42,8 @@ sArenaMixin.auraList = tInvert({
     89766,  -- Axe Toss (Stun)
     30283,  -- Shadowfury (Stun)
     24394,  -- Intimidation (Stun)
+    117526, -- Binding Shot (Stun)
+	357021, -- Consecutive Concussion (Stun)
     211881, -- Fel Eruption (Stun)
     91800,  -- Gnaw (Stun)
     205630, -- Illidan's Grasp (Stun)
@@ -66,8 +67,8 @@ sArenaMixin.auraList = tInvert({
     46968,  -- Shockwave
     132168, -- Shockwave (Protection)
     287712, -- Haymaker (Stun)
-    372245, -- Terror of the Skies (stun)   
-
+    372245, -- Terror of the Skies (stun)
+	389831, -- Snowdrift (Stun)
 
     33786,  -- Cyclone (Disorient)
     5246,   -- Intimidating Shout (Disorient)
@@ -117,6 +118,8 @@ sArenaMixin.auraList = tInvert({
     161372, -- Polymorph: Peacock (Incapacitate)
     277792, -- Polymorph: Bumblebee (Incapacitate)
     277787, -- Polymorph: Baby Direhorn (Incapacitate)
+	391622, -- Polymorph: Duck (Incapacitate)
+	383121, -- Mass Polymorph (Incapacitate)
     3355,   -- Freezing Trap (Incapacitate)
     203337, -- Freezing Trap, Diamond Ice Honor Talent (Incapacitate)
     115078, -- Paralysis (Incapacitate)
@@ -177,9 +180,7 @@ sArenaMixin.auraList = tInvert({
 
     -- Anti CCs
     23920,  -- Spell Reflection
-    330279, -- Overwatch
     213610, -- Priest: Holy Ward
-    213602, -- Priest: Greater Fade
     212295, -- Warlock: Nether Ward
     48707,  -- Death Knight: Anti-Magic Shell
     5384,   -- Hunter: Feign Death
@@ -189,7 +190,7 @@ sArenaMixin.auraList = tInvert({
     -- Silences
     81261,  -- Solar Beam
     202933, -- Spider Sting
-    233022, -- Spider Sting 2
+    356727, -- Spider Venom
     1330,   -- Garrote
     15487,  -- Silence
     199683, -- Last Word
@@ -200,7 +201,6 @@ sArenaMixin.auraList = tInvert({
     43523,  -- Unstable Affliction Silence 1
     196364, -- Unstable Affliction Silence 2
     317589, -- Tormenting Backlash
-
     375901, -- Mindgames
 
     -- Disarms
@@ -232,10 +232,10 @@ sArenaMixin.auraList = tInvert({
     53148,  -- Charge (Hunter Pet)
     190927, -- Harpoon
     136634, -- Narrow Escape (unused?)
-    198121, -- Frostbite
-    117526, -- Binding Shot
-    207171, -- Winter is Coming
-    241887, -- LandSlide
+    378760, -- Frostbite
+    233395, -- Deathchill (Remorseless Winter)
+	204085, -- Deathchill (Chains of Ice)
+    241887, -- Landslide
 
     -- Offensive Buffs
     51271,  -- Death Knight: Pillar of Frost
@@ -249,7 +249,7 @@ sArenaMixin.auraList = tInvert({
     266779, -- Hunter: Coordinated Assault
     288613, -- Hunter: Trueshot
     -- 260402, -- Hunter: Double Tap
-    12042,  -- Mage: Arcane Power
+    365362, -- Mage: Arcane Surge
     190319, -- Mage: Combustion
     324220, -- Mage: Deathborne
     198144, -- Mage: Ice Form
@@ -292,6 +292,7 @@ sArenaMixin.auraList = tInvert({
     212800, -- Demon Hunter: Blur
     188499, -- Demon Hunter: Blade Dance
     209426, -- Demon Hunter: Darkness
+	354610, -- Demon Hunter: Glimpse
     102342, -- Druid: Ironbark
     22812,  -- Druid: Barkskin
     61336,  -- Druid: Survival Instincts
@@ -369,6 +370,7 @@ sArenaMixin.auraList = tInvert({
     322463, -- Thoughtstolen (Warlock)
     322461, -- Thoughtstolen (Priest - Discipline)
     322458, -- Thoughtstolen (Monk)
+	394902, -- Thoughtstolen (Evoker)
     322460, -- Thoughtstolen (Priest - Shadow)
 
     -- Druid Forms
