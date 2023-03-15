@@ -72,6 +72,8 @@ sArenaMixin.auraList = tInvert({
 
     33786,  -- Cyclone (Disorient)
     5246,   -- Intimidating Shout (Disorient)
+	316593, -- Intimidating Shout (Menace Main Target) (Disorient)
+	316595, -- Intimidating Shout (Menace Other Targets) (Disorient)
     8122,   -- Psychic Scream (Disorient)
     2094,   -- Blind (Disorient)
     605,    -- Mind Control (Disorient)
@@ -243,7 +245,9 @@ sArenaMixin.auraList = tInvert({
     207289, -- Death Knight: Unholy Assault
     162264, -- Demon Hunter: Metamorphosis
     194223, -- Druid: Celestial Alignment
+	383410, -- Druid: Celestial Alignment (Orbital Strike)
     102560, -- Druid: Incarnation: Chosen of Elune
+	390414, -- Druid: Incarnation: Chosen of Elune (Orbital Strike)
     102543, -- Druid: Incarnation: King of the Jungle
     19574,  -- Hunter: Bestial Wrath
     266779, -- Hunter: Coordinated Assault
