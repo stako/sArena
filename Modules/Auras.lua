@@ -43,7 +43,7 @@ sArenaMixin.auraList = tInvert({
     30283,  -- Shadowfury (Stun)
     24394,  -- Intimidation (Stun)
     117526, -- Binding Shot (Stun)
-	357021, -- Consecutive Concussion (Stun)
+    357021, -- Consecutive Concussion (Stun)
     211881, -- Fel Eruption (Stun)
     91800,  -- Gnaw (Stun)
     205630, -- Illidan's Grasp (Stun)
@@ -68,10 +68,12 @@ sArenaMixin.auraList = tInvert({
     132168, -- Shockwave (Protection)
     287712, -- Haymaker (Stun)
     372245, -- Terror of the Skies (stun)
-	389831, -- Snowdrift (Stun)
+    389831, -- Snowdrift (Stun)
 
     33786,  -- Cyclone (Disorient)
     5246,   -- Intimidating Shout (Disorient)
+    316593, -- Intimidating Shout (Menace Main Target) (Disorient)
+    316595, -- Intimidating Shout (Menace Other Targets) (Disorient)
     8122,   -- Psychic Scream (Disorient)
     2094,   -- Blind (Disorient)
     605,    -- Mind Control (Disorient)
@@ -118,8 +120,8 @@ sArenaMixin.auraList = tInvert({
     161372, -- Polymorph: Peacock (Incapacitate)
     277792, -- Polymorph: Bumblebee (Incapacitate)
     277787, -- Polymorph: Baby Direhorn (Incapacitate)
-	391622, -- Polymorph: Duck (Incapacitate)
-	383121, -- Mass Polymorph (Incapacitate)
+    391622, -- Polymorph: Duck (Incapacitate)
+    383121, -- Mass Polymorph (Incapacitate)
     3355,   -- Freezing Trap (Incapacitate)
     203337, -- Freezing Trap, Diamond Ice Honor Talent (Incapacitate)
     115078, -- Paralysis (Incapacitate)
@@ -234,7 +236,7 @@ sArenaMixin.auraList = tInvert({
     136634, -- Narrow Escape (unused?)
     378760, -- Frostbite
     233395, -- Deathchill (Remorseless Winter)
-	204085, -- Deathchill (Chains of Ice)
+    204085, -- Deathchill (Chains of Ice)
     241887, -- Landslide
 
     -- Offensive Buffs
@@ -292,7 +294,7 @@ sArenaMixin.auraList = tInvert({
     212800, -- Demon Hunter: Blur
     188499, -- Demon Hunter: Blade Dance
     209426, -- Demon Hunter: Darkness
-	354610, -- Demon Hunter: Glimpse
+    354610, -- Demon Hunter: Glimpse
     102342, -- Druid: Ironbark
     22812,  -- Druid: Barkskin
     61336,  -- Druid: Survival Instincts
@@ -370,7 +372,7 @@ sArenaMixin.auraList = tInvert({
     322463, -- Thoughtstolen (Warlock)
     322461, -- Thoughtstolen (Priest - Discipline)
     322458, -- Thoughtstolen (Monk)
-	394902, -- Thoughtstolen (Evoker)
+    394902, -- Thoughtstolen (Evoker)
     322460, -- Thoughtstolen (Priest - Shadow)
 
     -- Druid Forms
