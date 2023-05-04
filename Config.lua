@@ -5,6 +5,7 @@ local function getLayoutTable()
         t[k] = sArenaMixin.layouts[k].name and sArenaMixin.layouts[k].name or k
     end
 
+	
     return t
 end
 
