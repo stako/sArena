@@ -4,7 +4,7 @@ local function getLayoutTable()
     for k, _ in pairs(sArenaMixin.layouts) do
         t[k] = sArenaMixin.layouts[k].name and sArenaMixin.layouts[k].name or k
     end
-
+ 
     return t
 end
 
